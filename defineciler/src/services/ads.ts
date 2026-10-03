@@ -3,7 +3,7 @@ import mobileAds, {
   AdsConsent,
   InterstitialAd,
   MaxAdContentRating,
-  RewardedAd,
+  RewardedInterstitialAd,
   RewardedAdEventType,
   TestIds,
 } from 'react-native-google-mobile-ads';
@@ -21,13 +21,13 @@ export const AD_UNITS = {
   banner: pick(PRODUCTION_AD_UNITS.banner, TestIds.ADAPTIVE_BANNER),
   resultBanner: pick(PRODUCTION_AD_UNITS.resultBanner, TestIds.BANNER),
   interstitial: pick(PRODUCTION_AD_UNITS.interstitial, TestIds.INTERSTITIAL),
-  rewarded: pick(PRODUCTION_AD_UNITS.rewarded, TestIds.REWARDED),
+  rewarded: pick(PRODUCTION_AD_UNITS.rewarded, TestIds.REWARDED_INTERSTITIAL),
 };
 
 let canRequestAds = false;
 let initPromise: Promise<void> | null = null;
 let interstitial: InterstitialAd | null = null;
-let rewarded: RewardedAd | null = null;
+let rewarded: RewardedInterstitialAd | null = null;
 let scansSinceInterstitial = 0;
 let lastInterstitialAt = 0;
 
@@ -71,7 +71,7 @@ function preloadInterstitial() {
 function preloadRewarded() {
   if (!canRequestAds) return;
   rewarded?.removeAllListeners();
-  rewarded = RewardedAd.createForAdRequest(AD_UNITS.rewarded);
+  rewarded = RewardedInterstitialAd.createForAdRequest(AD_UNITS.rewarded);
   rewarded.load();
 }
 

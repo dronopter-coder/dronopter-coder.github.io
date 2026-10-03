@@ -7,7 +7,7 @@ import { Platform } from 'react-native';
  * aşağıdaki birimleri açın ve kimlikleri buraya yazın. Geliştirme (__DEV__) modunda
  * Google'ın resmi test reklamları kullanılır; gerçek reklama kendiniz tıklamayın.
  *
- * Yayıncı kimliği: pub-3204109869365538
+ * Yayıncı kimliği: pub-3204109869365538 · Uygulama kimliği: ca-app-pub-3204109869365538~6941164437 (app.json)
  */
 export const PRODUCTION_AD_UNITS = {
   /** Sekmelerin altındaki banner (defineciler_banner) */
@@ -16,8 +16,8 @@ export const PRODUCTION_AD_UNITS = {
   resultBanner: 'ca-app-pub-3204109869365538/3849020679',
   /** Analiz bittikten sonra gösterilen geçiş reklamı (defineciler_gecis) */
   interstitial: 'ca-app-pub-3204109869365538/6287481758',
-  /** "Reklam izle, +1 analiz hakkı kazan" ödüllü reklamı — AdMob'da "Ödüllü" birim açılınca buraya yazın */
-  rewarded: 'ca-app-pub-3204109869365538/XXXXXXXXXX',
+  /** "Reklam izle, +1 analiz hakkı kazan" — ödüllü geçiş reklamı (rewarded interstitial) */
+  rewarded: 'ca-app-pub-3204109869365538/3537106047',
 };
 
 /** Geçiş reklamı en fazla kaç analizde bir gösterilsin. */

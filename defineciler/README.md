@@ -71,9 +71,9 @@ Reklam birimleri `src/constants/ad-units.ts` dosyasındadır:
 | --- | --- |
 | Banner (`defineciler_banner`) | `ca-app-pub-3204109869365538/3849020679` |
 | Geçiş (`defineciler_gecis`) | `ca-app-pub-3204109869365538/6287481758` |
-| Ödüllü | henüz yok — AdMob'da *Ödüllü* birim açıp ekleyin; eklenene kadar "+1 hak" reklamsız verilir |
+| Ödüllü geçiş | `ca-app-pub-3204109869365538/3537106047` |
 
-**Uygulama kimliği** (`ca-app-pub-3204109869365538~…`, AdMob → Uygulamalar → Uygulama ayarları) `app.json` → `react-native-google-mobile-ads` → `androidAppId` alanına yazılmalıdır; şu an Google'ın test kimliği duruyor ve gerçek reklamlar bu kimlik girilene kadar gösterilmez.
+**Uygulama kimliği** `ca-app-pub-3204109869365538~6941164437` → `app.json` → `react-native-google-mobile-ads` → `androidAppId`.
 
 Geliştirme modunda otomatik olarak Google test reklamları gösterilir. `app-ads.txt` dosyası `dronopter-coder.github.io` sitesinde yayında; Play Store kaydında geliştirici web sitesi olarak `https://dronopter-coder.github.io` girin.
 

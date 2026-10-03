@@ -55,9 +55,13 @@ async function leadImageFile(candidate: string): Promise<string | null> {
   const [lang, ...rest] = candidate.split(':');
   const title = rest.join(':').replace(/ /g, '_');
   const res = await get(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
-  if (!res.ok) return null;
+  if (!res.ok) {
+    console.warn(`  ${candidate}: Wikipedia özeti alınamadı (HTTP ${res.status})`);
+    return null;
+  }
   const json = (await res.json()) as { type?: string; originalimage?: { source: string } };
   const src = json.type === 'disambiguation' ? undefined : json.originalimage?.source;
+  if (src && !/\/wikipedia\/commons\//.test(src)) console.warn(`  ${candidate}: ana görsel Commons'ta değil (${src})`);
   const m = src?.match(/\/wikipedia\/commons\/(?:thumb\/)?[0-9a-f]\/[0-9a-f]{2}\/([^/]+)/);
   return m ? decodeURIComponent(m[1]) : null;
 }
@@ -72,11 +76,23 @@ const normTitle = (s: string) =>
 async function commonsInfo(file: string, width: number) {
   const api =
     'https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo' +
-    `&iiprop=url|extmetadata|mime&iiurlwidth=${width}&titles=${encodeURIComponent('File:' + file)}`;
-  const json = (await (await get(api)).json()) as any;
+    `&iiprop=url|extmetadata|mime|size&iiurlwidth=${width}&titles=${encodeURIComponent('File:' + file)}`;
+  const res = await get(api);
+  const json = (await res.json().catch(() => null)) as any;
   const page = Object.values(json?.query?.pages ?? {})[0] as any;
   const ii = page?.imageinfo?.[0];
-  if (!ii?.thumburl) return null;
+  if (!ii) {
+    console.warn(
+      `  ${file}: Commons bilgisi alınamadı (HTTP ${res.status}) ${JSON.stringify(json?.error ?? page ?? json).slice(0, 200)}`,
+    );
+    return null;
+  }
+  // Küçük resim adresi yoksa ve orijinal dosya küçükse orijinali kullan.
+  const thumb: string | undefined = ii.thumburl ?? (ii.size && ii.size < 4_000_000 ? ii.url : undefined);
+  if (!thumb) {
+    console.warn(`  ${file}: küçük resim adresi yok (${ii.mime}, ${ii.size} bayt)`);
+    return null;
+  }
   // Yanıt gerçekten istenen dosyaya mı ait? (yanlış atıf olmasın)
   if (page?.title && normTitle(page.title) !== normTitle(file)) {
     console.warn(`  beklenmeyen dosya: ${page.title} ≠ ${file}`);
@@ -84,7 +100,7 @@ async function commonsInfo(file: string, width: number) {
   }
   const meta = ii.extmetadata ?? {};
   return {
-    thumb: ii.thumburl as string,
+    thumb,
     author: stripHtml(meta.Artist?.value ?? '') || 'Wikimedia Commons',
     license: stripHtml(meta.LicenseShortName?.value ?? '') || 'bkz. kaynak',
     url: (ii.descriptionurl as string) ?? `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(file)}`,
