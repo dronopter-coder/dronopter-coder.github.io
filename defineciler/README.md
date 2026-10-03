@@ -59,7 +59,7 @@ Terminalden kurmak isterseniz: `cd worker && npm install && npx wrangler login &
 
 İsteğe bağlı günlük IP sınırı: `npx wrangler kv namespace create USAGE` komutunun verdiği id'yi `wrangler.jsonc` içindeki yorumlu `kv_namespaces` satırına ekleyin.
 
-Model `wrangler.jsonc` → `GEMINI_MODEL` ile seçilir. Varsayılan `gemini-flash-latest` (Google'ın güncel Flash modeli).
+Model `wrangler.jsonc` → `GEMINI_MODEL` ile seçilir. Varsayılan `gemini-3.8-flash`; yoğunlukta `GEMINI_FALLBACK_MODELS` listesindeki modeller sırayla denenir.
 
 > **Gizlilik notu:** Gemini API'nin ücretsiz katmanında Google, gönderilen içerikleri ürünlerini geliştirmek için kullanabilir. Yayına çıkarken AI Studio'da faturalandırmayı açmanız önerilir.
 
