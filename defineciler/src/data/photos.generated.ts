@@ -3,4 +3,107 @@
 
 export type Photo = { image: number; author: string; license: string; url: string };
 
-export const PHOTOS: Record<string, Photo> = {};
+export const PHOTOS: Record<string, Photo> = {
+  'guide:seramik': {
+    image: require('../../assets/photos/guide-seramik.jpg'),
+    author: "Chukwukajustice",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Traditional_pottery_in_Nigeria_(Ikpu_ite)_19.jpg",
+  },
+  'guide:sikkeler': {
+    image: require('../../assets/photos/guide-sikkeler.jpg'),
+    author: "Aaytacc147",
+    license: "CC BY 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Kocaeli_Arkeoloji_M%C3%BCzesi_Sikkeler_Seksiyonu.jpg",
+  },
+  'guide:zaman': {
+    image: require('../../assets/photos/guide-zaman.jpg'),
+    author: "Teomancimit",
+    license: "CC BY-SA 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:G%C3%B6bekli_Tepe,_Urfa.jpg",
+  },
+  'place:frigya': {
+    image: require('../../assets/photos/place-frigya.jpg'),
+    author: "Gordion Archive, Penn Museum",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Gordion_Early_Phrygian_East_Gate.jpg",
+  },
+  'place:iyonya': {
+    image: require('../../assets/photos/place-iyonya.jpg'),
+    author: "Benh LIEU SONG",
+    license: "CC BY-SA 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:Ephesus_Celsus_Library_Fa%C3%A7ade.jpg",
+  },
+  'place:kafkas': {
+    image: require('../../assets/photos/place-kafkas.jpg'),
+    author: "Engin Tavlı",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Ani_Harabeleri_2.jpg",
+  },
+  'place:kapadokya': {
+    image: require('../../assets/photos/place-kapadokya.jpg'),
+    author: "MusikAnimal",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:G%C3%B6reme_town_and_valley_2015.JPG",
+  },
+  'place:karadeniz': {
+    image: require('../../assets/photos/place-karadeniz.jpg'),
+    author: "Ahmtzngn34",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Ye%C5%9Fil%C4%B1rmak2.jpg",
+  },
+  'place:karya': {
+    image: require('../../assets/photos/place-karya.jpg'),
+    author: "Carole Raddato from FRANKFURT, Germany",
+    license: "CC BY-SA 2.0",
+    url: "https://commons.wikimedia.org/wiki/File:The_Temple_of_Aphrodite,_built_in_the_Ionic_order_in_stages_during_the_Roman_period_(from_1st_century_BC_to_2nd_century_AD)_and_later_converted_into_a_Christian_basilica,_Aphrodisias,_Caria,_Turkey_(20300922019).jpg",
+  },
+  'place:kilikya': {
+    image: require('../../assets/photos/place-kilikya.jpg'),
+    author: "Klaus-Peter Simon",
+    license: "CC BY-SA 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:Kizkalesi_M%C3%A4dchenburg_3.jpg",
+  },
+  'place:kommagene': {
+    image: require('../../assets/photos/place-kommagene.jpg'),
+    author: "Klearchos Kapoutsis from Santorini, Greece",
+    license: "CC BY 2.0",
+    url: "https://commons.wikimedia.org/wiki/File:Mount_Nemrut_-_East_Terrace_(4961323529).jpg",
+  },
+  'place:lidya': {
+    image: require('../../assets/photos/place-lidya.jpg'),
+    author: "Carole Raddato from FRANKFURT, Germany",
+    license: "CC BY-SA 2.0",
+    url: "https://commons.wikimedia.org/wiki/File:The_Bath-Gymnasium_complex_at_Sardis,_late_2nd_-_early_3rd_century_AD,_Sardis,_Turkey_(17098680002).jpg",
+  },
+  'place:likya': {
+    image: require('../../assets/photos/place-likya.jpg'),
+    author: "Ingo Mehling",
+    license: "CC BY-SA 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:Myra_theatre.jpg",
+  },
+  'place:mezopotamya': {
+    image: require('../../assets/photos/place-mezopotamya.jpg'),
+    author: "Omer Unlu",
+    license: "CC BY 2.0",
+    url: "https://commons.wikimedia.org/wiki/File:Hasankeyf_Castle.jpg",
+  },
+  'place:pamfilya': {
+    image: require('../../assets/photos/place-pamfilya.jpg'),
+    author: "Dosseman",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Aspendos_Basilica_4728.jpg",
+  },
+  'place:trakya': {
+    image: require('../../assets/photos/place-trakya.jpg'),
+    author: "Frank Chandler",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Macro,_Liquid_drop_on_Feather,_70-300mm-Coupler_%26_reverse_Lens-213.jpg",
+  },
+  'place:troas': {
+    image: require('../../assets/photos/place-troas.jpg'),
+    author: "Carole Raddato",
+    license: "CC BY-SA 2.0",
+    url: "https://commons.wikimedia.org/wiki/File:Hadrianic_Odeon_in_Troy_IX_(Ilion),_Turkey.jpg",
+  },
+};
