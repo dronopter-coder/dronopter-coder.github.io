@@ -4,12 +4,6 @@
 export type Photo = { image: number; author: string; license: string; url: string };
 
 export const PHOTOS: Record<string, Photo> = {
-  'guide:seramik': {
-    image: require('../../assets/photos/guide-seramik.jpg'),
-    author: "Chukwukajustice",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Traditional_pottery_in_Nigeria_(Ikpu_ite)_19.jpg",
-  },
   'guide:sikkeler': {
     image: require('../../assets/photos/guide-sikkeler.jpg'),
     author: "Aaytacc147",
@@ -93,12 +87,6 @@ export const PHOTOS: Record<string, Photo> = {
     author: "Dosseman",
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Aspendos_Basilica_4728.jpg",
-  },
-  'place:trakya': {
-    image: require('../../assets/photos/place-trakya.jpg'),
-    author: "Frank Chandler",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Macro,_Liquid_drop_on_Feather,_70-300mm-Coupler_%26_reverse_Lens-213.jpg",
   },
   'place:troas': {
     image: require('../../assets/photos/place-troas.jpg'),

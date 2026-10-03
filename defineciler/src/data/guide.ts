@@ -66,7 +66,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Çanak çömlek parçalarından dönem tahmini',
     icon: 'pot-mix',
     wiki: { tr: 'Seramik', en: 'Pottery' },
-    photo: ['en:Ancient Greek pottery', 'en:Pottery'],
+    photo: ['en:Ancient Greek pottery', 'en:Terra sigillata', 'en:Attic vase painting', 'en:Black-figure pottery'],
     accent: '#B5651D',
     sections: [
       {
@@ -96,7 +96,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Antik aydınlatma araçları',
     icon: 'lamp',
     wiki: { en: 'Oil lamp' },
-    photo: ['en:Oil lamp'],
+    photo: ['en:Oil lamp', 'en:Roman lamp', 'en:Lucerna'],
     accent: '#D08C3C',
     sections: [
       {
@@ -120,7 +120,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Damga, silindir ve kurşun mühürler',
     icon: 'stamper',
     wiki: { tr: 'Mühür', en: 'Seal (emblem)' },
-    photo: ['en:Cylinder seal'],
+    photo: ['en:Cylinder seal', 'en:Stamp seal', 'en:Seal (emblem)'],
     accent: '#8E3B2E',
     sections: [
       {
@@ -141,7 +141,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Fibula, yüzük, bilezik ve haçlar',
     icon: 'ring',
     wiki: { en: 'Fibula (brooch)' },
-    photo: ['en:Fibula (brooch)'],
+    photo: ['en:Fibula (brooch)', 'en:Byzantine jewellery', 'en:Ancient Greek jewellery'],
     accent: '#A3683A',
     sections: [
       {
@@ -170,7 +170,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Ana tanrıçadan Roma bronzlarına',
     icon: 'human-female',
     wiki: { tr: 'Figürin', en: 'Figurine' },
-    photo: ['en:Seated Woman of Çatalhöyük', 'en:Figurine'],
+    photo: ['en:Seated Woman of Çatalhöyük', 'en:Tanagra figurine', 'en:Figurine'],
     accent: '#9C5B2E',
     sections: [
       {
@@ -190,7 +190,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Halk inanışı ve bilimsel açıklaması',
     icon: 'sign-direction',
     wiki: { tr: 'Petroglif', en: 'Cup and ring mark' },
-    photo: ['en:Petroglyph', 'en:Cup and ring mark'],
+    photo: ['en:Petroglyph', 'en:Cup and ring mark', 'en:Rock art'],
     accent: '#7A5C3E',
     sections: [
       {
@@ -220,7 +220,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Replika ve taklitleri ayırt etme',
     icon: 'magnify-scan',
     wiki: { en: 'Art forgery' },
-    photo: ['en:Art forgery'],
+    photo: ['en:Art forgery', 'en:Replica', 'en:Forgery'],
     accent: '#5A6E8C',
     sections: [
       {
@@ -245,7 +245,7 @@ export const GUIDE: GuideTopic[] = [
     title: 'Eser Bulursanız Ne Yapmalı?',
     subtitle: 'Yasal süreç, haklar ve cezalar',
     icon: 'scale-balance',
-    photo: ['en:Museum of Anatolian Civilizations'],
+    photo: ['en:Museum of Anatolian Civilizations', 'en:Istanbul Archaeology Museums', 'tr:Anadolu Medeniyetleri Müzesi'],
     accent: '#3E7C8C',
     sections: [
       {
@@ -275,7 +275,7 @@ export const GUIDE: GuideTopic[] = [
     title: 'İyi Fotoğraf Nasıl Çekilir?',
     subtitle: 'Yapay zekadan en doğru sonucu almak için',
     icon: 'camera-iris',
-    photo: ['en:Excavation (archaeology)', 'en:Archaeology'],
+    photo: ['en:Excavation (archaeology)', 'en:Archaeology', 'en:Archaeological field survey'],
     accent: '#C08B5C',
     sections: [
       {

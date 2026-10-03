@@ -43,7 +43,7 @@ export const PLACES: Place[] = [
     keySites: ['Hattuşa (Boğazkale)', 'Yazılıkaya', 'Alacahöyük', 'Kültepe (Kaniş)', 'Şapinuva (Ortaköy)'],
     museums: ['Anadolu Medeniyetleri Müzesi (Ankara)', 'Çorum Müzesi', 'Kayseri Arkeoloji Müzesi', 'Boğazköy Müzesi'],
     wiki: { tr: 'Hattuşa', en: 'Hattusa' },
-    photo: ['en:Hattusa', 'en:Lion Gate (Hattusa)'],
+    photo: ['en:Hattusa', 'en:Lion Gate, Hattusa', 'tr:Hattuşa', 'en:Yazılıkaya'],
     accent: '#B5651D',
   },
   {
@@ -114,7 +114,7 @@ export const PLACES: Place[] = [
     keySites: ['Van Kalesi (Tuşpa)', 'Çavuştepe', 'Ayanis', 'Toprakkale (Rusahinili)', 'Altıntepe'],
     museums: ['Van Müzesi', 'Erzurum Arkeoloji Müzesi', 'Elazığ Arkeoloji Müzesi'],
     wiki: { tr: 'Van Kalesi', en: 'Van Fortress' },
-    photo: ['en:Van Fortress'],
+    photo: ['en:Van Fortress', 'en:Çavuştepe', 'tr:Van Kalesi', 'en:Tushpa'],
     accent: '#8E3B2E',
   },
   {
@@ -323,7 +323,7 @@ export const PLACES: Place[] = [
     keySites: ['Çatalhöyük', 'Alaeddin Tepesi', 'Binbir Kilise', 'Kerkenes (Yozgat, komşu)', 'Kubadabad Sarayı'],
     museums: ['Konya Arkeoloji Müzesi', 'Karatay Çini Eserler Müzesi', 'Karaman Müzesi'],
     wiki: { tr: 'Çatalhöyük', en: 'Çatalhöyük' },
-    photo: ['en:Çatalhöyük'],
+    photo: ['en:Çatalhöyük', 'en:Alâeddin Mosque', 'tr:Çatalhöyük', 'en:Konya'],
     accent: '#A3683A',
   },
   {
@@ -369,7 +369,7 @@ export const PLACES: Place[] = [
     keySites: ['Yenikapı', 'Kırklareli Dolmenleri', 'Aşağı Pınar', 'Kırklareli Tümülüsleri', 'Perinthos (Marmara Ereğlisi)'],
     museums: ['İstanbul Arkeoloji Müzeleri', 'Edirne Müzesi', 'Kırklareli Müzesi', 'Tekirdağ Müzesi'],
     wiki: { tr: 'Dolmen', en: 'Dolmen' },
-    photo: ['en:Hagia Sophia'],
+    photo: ['en:Hagia Sophia', 'en:Selimiye Mosque', 'en:Edirne'],
     accent: '#5A6E8C',
   },
   {

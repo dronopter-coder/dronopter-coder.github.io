@@ -13,7 +13,8 @@ const PHOTO_DIR = new URL('assets/photos/', ROOT);
 const CREDITS = new URL('assets/photos/credits.json', ROOT);
 const GENERATED = new URL('src/data/photos.generated.ts', ROOT);
 const UA = 'DefinecilerBuild/1.0 (https://dronopter-coder.github.io; dronopter@gmail.com)';
-const WIDTH = 1024;
+// Wikimedia yalnızca standart küçük resim genişliklerini üretir; sırayla denenir.
+const WIDTHS = [1280, 960, 500];
 
 type Credit = { file: string; author: string; license: string; url: string };
 type Entry = { key: string; candidates: string[] };
@@ -21,11 +22,11 @@ type Entry = { key: string; candidates: string[] };
 const entries: Entry[] = [
   ...PLACES.map((p) => ({
     key: `place:${p.id}`,
-    candidates: [...(p.photo ?? []), p.wiki.en && `en:${p.wiki.en}`, p.wiki.tr && `tr:${p.wiki.tr}`].filter(Boolean) as string[],
+    candidates: p.photo ?? ([p.wiki.en && `en:${p.wiki.en}`, p.wiki.tr && `tr:${p.wiki.tr}`].filter(Boolean) as string[]),
   })),
   ...GUIDE.map((g) => ({
     key: `guide:${g.id}`,
-    candidates: [...(g.photo ?? []), g.wiki?.en && `en:${g.wiki.en}`, g.wiki?.tr && `tr:${g.wiki.tr}`].filter(Boolean) as string[],
+    candidates: g.photo ?? ([g.wiki?.en && `en:${g.wiki.en}`, g.wiki?.tr && `tr:${g.wiki.tr}`].filter(Boolean) as string[]),
   })),
 ];
 
@@ -61,14 +62,26 @@ async function leadImageFile(candidate: string): Promise<string | null> {
   return m ? decodeURIComponent(m[1]) : null;
 }
 
-async function commonsInfo(file: string) {
+const normTitle = (s: string) =>
+  s
+    .replace(/^File:/, '')
+    .replace(/_/g, ' ')
+    .trim()
+    .toLowerCase();
+
+async function commonsInfo(file: string, width: number) {
   const api =
     'https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo' +
-    `&iiprop=url|extmetadata|mime&iiurlwidth=${WIDTH}&titles=${encodeURIComponent('File:' + file)}`;
+    `&iiprop=url|extmetadata|mime&iiurlwidth=${width}&titles=${encodeURIComponent('File:' + file)}`;
   const json = (await (await get(api)).json()) as any;
   const page = Object.values(json?.query?.pages ?? {})[0] as any;
   const ii = page?.imageinfo?.[0];
   if (!ii?.thumburl) return null;
+  // Yanıt gerçekten istenen dosyaya mı ait? (yanlış atıf olmasın)
+  if (page?.title && normTitle(page.title) !== normTitle(file)) {
+    console.warn(`  beklenmeyen dosya: ${page.title} ≠ ${file}`);
+    return null;
+  }
   const meta = ii.extmetadata ?? {};
   return {
     thumb: ii.thumburl as string,
@@ -76,6 +89,19 @@ async function commonsInfo(file: string) {
     license: stripHtml(meta.LicenseShortName?.value ?? '') || 'bkz. kaynak',
     url: (ii.descriptionurl as string) ?? `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(file)}`,
   };
+}
+
+/** Standart genişlikleri sırayla dener; ilk inen küçük resmi döndürür. */
+async function download(file: string) {
+  for (const width of WIDTHS) {
+    const info = await commonsInfo(file, width);
+    if (!info) return null;
+    const img = await get(info.thumb);
+    if (img.ok) return { info, bytes: Buffer.from(await img.arrayBuffer()) };
+    console.warn(`  ${file} @${width}px indirilemedi (HTTP ${img.status})`);
+    await sleep(500);
+  }
+  return null;
 }
 
 const fileNameFor = (key: string, thumb: string) => {
@@ -99,13 +125,15 @@ async function main() {
     for (const candidate of candidates) {
       try {
         const file = await leadImageFile(candidate);
-        if (!file) continue;
-        const info = await commonsInfo(file);
-        if (!info) continue;
-        const img = await get(info.thumb);
-        if (!img.ok) continue;
+        if (!file) {
+          console.warn(`  ${key}: ${candidate} sayfasında Commons görseli yok`);
+          continue;
+        }
+        const got = await download(file);
+        if (!got) continue;
+        const { info, bytes } = got;
         const name = fileNameFor(key, info.thumb);
-        writeFileSync(new URL(name, PHOTO_DIR), Buffer.from(await img.arrayBuffer()));
+        writeFileSync(new URL(name, PHOTO_DIR), bytes);
         credits[key] = { file: name, author: info.author, license: info.license, url: info.url };
         console.log(`✓ ${key} ← ${candidate} (${file}) · ${info.author} · ${info.license}`);
         done = true;

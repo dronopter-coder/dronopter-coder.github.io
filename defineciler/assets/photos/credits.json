@@ -1,10 +1,4 @@
 {
-  "guide:seramik": {
-    "file": "guide-seramik.jpg",
-    "author": "Chukwukajustice",
-    "license": "CC BY-SA 4.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Traditional_pottery_in_Nigeria_(Ikpu_ite)_19.jpg"
-  },
   "guide:sikkeler": {
     "file": "guide-sikkeler.jpg",
     "author": "Aaytacc147",
@@ -88,12 +82,6 @@
     "author": "Dosseman",
     "license": "CC BY-SA 4.0",
     "url": "https://commons.wikimedia.org/wiki/File:Aspendos_Basilica_4728.jpg"
-  },
-  "place:trakya": {
-    "file": "place-trakya.jpg",
-    "author": "Frank Chandler",
-    "license": "CC BY-SA 4.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Macro,_Liquid_drop_on_Feather,_70-300mm-Coupler_%26_reverse_Lens-213.jpg"
   },
   "place:troas": {
     "file": "place-troas.jpg",
