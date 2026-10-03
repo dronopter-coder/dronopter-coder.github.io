@@ -16,7 +16,9 @@ const UA = 'DefinecilerBuild/1.0 (https://dronopter-coder.github.io; dronopter@g
 // Wikimedia yalnızca standart küçük resim genişliklerini üretir; sırayla denenir.
 const WIDTHS = [1280, 960, 500];
 
-type Credit = { file: string; author: string; license: string; url: string };
+// v: kayıt biçimi sürümü; daha eski kayıtlar (atıf doğrulaması öncesi) yeniden indirilir.
+const CREDIT_VERSION = 2;
+type Credit = { file: string; author: string; license: string; url: string; v?: number };
 type Entry = { key: string; candidates: string[] };
 
 const entries: Entry[] = [
@@ -62,7 +64,7 @@ async function leadImageFile(candidate: string): Promise<string | null> {
   const json = (await res.json()) as { type?: string; originalimage?: { source: string } };
   const src = json.type === 'disambiguation' ? undefined : json.originalimage?.source;
   if (src && !/\/wikipedia\/commons\//.test(src)) console.warn(`  ${candidate}: ana görsel Commons'ta değil (${src})`);
-  const m = src?.match(/\/wikipedia\/commons\/(?:thumb\/)?[0-9a-f]\/[0-9a-f]{2}\/([^/]+)/);
+  const m = src?.match(/\/wikipedia\/commons\/(?:thumb\/)?[0-9a-f]\/[0-9a-f]{2}\/([^/?#]+)/);
   return m ? decodeURIComponent(m[1]) : null;
 }
 
@@ -133,9 +135,8 @@ async function main() {
 
   for (const { key, candidates } of entries) {
     const existing = credits[key];
-    if (existing && existsSync(new URL(existing.file, PHOTO_DIR)) && !refresh.has(key)) continue;
-    if (existing) rmSync(new URL(existing.file, PHOTO_DIR), { force: true });
-    delete credits[key];
+    const fresh = existing && existing.v === CREDIT_VERSION && existsSync(new URL(existing.file, PHOTO_DIR));
+    if (fresh && !refresh.has(key)) continue;
 
     let done = false;
     for (const candidate of candidates) {
@@ -149,8 +150,10 @@ async function main() {
         if (!got) continue;
         const { info, bytes } = got;
         const name = fileNameFor(key, info.thumb);
+        // Eski dosya yalnızca yenisi başarıyla indiğinde silinir.
+        if (existing && existing.file !== name) rmSync(new URL(existing.file, PHOTO_DIR), { force: true });
         writeFileSync(new URL(name, PHOTO_DIR), bytes);
-        credits[key] = { file: name, author: info.author, license: info.license, url: info.url };
+        credits[key] = { file: name, author: info.author, license: info.license, url: info.url, v: CREDIT_VERSION };
         console.log(`✓ ${key} ← ${candidate} (${file}) · ${info.author} · ${info.license}`);
         done = true;
         break;
@@ -159,7 +162,9 @@ async function main() {
       }
       await sleep(300);
     }
-    if (!done) failed.push(key);
+    // Yenisi inmezse (ör. geçici ağ hatası) mevcut fotoğraf korunur.
+    if (!done && !existing) failed.push(key);
+    else if (!done) console.warn(`  ${key}: yenilenemedi, mevcut fotoğraf korunuyor`);
     await sleep(300);
   }
 

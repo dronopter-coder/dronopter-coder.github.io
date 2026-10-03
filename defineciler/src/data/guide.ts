@@ -170,7 +170,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Ana tanrıçadan Roma bronzlarına',
     icon: 'human-female',
     wiki: { tr: 'Figürin', en: 'Figurine' },
-    photo: ['en:Seated Woman of Çatalhöyük', 'en:Tanagra figurine', 'en:Figurine'],
+    photo: ['en:Seated Woman of Çatalhöyük', 'en:Tanagra figurine'],
     accent: '#9C5B2E',
     sections: [
       {
