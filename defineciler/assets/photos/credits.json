@@ -1,9 +1,21 @@
 {
+  "guide:seramik": {
+    "file": "guide-seramik.jpg",
+    "author": "Haselburg-müller",
+    "license": "CC BY-SA 3.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Roemerhalle_Kreuznach_Sigillata.jpg"
+  },
   "guide:sikkeler": {
     "file": "guide-sikkeler.jpg",
     "author": "Aaytacc147",
     "license": "CC BY 4.0",
     "url": "https://commons.wikimedia.org/wiki/File:Kocaeli_Arkeoloji_M%C3%BCzesi_Sikkeler_Seksiyonu.jpg"
+  },
+  "guide:yasal": {
+    "file": "guide-yasal.jpg",
+    "author": "Metuboy",
+    "license": "CC BY-SA 4.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Istanbularcheology.jpg"
   },
   "guide:zaman": {
     "file": "guide-zaman.jpg",
@@ -82,6 +94,12 @@
     "author": "Dosseman",
     "license": "CC BY-SA 4.0",
     "url": "https://commons.wikimedia.org/wiki/File:Aspendos_Basilica_4728.jpg"
+  },
+  "place:trakya": {
+    "file": "place-trakya.jpg",
+    "author": "Tevfik Teker",
+    "license": "CC BY 3.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Selimiye_Mosque_and_The_Statue_of_Architect_Sinan_-_panoramio.jpg"
   },
   "place:troas": {
     "file": "place-troas.jpg",

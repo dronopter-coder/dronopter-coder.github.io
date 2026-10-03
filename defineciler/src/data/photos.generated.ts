@@ -4,11 +4,23 @@
 export type Photo = { image: number; author: string; license: string; url: string };
 
 export const PHOTOS: Record<string, Photo> = {
+  'guide:seramik': {
+    image: require('../../assets/photos/guide-seramik.jpg'),
+    author: "Haselburg-müller",
+    license: "CC BY-SA 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:Roemerhalle_Kreuznach_Sigillata.jpg",
+  },
   'guide:sikkeler': {
     image: require('../../assets/photos/guide-sikkeler.jpg'),
     author: "Aaytacc147",
     license: "CC BY 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Kocaeli_Arkeoloji_M%C3%BCzesi_Sikkeler_Seksiyonu.jpg",
+  },
+  'guide:yasal': {
+    image: require('../../assets/photos/guide-yasal.jpg'),
+    author: "Metuboy",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Istanbularcheology.jpg",
   },
   'guide:zaman': {
     image: require('../../assets/photos/guide-zaman.jpg'),
@@ -87,6 +99,12 @@ export const PHOTOS: Record<string, Photo> = {
     author: "Dosseman",
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Aspendos_Basilica_4728.jpg",
+  },
+  'place:trakya': {
+    image: require('../../assets/photos/place-trakya.jpg'),
+    author: "Tevfik Teker",
+    license: "CC BY 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:Selimiye_Mosque_and_The_Statue_of_Architect_Sinan_-_panoramio.jpg",
   },
   'place:troas': {
     image: require('../../assets/photos/place-troas.jpg'),
