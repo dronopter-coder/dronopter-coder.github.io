@@ -34,6 +34,13 @@
     "url": "https://commons.wikimedia.org/wiki/File:Cylinder_seal_king_Louvre_AO6620.jpg",
     "v": 2
   },
+  "guide:sahte": {
+    "file": "guide-sahte.jpg",
+    "author": "WolfenSilva",
+    "license": "CC BY-SA 3.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Mag_glass_request.jpg",
+    "v": 2
+  },
   "guide:seramik": {
     "file": "guide-seramik.jpg",
     "author": "Ad Meskens",
@@ -67,6 +74,13 @@
     "author": "Teomancimit",
     "license": "CC BY-SA 3.0",
     "url": "https://commons.wikimedia.org/wiki/File:G%C3%B6bekli_Tepe,_Urfa.jpg",
+    "v": 2
+  },
+  "place:frigya": {
+    "file": "place-frigya.jpg",
+    "author": "Gordion Archive, Penn Museum",
+    "license": "CC BY-SA 4.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Gordion_Early_Phrygian_East_Gate.jpg",
     "v": 2
   },
   "place:hitit": {
@@ -109,6 +123,13 @@
     "author": "Carole Raddato from FRANKFURT, Germany",
     "license": "CC BY-SA 2.0",
     "url": "https://commons.wikimedia.org/wiki/File:The_Temple_of_Aphrodite,_built_in_the_Ionic_order_in_stages_during_the_Roman_period_(from_1st_century_BC_to_2nd_century_AD)_and_later_converted_into_a_Christian_basilica,_Aphrodisias,_Caria,_Turkey_(20300922019).jpg",
+    "v": 2
+  },
+  "place:kilikya": {
+    "file": "place-kilikya.jpg",
+    "author": "Klaus-Peter Simon",
+    "license": "CC BY-SA 3.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Kizkalesi_M%C3%A4dchenburg_3.jpg",
     "v": 2
   },
   "place:kommagene": {
