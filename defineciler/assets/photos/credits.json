@@ -1,110 +1,198 @@
 {
+  "guide:figurinler": {
+    "file": "guide-figurinler.jpg",
+    "author": "Sefer azeri",
+    "license": "CC BY-SA 4.0",
+    "url": "https://commons.wikimedia.org/wiki/File:%C3%87atalh%C3%B6y%C3%BCk_oturan_ilah%C9%99_fiqurunun_%C3%B6nd%C9%99n_g%C3%B6r%C3%BCn%C3%BC%C5%9F%C3%BC.jpg",
+    "v": 2
+  },
+  "guide:fotograf": {
+    "file": "guide-fotograf.jpg",
+    "author": "Tadeusz Biniewski",
+    "license": "CC BY-SA 3.0 pl",
+    "url": "https://commons.wikimedia.org/wiki/File:Excavations_at_Faras_049.jpg",
+    "v": 2
+  },
+  "guide:isaretler": {
+    "file": "guide-isaretler.jpg",
+    "author": "Asef-m-m",
+    "license": "CC BY-SA 4.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Golpayegan.petroglyphs0101.jpg",
+    "v": 2
+  },
+  "guide:kandiller": {
+    "file": "guide-kandiller.jpg",
+    "author": "Combirom2",
+    "license": "CC BY-SA 4.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Group_of_ancient_hellenistic_an_roan_oil_lamps.jpg",
+    "v": 2
+  },
+  "guide:muhurler": {
+    "file": "guide-muhurler.jpg",
+    "author": "Wikimedia Commons",
+    "license": "Public domain",
+    "url": "https://commons.wikimedia.org/wiki/File:Cylinder_seal_king_Louvre_AO6620.jpg",
+    "v": 2
+  },
+  "guide:sahte": {
+    "file": "guide-sahte.jpg",
+    "author": "Lucas Velázquez",
+    "license": "Public domain",
+    "url": "https://commons.wikimedia.org/wiki/File:La_ciudad_sobre_la_roca,_por_Eugenio_Lucas_Vel%C3%A1zquez.jpg",
+    "v": 2
+  },
   "guide:seramik": {
     "file": "guide-seramik.jpg",
-    "author": "Haselburg-müller",
+    "author": "Ad Meskens",
     "license": "CC BY-SA 3.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Roemerhalle_Kreuznach_Sigillata.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Amphorae_stacking.jpg",
+    "v": 2
   },
   "guide:sikkeler": {
     "file": "guide-sikkeler.jpg",
-    "author": "Aaytacc147",
-    "license": "CC BY 4.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Kocaeli_Arkeoloji_M%C3%BCzesi_Sikkeler_Seksiyonu.jpg"
+    "author": "CNG Coins",
+    "license": "CC BY-SA 3.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Kroisos._Circa_564-53-550-39_BC._AV_Stater_(16mm,_10.76_g)._Heavy_series._Sardes_mint.jpg",
+    "v": 2
+  },
+  "guide:takilar": {
+    "file": "guide-takilar.jpg",
+    "author": "Anonymous (Frankish) Unknown author",
+    "license": "Public domain",
+    "url": "https://commons.wikimedia.org/wiki/File:Frankish_-_Digitated_Fibula_-_Walters_542443.jpg",
+    "v": 2
   },
   "guide:yasal": {
     "file": "guide-yasal.jpg",
     "author": "Metuboy",
     "license": "CC BY-SA 4.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Istanbularcheology.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Istanbularcheology.jpg",
+    "v": 2
   },
   "guide:zaman": {
     "file": "guide-zaman.jpg",
     "author": "Teomancimit",
     "license": "CC BY-SA 3.0",
-    "url": "https://commons.wikimedia.org/wiki/File:G%C3%B6bekli_Tepe,_Urfa.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:G%C3%B6bekli_Tepe,_Urfa.jpg",
+    "v": 2
   },
   "place:frigya": {
     "file": "place-frigya.jpg",
-    "author": "Gordion Archive, Penn Museum",
+    "author": "Zeynel Cebeci",
     "license": "CC BY-SA 4.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Gordion_Early_Phrygian_East_Gate.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Street_in_Yaz%C4%B1l%C4%B1kaya_01.jpg",
+    "v": 2
+  },
+  "place:hitit": {
+    "file": "place-hitit.jpg",
+    "author": "Carole Raddato from FRANKFURT, Germany",
+    "license": "CC BY-SA 2.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Lion_Gate,_Hattusa_13_(cropped).jpg",
+    "v": 2
   },
   "place:iyonya": {
     "file": "place-iyonya.jpg",
     "author": "Benh LIEU SONG",
     "license": "CC BY-SA 3.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Ephesus_Celsus_Library_Fa%C3%A7ade.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Ephesus_Celsus_Library_Fa%C3%A7ade.jpg",
+    "v": 2
   },
   "place:kafkas": {
     "file": "place-kafkas.jpg",
     "author": "Engin Tavlı",
     "license": "CC BY-SA 4.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Ani_Harabeleri_2.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Ani_Harabeleri_2.jpg",
+    "v": 2
   },
   "place:kapadokya": {
     "file": "place-kapadokya.jpg",
     "author": "MusikAnimal",
     "license": "CC BY-SA 4.0",
-    "url": "https://commons.wikimedia.org/wiki/File:G%C3%B6reme_town_and_valley_2015.JPG"
+    "url": "https://commons.wikimedia.org/wiki/File:G%C3%B6reme_town_and_valley_2015.JPG",
+    "v": 2
   },
   "place:karadeniz": {
     "file": "place-karadeniz.jpg",
     "author": "Ahmtzngn34",
     "license": "CC BY-SA 4.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Ye%C5%9Fil%C4%B1rmak2.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Ye%C5%9Fil%C4%B1rmak2.jpg",
+    "v": 2
   },
   "place:karya": {
     "file": "place-karya.jpg",
     "author": "Carole Raddato from FRANKFURT, Germany",
     "license": "CC BY-SA 2.0",
-    "url": "https://commons.wikimedia.org/wiki/File:The_Temple_of_Aphrodite,_built_in_the_Ionic_order_in_stages_during_the_Roman_period_(from_1st_century_BC_to_2nd_century_AD)_and_later_converted_into_a_Christian_basilica,_Aphrodisias,_Caria,_Turkey_(20300922019).jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:The_Temple_of_Aphrodite,_built_in_the_Ionic_order_in_stages_during_the_Roman_period_(from_1st_century_BC_to_2nd_century_AD)_and_later_converted_into_a_Christian_basilica,_Aphrodisias,_Caria,_Turkey_(20300922019).jpg",
+    "v": 2
   },
   "place:kilikya": {
     "file": "place-kilikya.jpg",
-    "author": "Klaus-Peter Simon",
-    "license": "CC BY-SA 3.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Kizkalesi_M%C3%A4dchenburg_3.jpg"
+    "author": "Zcebeci",
+    "license": "Public domain",
+    "url": "https://commons.wikimedia.org/wiki/File:K%C4%B1zkalesi_(Korykos),_Mersin,Turkey_1.jpg",
+    "v": 2
   },
   "place:kommagene": {
     "file": "place-kommagene.jpg",
     "author": "Klearchos Kapoutsis from Santorini, Greece",
     "license": "CC BY 2.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Mount_Nemrut_-_East_Terrace_(4961323529).jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Mount_Nemrut_-_East_Terrace_(4961323529).jpg",
+    "v": 2
+  },
+  "place:konya": {
+    "file": "place-konya.jpg",
+    "author": "Murat Özsoy 1958",
+    "license": "CC BY-SA 4.0",
+    "url": "https://commons.wikimedia.org/wiki/File:%C3%87atalh%C3%B6y%C3%BCk,_7400_BC,_Konya,_Turkey_-_UNESCO_World_Heritage_Site,_08.jpg",
+    "v": 2
   },
   "place:lidya": {
     "file": "place-lidya.jpg",
     "author": "Carole Raddato from FRANKFURT, Germany",
     "license": "CC BY-SA 2.0",
-    "url": "https://commons.wikimedia.org/wiki/File:The_Bath-Gymnasium_complex_at_Sardis,_late_2nd_-_early_3rd_century_AD,_Sardis,_Turkey_(17098680002).jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:The_Bath-Gymnasium_complex_at_Sardis,_late_2nd_-_early_3rd_century_AD,_Sardis,_Turkey_(17098680002).jpg",
+    "v": 2
   },
   "place:likya": {
     "file": "place-likya.jpg",
     "author": "Ingo Mehling",
     "license": "CC BY-SA 3.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Myra_theatre.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Myra_theatre.jpg",
+    "v": 2
   },
   "place:mezopotamya": {
     "file": "place-mezopotamya.jpg",
     "author": "Omer Unlu",
     "license": "CC BY 2.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Hasankeyf_Castle.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Hasankeyf_Castle.jpg",
+    "v": 2
   },
   "place:pamfilya": {
     "file": "place-pamfilya.jpg",
     "author": "Dosseman",
     "license": "CC BY-SA 4.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Aspendos_Basilica_4728.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Aspendos_Basilica_4728.jpg",
+    "v": 2
   },
   "place:trakya": {
     "file": "place-trakya.jpg",
-    "author": "Tevfik Teker",
-    "license": "CC BY 3.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Selimiye_Mosque_and_The_Statue_of_Architect_Sinan_-_panoramio.jpg"
+    "author": "Adli Wahid",
+    "license": "CC BY-SA 3.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Hagia_Sophia_(228968325).jpeg",
+    "v": 2
   },
   "place:troas": {
     "file": "place-troas.jpg",
-    "author": "Carole Raddato",
+    "author": "Adam Jones from Kelowna, BC, Canada",
     "license": "CC BY-SA 2.0",
-    "url": "https://commons.wikimedia.org/wiki/File:Hadrianic_Odeon_in_Troy_IX_(Ilion),_Turkey.jpg"
+    "url": "https://commons.wikimedia.org/wiki/File:Acropolis_-_Bergama_(Pergamon)_-_Turkey_-_10_(5747249729).jpg",
+    "v": 2
+  },
+  "place:urartu": {
+    "file": "place-urartu.jpg",
+    "author": "Bjørn Christian Tørrissen",
+    "license": "CC BY-SA 3.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Van_Fortress_From_Northwest.JPG",
+    "v": 2
   }
 }

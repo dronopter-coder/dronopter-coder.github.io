@@ -4,17 +4,59 @@
 export type Photo = { image: number; author: string; license: string; url: string };
 
 export const PHOTOS: Record<string, Photo> = {
+  'guide:figurinler': {
+    image: require('../../assets/photos/guide-figurinler.jpg'),
+    author: "Sefer azeri",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:%C3%87atalh%C3%B6y%C3%BCk_oturan_ilah%C9%99_fiqurunun_%C3%B6nd%C9%99n_g%C3%B6r%C3%BCn%C3%BC%C5%9F%C3%BC.jpg",
+  },
+  'guide:fotograf': {
+    image: require('../../assets/photos/guide-fotograf.jpg'),
+    author: "Tadeusz Biniewski",
+    license: "CC BY-SA 3.0 pl",
+    url: "https://commons.wikimedia.org/wiki/File:Excavations_at_Faras_049.jpg",
+  },
+  'guide:isaretler': {
+    image: require('../../assets/photos/guide-isaretler.jpg'),
+    author: "Asef-m-m",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Golpayegan.petroglyphs0101.jpg",
+  },
+  'guide:kandiller': {
+    image: require('../../assets/photos/guide-kandiller.jpg'),
+    author: "Combirom2",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Group_of_ancient_hellenistic_an_roan_oil_lamps.jpg",
+  },
+  'guide:muhurler': {
+    image: require('../../assets/photos/guide-muhurler.jpg'),
+    author: "Wikimedia Commons",
+    license: "Public domain",
+    url: "https://commons.wikimedia.org/wiki/File:Cylinder_seal_king_Louvre_AO6620.jpg",
+  },
+  'guide:sahte': {
+    image: require('../../assets/photos/guide-sahte.jpg'),
+    author: "Lucas Velázquez",
+    license: "Public domain",
+    url: "https://commons.wikimedia.org/wiki/File:La_ciudad_sobre_la_roca,_por_Eugenio_Lucas_Vel%C3%A1zquez.jpg",
+  },
   'guide:seramik': {
     image: require('../../assets/photos/guide-seramik.jpg'),
-    author: "Haselburg-müller",
+    author: "Ad Meskens",
     license: "CC BY-SA 3.0",
-    url: "https://commons.wikimedia.org/wiki/File:Roemerhalle_Kreuznach_Sigillata.jpg",
+    url: "https://commons.wikimedia.org/wiki/File:Amphorae_stacking.jpg",
   },
   'guide:sikkeler': {
     image: require('../../assets/photos/guide-sikkeler.jpg'),
-    author: "Aaytacc147",
-    license: "CC BY 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Kocaeli_Arkeoloji_M%C3%BCzesi_Sikkeler_Seksiyonu.jpg",
+    author: "CNG Coins",
+    license: "CC BY-SA 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:Kroisos._Circa_564-53-550-39_BC._AV_Stater_(16mm,_10.76_g)._Heavy_series._Sardes_mint.jpg",
+  },
+  'guide:takilar': {
+    image: require('../../assets/photos/guide-takilar.jpg'),
+    author: "Anonymous (Frankish) Unknown author",
+    license: "Public domain",
+    url: "https://commons.wikimedia.org/wiki/File:Frankish_-_Digitated_Fibula_-_Walters_542443.jpg",
   },
   'guide:yasal': {
     image: require('../../assets/photos/guide-yasal.jpg'),
@@ -30,9 +72,15 @@ export const PHOTOS: Record<string, Photo> = {
   },
   'place:frigya': {
     image: require('../../assets/photos/place-frigya.jpg'),
-    author: "Gordion Archive, Penn Museum",
+    author: "Zeynel Cebeci",
     license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Gordion_Early_Phrygian_East_Gate.jpg",
+    url: "https://commons.wikimedia.org/wiki/File:Street_in_Yaz%C4%B1l%C4%B1kaya_01.jpg",
+  },
+  'place:hitit': {
+    image: require('../../assets/photos/place-hitit.jpg'),
+    author: "Carole Raddato from FRANKFURT, Germany",
+    license: "CC BY-SA 2.0",
+    url: "https://commons.wikimedia.org/wiki/File:Lion_Gate,_Hattusa_13_(cropped).jpg",
   },
   'place:iyonya': {
     image: require('../../assets/photos/place-iyonya.jpg'),
@@ -66,15 +114,21 @@ export const PHOTOS: Record<string, Photo> = {
   },
   'place:kilikya': {
     image: require('../../assets/photos/place-kilikya.jpg'),
-    author: "Klaus-Peter Simon",
-    license: "CC BY-SA 3.0",
-    url: "https://commons.wikimedia.org/wiki/File:Kizkalesi_M%C3%A4dchenburg_3.jpg",
+    author: "Zcebeci",
+    license: "Public domain",
+    url: "https://commons.wikimedia.org/wiki/File:K%C4%B1zkalesi_(Korykos),_Mersin,Turkey_1.jpg",
   },
   'place:kommagene': {
     image: require('../../assets/photos/place-kommagene.jpg'),
     author: "Klearchos Kapoutsis from Santorini, Greece",
     license: "CC BY 2.0",
     url: "https://commons.wikimedia.org/wiki/File:Mount_Nemrut_-_East_Terrace_(4961323529).jpg",
+  },
+  'place:konya': {
+    image: require('../../assets/photos/place-konya.jpg'),
+    author: "Murat Özsoy 1958",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:%C3%87atalh%C3%B6y%C3%BCk,_7400_BC,_Konya,_Turkey_-_UNESCO_World_Heritage_Site,_08.jpg",
   },
   'place:lidya': {
     image: require('../../assets/photos/place-lidya.jpg'),
@@ -102,14 +156,20 @@ export const PHOTOS: Record<string, Photo> = {
   },
   'place:trakya': {
     image: require('../../assets/photos/place-trakya.jpg'),
-    author: "Tevfik Teker",
-    license: "CC BY 3.0",
-    url: "https://commons.wikimedia.org/wiki/File:Selimiye_Mosque_and_The_Statue_of_Architect_Sinan_-_panoramio.jpg",
+    author: "Adli Wahid",
+    license: "CC BY-SA 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:Hagia_Sophia_(228968325).jpeg",
   },
   'place:troas': {
     image: require('../../assets/photos/place-troas.jpg'),
-    author: "Carole Raddato",
+    author: "Adam Jones from Kelowna, BC, Canada",
     license: "CC BY-SA 2.0",
-    url: "https://commons.wikimedia.org/wiki/File:Hadrianic_Odeon_in_Troy_IX_(Ilion),_Turkey.jpg",
+    url: "https://commons.wikimedia.org/wiki/File:Acropolis_-_Bergama_(Pergamon)_-_Turkey_-_10_(5747249729).jpg",
+  },
+  'place:urartu': {
+    image: require('../../assets/photos/place-urartu.jpg'),
+    author: "Bjørn Christian Tørrissen",
+    license: "CC BY-SA 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:Van_Fortress_From_Northwest.JPG",
   },
 };
