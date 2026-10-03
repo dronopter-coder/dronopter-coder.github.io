@@ -1,5 +1,11 @@
 name: Defineciler Android APK
 
+# Gerekli GitHub gizli anahtarları (Settings → Secrets and variables → Actions):
+#   GEMINI_API_KEY        Google AI Studio API anahtarı
+#   CLOUDFLARE_API_TOKEN  "Edit Cloudflare Workers" şablonuyla oluşturulmuş token
+#   CLOUDFLARE_ACCOUNT_ID (isteğe bağlı) birden fazla Cloudflare hesabınız varsa
+# Anahtarlar yoksa sunucu yayınlanmaz ama APK yine üretilir.
+
 on:
   push:
     paths:
@@ -36,14 +42,109 @@ jobs:
           npx tsc --noEmit
           npx vitest run
 
-  apk:
+  worker:
+    name: Sunucuyu yayınla (Cloudflare Worker)
     needs: check
     runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    defaults:
+      run:
+        working-directory: defineciler/worker
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Anahtar kontrolü
+        id: keys
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$GEMINI_API_KEY" ]; then
+            echo "::warning::GEMINI_API_KEY ve/veya CLOUDFLARE_API_TOKEN gizli anahtarı eklenmemiş; sunucu yayınlanmadı. APK analiz yapamaz."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.keys.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: defineciler/worker/package-lock.json
+      - if: steps.keys.outputs.ready == 'true'
+        run: npm ci
+      - name: Yayınla
+        id: deploy
+        if: steps.keys.outputs.ready == 'true'
+        run: |
+          set -o pipefail
+          if [ -n "$CF_ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID"; fi
+          npx wrangler deploy 2>&1 | tee deploy.log
+          url=$(grep -oE 'https://[A-Za-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          if [ -z "$url" ]; then echo "::error::Worker adresi bulunamadı (workers.dev alt alanınız açık mı?)"; exit 1; fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "### Sunucu adresi: $url" >> "$GITHUB_STEP_SUMMARY"
+      - name: Gemini anahtarını sunucuya kaydet
+        if: steps.keys.outputs.ready == 'true'
+        run: |
+          if [ -n "$CF_ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID"; fi
+          printf '%s' "$GEMINI_API_KEY" | npx wrangler secret put GEMINI_API_KEY
+      - name: Sağlık kontrolü
+        if: steps.keys.outputs.ready == 'true'
+        run: |
+          for i in 1 2 3 4 5 6; do
+            curl -fsS "${{ steps.deploy.outputs.url }}/health" && exit 0
+            sleep 5
+          done
+          echo "::warning::Sunucu henüz yanıt vermiyor (yeni workers.dev adresleri birkaç dakika sürebilir)."
+
+  photos:
+    name: Fotoğrafları indir (Wikimedia Commons)
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     defaults:
       run:
         working-directory: defineciler
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Eksik fotoğrafları indir
+        run: node --experimental-strip-types scripts/fetch-photos.mts
+      - name: Yeni fotoğrafları dala kaydet
+        run: |
+          git add assets/photos src/data/photos.generated.ts
+          if git diff --cached --quiet; then echo "Yeni fotoğraf yok."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Fotoğraflar: Wikimedia Commons kapak görselleri"
+          git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" || echo "::warning::Fotoğraflar dala kaydedilemedi (APK yine de bunları içerir)."
+      - uses: actions/upload-artifact@v4
+        with:
+          name: photos
+          path: |
+            defineciler/assets/photos
+            defineciler/src/data/photos.generated.ts
+          retention-days: 1
+
+  apk:
+    needs: [check, worker, photos]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: defineciler
+    env:
+      DEFINECILER_API_URL: ${{ needs.worker.outputs.url || vars.DEFINECILER_API_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: photos
+          path: defineciler
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -55,6 +156,14 @@ jobs:
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
       - run: npm ci
+      - name: Sunucu adresi
+        run: |
+          if [ -z "$DEFINECILER_API_URL" ]; then
+            echo "::warning::Sunucu adresi yok; bu APK'da analiz çalışmaz."
+          else
+            echo "APK sunucu adresi: $DEFINECILER_API_URL" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+          ls assets/photos | head -40
       - name: Android projesini üret
         run: npx expo prebuild --platform android --no-install
       - name: APK derle

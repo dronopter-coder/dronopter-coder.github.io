@@ -1,6 +1,7 @@
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 
 import { API_URL, APP_KEY } from '@/constants/config';
+import type { NewsItem } from '@/services/news';
 import type { AnalysisResult } from '@/types/analysis';
 
 export class ApiError extends Error {
@@ -84,16 +85,6 @@ export async function analyzeArtifact(input: AnalyzeInput): Promise<{ result: An
   });
   return { result: data.result, processedUri: image.uri };
 }
-
-export type NewsItem = {
-  id: string;
-  title: string;
-  link: string;
-  source: string;
-  publishedAt: string | null;
-  image: string | null;
-  summary: string;
-};
 
 export function fetchNews() {
   return request<{ items: NewsItem[]; updatedAt: string }>('/news', { method: 'GET' });

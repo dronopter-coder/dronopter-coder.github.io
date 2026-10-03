@@ -17,7 +17,7 @@ function PlaceCard({ place }: { place: Place }) {
     <Pressable
       onPress={() => router.push({ pathname: '/place/[id]', params: { id: place.id } })}
       style={({ pressed }) => [styles.card, pressed && { opacity: 0.85 }]}>
-      <WikiImage wiki={place.wiki} accent={place.accent} icon="pillar" style={styles.cardImage} />
+      <WikiImage photoKey={`place:${place.id}`} wiki={place.wiki} accent={place.accent} icon="pillar" style={styles.cardImage} />
       <View style={styles.cardBody}>
         <View style={styles.cardTop}>
           <Text style={styles.cardArea}>{place.area.toLocaleUpperCase('tr')}</Text>

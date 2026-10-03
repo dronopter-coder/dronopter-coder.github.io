@@ -17,7 +17,7 @@ import Animated, {
 import { Button, Card, Notice } from '@/components/ui';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { useRemainingScans } from '@/hooks/use-quota';
-import { adsReady, initAds, maybeShowInterstitial, showRewarded } from '@/services/ads';
+import { adsReady, initAds, maybeShowInterstitial, rewardedConfigured, showRewarded } from '@/services/ads';
 import { analyzeArtifact, ApiError } from '@/services/api';
 import { addBonusScans, consumeScan } from '@/services/quota';
 import { saveScan } from '@/storage/history';
@@ -97,7 +97,7 @@ export default function ScanScreen() {
     try {
       await initAds();
       // Reklam onayı verilmemiş/AdMob kullanılamıyorsa kullanıcıyı bekletmeden hak ver (sunucu tarafı sınır yine geçerlidir).
-      const earned = adsReady() ? await showRewarded() : true;
+      const earned = adsReady() && rewardedConfigured() ? await showRewarded() : true;
       if (earned) {
         await addBonusScans(1);
       } else {

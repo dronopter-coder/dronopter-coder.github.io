@@ -81,9 +81,9 @@ export default function SettingsScreen() {
       <Card style={{ gap: Spacing.sm }}>
         <SectionTitle icon="creative-commons">Kaynaklar ve lisanslar</SectionTitle>
         <Body muted>
-          Bölge ve rehber görselleri ile özetleri Wikipedia ve Wikimedia Commons’tan (CC BY-SA) alınır. Haber başlıkları ilgili
-          yayın kuruluşlarına aittir; habere dokunduğunuzda kaynağın kendi sayfası açılır. Eser analizi Google Gemini yapay zeka
-          modeliyle yapılır.
+          Bölge ve rehber fotoğrafları Wikimedia Commons’tan alınmıştır; her fotoğrafın yazarı ve lisansı fotoğrafın üzerinde
+          belirtilir. Özetler Wikipedia’dandır (CC BY-SA). Haber başlıkları ilgili yayın kuruluşlarına aittir; habere
+          dokunduğunuzda kaynağın kendi sayfası açılır. Eser analizi Google Gemini yapay zeka modeliyle yapılır.
         </Body>
       </Card>
     </ScrollView>

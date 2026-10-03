@@ -20,7 +20,15 @@ export default function GuideTopicScreen() {
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: Spacing.xxl }}>
       <Stack.Screen options={{ title: topic.title }} />
-      <WikiImage wiki={topic.wiki} accent={topic.accent} icon={topic.icon} style={styles.hero} onSummary={setWiki} />
+      <WikiImage
+        photoKey={`guide:${topic.id}`}
+        wiki={topic.wiki}
+        accent={topic.accent}
+        icon={topic.icon}
+        style={styles.hero}
+        showCredit
+        onSummary={setWiki}
+      />
       <View style={styles.body}>
         <View style={{ gap: 4 }}>
           <Text style={styles.title}>{topic.title}</Text>

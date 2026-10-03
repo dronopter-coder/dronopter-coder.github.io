@@ -7,8 +7,8 @@ Yapay zeka destekli tarihi eser tanımlama uygulaması (Android). Kullanıcı es
 | Sekme | İçerik |
 | --- | --- |
 | **Tara** | Uygulamanın kalbi: fotoğraf çek / galeriden seç → not ekle → yapay zeka analizi → ayrıntılı sonuç ekranı |
-| **Bölgeler** | Anadolu'nun tarihi yoğunluğu en yüksek 17 bölgesi: uygarlıklar, tipik buluntular, ören yerleri, müzeler (Wikipedia görselleriyle) |
-| **Haberler** | Google Haberler, Arkeofili ve AA'dan güncel arkeoloji haberleri (Worker'da toplanır, 30 dk önbelleklenir) |
+| **Bölgeler** | Anadolu'nun tarihi yoğunluğu en yüksek 17 bölgesi: uygarlıklar, tipik buluntular, ören yerleri, müzeler (gerçek fotoğraflarla) |
+| **Haberler** | Google Haberler, Arkeofili ve AA'dan güncel arkeoloji haberleri (doğrudan cihazdan okunur; olmazsa sunucudan) |
 | **Rehber** | Sikke, seramik, kandil, mühür, takı, figürin, define işaretleri, sahte eser tespiti, yasal süreç, zaman çizelgesi |
 | **Geçmiş** | Cihazda saklanan tarama geçmişi |
 
@@ -38,35 +38,48 @@ Google Gemini API
 
 API anahtarı uygulamanın içine konmaz; APK açılsa bile anahtar çalınamaz. Worker ayrıca IP başına dakikalık (ve isteğe bağlı günlük) sınır uygular.
 
-## 1. Worker'ı yayınlama (bir kez)
+## 1. Sunucuyu yayınlama (GitHub üzerinden, terminal gerekmez)
 
-1. [Google AI Studio](https://aistudio.google.com/apikey)'dan bir **Gemini API anahtarı** alın.
-2. Ücretsiz bir [Cloudflare](https://dash.cloudflare.com/sign-up) hesabı açın.
-3. Terminalde:
+GitHub Actions iş akışı her çalıştığında Worker'ı Cloudflare'e yayınlar, Gemini anahtarını sunucuya kaydeder ve APK'yı bu sunucu adresiyle derler. Sizin yapmanız gereken yalnızca iki anahtarı bir kez GitHub'a eklemek:
 
-```bash
-cd worker
-npm install
-npx wrangler login
-npx wrangler secret put GEMINI_API_KEY     # anahtarı yapıştırın
-npx wrangler deploy
-```
+1. **Gemini API anahtarı:** [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → *Create API key* → anahtarı kopyalayın.
+2. **Cloudflare token:**
+   - [dash.cloudflare.com](https://dash.cloudflare.com/sign-up) adresinde ücretsiz hesap açın.
+   - Sol menüden bir kez **Workers & Pages** sayfasını açın (ücretsiz `*.workers.dev` alt alanınız oluşur).
+   - Sağ üstte profil → **My Profile → API Tokens → Create Token** → **Edit Cloudflare Workers** şablonu → *Use template*.
+   - *Account Resources*: kendi hesabınız; *Zone Resources*: *All zones* → *Continue to summary* → *Create Token* → token'ı kopyalayın.
+3. **GitHub:** bu repo → **Settings → Secrets and variables → Actions → New repository secret**:
+   - `GEMINI_API_KEY` = Gemini anahtarı
+   - `CLOUDFLARE_API_TOKEN` = Cloudflare token'ı
+4. **Actions** sekmesi → en son *Defineciler Android APK* çalışması → **Re-run all jobs**.
 
-4. Çıktıdaki adresi (ör. `https://defineciler-api.KULLANICI.workers.dev`) `app.json` → `expo.extra.apiUrl` alanına yazın.
+Çalışma bitince özet sayfasında sunucu adresi yazar; *Artifacts* bölümündeki `defineciler-apk` artık analiz yapabilen APK'dır.
 
-İsteğe bağlı günlük IP sınırı: `npx wrangler kv namespace create USAGE` komutunun verdiği id'yi `wrangler.jsonc` içindeki yorumlu `kv_namespaces` satırına ekleyip yeniden `deploy` edin.
+Terminalden kurmak isterseniz: `cd worker && npm install && npx wrangler login && npx wrangler secret put GEMINI_API_KEY && npx wrangler deploy`; çıkan adresi `DEFINECILER_API_URL` ortam değişkeni (veya GitHub'da aynı adlı *repository variable*) olarak verin.
 
-Model `wrangler.jsonc` → `GEMINI_MODEL` ile seçilir. Varsayılan `gemini-flash-latest` (Google'ın güncel Flash modeli). Sabit bir sürüm için ör. `gemini-3.8-flash` yazabilirsiniz.
+İsteğe bağlı günlük IP sınırı: `npx wrangler kv namespace create USAGE` komutunun verdiği id'yi `wrangler.jsonc` içindeki yorumlu `kv_namespaces` satırına ekleyin.
 
-> **Gizlilik notu:** Gemini API'nin ücretsiz katmanında Google, gönderilen içerikleri ürünlerini geliştirmek için kullanabilir. Yayına çıkarken AI Studio'da faturalandırmayı açmanız önerilir (ücretli katmanda veriler bu amaçla kullanılmaz).
+Model `wrangler.jsonc` → `GEMINI_MODEL` ile seçilir. Varsayılan `gemini-flash-latest` (Google'ın güncel Flash modeli).
+
+> **Gizlilik notu:** Gemini API'nin ücretsiz katmanında Google, gönderilen içerikleri ürünlerini geliştirmek için kullanabilir. Yayına çıkarken AI Studio'da faturalandırmayı açmanız önerilir.
 
 ## 2. AdMob kimlikleri
 
-1. [AdMob](https://admob.google.com)'da "Defineciler" adında bir Android uygulaması oluşturun.
-2. Uygulama kimliğini (`ca-app-pub-3204109869365538~...`) `app.json` → `react-native-google-mobile-ads` → `androidAppId` alanına yazın. (Şu an Google'ın test kimliği duruyor.)
-3. Dört reklam birimi oluşturun (Banner, Banner, Geçiş, Ödüllü) ve kimliklerini `src/constants/ad-units.ts` dosyasına yazın.
+Reklam birimleri `src/constants/ad-units.ts` dosyasındadır:
 
-Geliştirme modunda ve kimlik girilmemişken otomatik olarak Google test reklamları gösterilir. `app-ads.txt` dosyası `dronopter-coder.github.io` sitesinde zaten yayında; Play Store kaydında geliştirici web sitesi olarak `https://dronopter-coder.github.io` girin.
+| Birim | Kimlik |
+| --- | --- |
+| Banner (`defineciler_banner`) | `ca-app-pub-3204109869365538/3849020679` |
+| Geçiş (`defineciler_gecis`) | `ca-app-pub-3204109869365538/6287481758` |
+| Ödüllü | henüz yok — AdMob'da *Ödüllü* birim açıp ekleyin; eklenene kadar "+1 hak" reklamsız verilir |
+
+**Uygulama kimliği** (`ca-app-pub-3204109869365538~…`, AdMob → Uygulamalar → Uygulama ayarları) `app.json` → `react-native-google-mobile-ads` → `androidAppId` alanına yazılmalıdır; şu an Google'ın test kimliği duruyor ve gerçek reklamlar bu kimlik girilene kadar gösterilmez.
+
+Geliştirme modunda otomatik olarak Google test reklamları gösterilir. `app-ads.txt` dosyası `dronopter-coder.github.io` sitesinde yayında; Play Store kaydında geliştirici web sitesi olarak `https://dronopter-coder.github.io` girin.
+
+## Fotoğraflar
+
+Bölge ve rehber kapak fotoğrafları Wikimedia Commons'tan `scripts/fetch-photos.mts` ile indirilip `assets/photos/` klasörüne gömülür (Actions'taki *photos* işi eksikleri indirip dala kaydeder). Her fotoğrafın yazarı ve lisansı `assets/photos/credits.json` dosyasında ve uygulamada fotoğrafın üzerinde gösterilir. Bir fotoğrafı değiştirmek için `src/data/places.ts` / `guide.ts` içindeki `photo` adaylarını düzenleyip `PHOTO_REFRESH=place:hitit` ile betiği yeniden çalıştırın.
 
 ## 3. APK / AAB üretme
 

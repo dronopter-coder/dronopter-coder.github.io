@@ -15,6 +15,8 @@ export type GuideTopic = {
   subtitle: string;
   icon: IconName;
   wiki?: { tr?: string; en?: string };
+  /** Kapak fotoğrafı için aday Wikipedia sayfaları ("en:Başlık"); yoksa wiki.en/wiki.tr denenir. */
+  photo?: string[];
   accent: string;
   sections: GuideSection[];
 };
@@ -26,6 +28,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Lidya’dan Osmanlı’ya madeni paraları tanıma',
     icon: 'circle-multiple',
     wiki: { tr: 'Sikke', en: 'Coin' },
+    photo: ['en:Croeseid', 'en:Lydian coinage', 'en:Coin'],
     accent: '#C9A227',
     sections: [
       {
@@ -63,6 +66,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Çanak çömlek parçalarından dönem tahmini',
     icon: 'pot-mix',
     wiki: { tr: 'Seramik', en: 'Pottery' },
+    photo: ['en:Ancient Greek pottery', 'en:Pottery'],
     accent: '#B5651D',
     sections: [
       {
@@ -92,6 +96,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Antik aydınlatma araçları',
     icon: 'lamp',
     wiki: { en: 'Oil lamp' },
+    photo: ['en:Oil lamp'],
     accent: '#D08C3C',
     sections: [
       {
@@ -115,6 +120,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Damga, silindir ve kurşun mühürler',
     icon: 'stamper',
     wiki: { tr: 'Mühür', en: 'Seal (emblem)' },
+    photo: ['en:Cylinder seal'],
     accent: '#8E3B2E',
     sections: [
       {
@@ -135,6 +141,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Fibula, yüzük, bilezik ve haçlar',
     icon: 'ring',
     wiki: { en: 'Fibula (brooch)' },
+    photo: ['en:Fibula (brooch)'],
     accent: '#A3683A',
     sections: [
       {
@@ -163,6 +170,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Ana tanrıçadan Roma bronzlarına',
     icon: 'human-female',
     wiki: { tr: 'Figürin', en: 'Figurine' },
+    photo: ['en:Seated Woman of Çatalhöyük', 'en:Figurine'],
     accent: '#9C5B2E',
     sections: [
       {
@@ -182,6 +190,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Halk inanışı ve bilimsel açıklaması',
     icon: 'sign-direction',
     wiki: { tr: 'Petroglif', en: 'Cup and ring mark' },
+    photo: ['en:Petroglyph', 'en:Cup and ring mark'],
     accent: '#7A5C3E',
     sections: [
       {
@@ -211,6 +220,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Replika ve taklitleri ayırt etme',
     icon: 'magnify-scan',
     wiki: { en: 'Art forgery' },
+    photo: ['en:Art forgery'],
     accent: '#5A6E8C',
     sections: [
       {
@@ -235,6 +245,7 @@ export const GUIDE: GuideTopic[] = [
     title: 'Eser Bulursanız Ne Yapmalı?',
     subtitle: 'Yasal süreç, haklar ve cezalar',
     icon: 'scale-balance',
+    photo: ['en:Museum of Anatolian Civilizations'],
     accent: '#3E7C8C',
     sections: [
       {
@@ -264,6 +275,7 @@ export const GUIDE: GuideTopic[] = [
     title: 'İyi Fotoğraf Nasıl Çekilir?',
     subtitle: 'Yapay zekadan en doğru sonucu almak için',
     icon: 'camera-iris',
+    photo: ['en:Excavation (archaeology)', 'en:Archaeology'],
     accent: '#C08B5C',
     sections: [
       {
@@ -285,6 +297,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Uygarlıklar ve dönemler bir bakışta',
     icon: 'timeline-clock',
     wiki: { tr: 'Göbekli Tepe', en: 'Göbekli Tepe' },
+    photo: ['en:Göbekli Tepe'],
     accent: '#6E5A7E',
     sections: [
       {

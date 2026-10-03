@@ -4,5 +4,6 @@ export const initAds = async () => {};
 export const adsReady = () => false;
 export const maybeShowInterstitial = async () => {};
 export const rewardedAvailable = () => false;
+export const rewardedConfigured = () => false;
 export const showRewarded = async () => true;
 export const showPrivacyOptions = async () => {};

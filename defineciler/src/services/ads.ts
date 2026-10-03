@@ -105,6 +105,9 @@ export async function maybeShowInterstitial(): Promise<void> {
 
 export const rewardedAvailable = () => !!rewarded?.loaded;
 
+/** Yayın sürümünde ödüllü reklam birimi henüz tanımlı değilse reklam gösterilmeden hak verilir. */
+export const rewardedConfigured = () => __DEV__ || !isPlaceholder(PRODUCTION_AD_UNITS.rewarded);
+
 /**
  * Ödüllü reklamı gösterir. Kullanıcı ödülü kazandıysa true döner.
  * Reklam henüz yüklenmediyse yüklenmesini en fazla 8 sn bekler.

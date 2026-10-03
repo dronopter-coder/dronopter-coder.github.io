@@ -10,13 +10,13 @@ import { Platform } from 'react-native';
  * Yayıncı kimliği: pub-3204109869365538
  */
 export const PRODUCTION_AD_UNITS = {
-  /** Sekmelerin altındaki banner */
-  banner: 'ca-app-pub-3204109869365538/XXXXXXXXXX',
-  /** Sonuç ekranındaki büyük (orta dikdörtgen) banner */
-  resultBanner: 'ca-app-pub-3204109869365538/XXXXXXXXXX',
-  /** Analiz bittikten sonra gösterilen geçiş reklamı */
-  interstitial: 'ca-app-pub-3204109869365538/XXXXXXXXXX',
-  /** "Reklam izle, +1 analiz hakkı kazan" ödüllü reklamı */
+  /** Sekmelerin altındaki banner (defineciler_banner) */
+  banner: 'ca-app-pub-3204109869365538/3849020679',
+  /** Sonuç ve detay ekranlarındaki orta dikdörtgen; aynı banner birimi her boyutu sunar */
+  resultBanner: 'ca-app-pub-3204109869365538/3849020679',
+  /** Analiz bittikten sonra gösterilen geçiş reklamı (defineciler_gecis) */
+  interstitial: 'ca-app-pub-3204109869365538/6287481758',
+  /** "Reklam izle, +1 analiz hakkı kazan" ödüllü reklamı — AdMob'da "Ödüllü" birim açılınca buraya yazın */
   rewarded: 'ca-app-pub-3204109869365538/XXXXXXXXXX',
 };
 

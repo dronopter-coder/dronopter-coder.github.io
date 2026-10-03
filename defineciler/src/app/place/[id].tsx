@@ -10,6 +10,7 @@ import { Body, Bullets, Button, Card, Chip, EmptyState, Notice, SectionTitle } f
 import { WikiImage } from '@/components/wiki-image';
 import { Colors, Fonts, Spacing } from '@/constants/theme';
 import { LEGAL_NOTICE, getPlace } from '@/data/places';
+import { PHOTOS } from '@/data/photos.generated';
 import type { WikiSummary } from '@/services/wiki';
 
 export default function PlaceScreen() {
@@ -18,12 +19,21 @@ export default function PlaceScreen() {
   const [wiki, setWiki] = useState<WikiSummary | null>(null);
 
   if (!place) return <EmptyState icon="map-marker-question-outline" title="Bölge bulunamadı" />;
+  const photo = PHOTOS[`place:${place.id}`];
 
   return (
     <View style={{ flex: 1 }}>
       <Stack.Screen options={{ title: place.name }} />
       <ScrollView contentContainerStyle={{ paddingBottom: Spacing.xxl }}>
-        <WikiImage wiki={place.wiki} accent={place.accent} icon="pillar" style={styles.hero} onSummary={setWiki} />
+        <WikiImage
+          photoKey={`place:${place.id}`}
+          wiki={place.wiki}
+          accent={place.accent}
+          icon="pillar"
+          style={styles.hero}
+          showCredit
+          onSummary={setWiki}
+        />
         <View style={styles.body}>
           <View style={{ gap: Spacing.sm }}>
             <Text style={styles.area}>
@@ -91,7 +101,9 @@ export default function PlaceScreen() {
           <Notice tone="warning" icon="alert-outline" text={LEGAL_NOTICE} />
           <View style={styles.credit}>
             <MaterialCommunityIcons name="creative-commons" size={14} color={Colors.textMuted} />
-            <Text style={styles.creditText}>Görsel ve özet: Wikipedia / Wikimedia Commons (CC BY-SA)</Text>
+            <Text style={styles.creditText} onPress={() => photo && WebBrowser.openBrowserAsync(photo.url)} suppressHighlighting>
+              {photo ? `Fotoğraf: ${photo.author} (${photo.license}) · ` : ''}Özet: Wikipedia (CC BY-SA)
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -108,5 +120,5 @@ const styles = StyleSheet.create({
   densityLabel: { color: Colors.textMuted, fontSize: 13 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
   credit: { flexDirection: 'row', alignItems: 'center', gap: 6, justifyContent: 'center' },
-  creditText: { color: Colors.textMuted, fontSize: 11 },
+  creditText: { color: Colors.textMuted, fontSize: 11, textAlign: 'center', flexShrink: 1 },
 });

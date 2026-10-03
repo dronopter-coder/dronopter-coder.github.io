@@ -65,7 +65,7 @@
       ]
     ],
     "extra": {
-      "apiUrl": "https://defineciler-api.YOUR-SUBDOMAIN.workers.dev",
+      "apiUrl": "",
       "appKey": "defineciler-android-v1",
       "dailyFreeScans": 3
     },

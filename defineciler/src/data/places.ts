@@ -16,6 +16,8 @@ export type Place = {
   keySites: string[];
   museums: string[];
   wiki: { tr?: string; en?: string };
+  /** Kapak fotoğrafı için aday Wikipedia sayfaları ("en:Başlık"); yoksa wiki.en/wiki.tr denenir. */
+  photo?: string[];
   accent: string;
 };
 
@@ -41,6 +43,7 @@ export const PLACES: Place[] = [
     keySites: ['Hattuşa (Boğazkale)', 'Yazılıkaya', 'Alacahöyük', 'Kültepe (Kaniş)', 'Şapinuva (Ortaköy)'],
     museums: ['Anadolu Medeniyetleri Müzesi (Ankara)', 'Çorum Müzesi', 'Kayseri Arkeoloji Müzesi', 'Boğazköy Müzesi'],
     wiki: { tr: 'Hattuşa', en: 'Hattusa' },
+    photo: ['en:Hattusa', 'en:Lion Gate (Hattusa)'],
     accent: '#B5651D',
   },
   {
@@ -64,6 +67,7 @@ export const PLACES: Place[] = [
     keySites: ['Gordion', 'Midas Tümülüsü', 'Midas Şehri (Yazılıkaya)', 'Aslantaş', 'Pessinus (Ballıhisar)'],
     museums: ['Gordion Müzesi', 'Anadolu Medeniyetleri Müzesi', 'Afyonkarahisar Müzesi', 'Eskişehir Arkeoloji Müzesi'],
     wiki: { tr: 'Gordion', en: 'Gordion' },
+    photo: ['en:Midas City', 'en:Gordion'],
     accent: '#8C6D3F',
   },
   {
@@ -86,6 +90,7 @@ export const PLACES: Place[] = [
     keySites: ['Sardes', 'Bintepeler', 'Artemis Tapınağı (Sardes)', 'Güre Tümülüsleri (Uşak)'],
     museums: ['Manisa Müzesi', 'Uşak Arkeoloji Müzesi', 'İzmir Arkeoloji Müzesi'],
     wiki: { tr: 'Sardes', en: 'Sardis' },
+    photo: ['en:Sardis'],
     accent: '#C9A227',
   },
   {
@@ -109,6 +114,7 @@ export const PLACES: Place[] = [
     keySites: ['Van Kalesi (Tuşpa)', 'Çavuştepe', 'Ayanis', 'Toprakkale (Rusahinili)', 'Altıntepe'],
     museums: ['Van Müzesi', 'Erzurum Arkeoloji Müzesi', 'Elazığ Arkeoloji Müzesi'],
     wiki: { tr: 'Van Kalesi', en: 'Van Fortress' },
+    photo: ['en:Van Fortress'],
     accent: '#8E3B2E',
   },
   {
@@ -132,6 +138,7 @@ export const PLACES: Place[] = [
     keySites: ['Efes', 'Milet', 'Priene', 'Didyma Apollon Tapınağı', 'Klazomenai', 'Teos'],
     museums: ['Efes Müzesi (Selçuk)', 'İzmir Arkeoloji Müzesi', 'Milet Müzesi', 'Aydın Arkeoloji Müzesi'],
     wiki: { tr: 'Efes', en: 'Ephesus' },
+    photo: ['en:Library of Celsus', 'en:Ephesus'],
     accent: '#3E7C8C',
   },
   {
@@ -154,6 +161,7 @@ export const PLACES: Place[] = [
     keySites: ['Troya', 'Assos', 'Aleksandreia Troas', 'Daskyleion', 'Pergamon (Bergama)', 'Kyzikos'],
     museums: ['Troya Müzesi', 'Çanakkale Arkeoloji Müzesi', 'Bergama Müzesi', 'Balıkesir Müzesi'],
     wiki: { tr: 'Troya', en: 'Troy' },
+    photo: ['en:Pergamon', 'en:Troy'],
     accent: '#7A5C3E',
   },
   {
@@ -176,6 +184,7 @@ export const PLACES: Place[] = [
     keySites: ['Halikarnas Mozolesi', 'Afrodisias', 'Stratonikeia', 'Labraunda', 'Knidos', 'Kaunos'],
     museums: ['Bodrum Sualtı Arkeoloji Müzesi', 'Afrodisias Müzesi', 'Milas Müzesi', 'Muğla Müzesi'],
     wiki: { tr: 'Afrodisias', en: 'Aphrodisias' },
+    photo: ['en:Aphrodisias'],
     accent: '#A0522D',
   },
   {
@@ -198,6 +207,7 @@ export const PLACES: Place[] = [
     keySites: ['Ksanthos', 'Letoon', 'Patara', 'Myra', 'Tlos', 'Pınara', 'Olympos'],
     museums: ['Antalya Müzesi', 'Fethiye Müzesi', 'Likya Uygarlıkları Müzesi (Demre)'],
     wiki: { tr: 'Patara', en: 'Patara' },
+    photo: ['en:Myra', 'en:Lycian rock-cut tombs'],
     accent: '#B8743A',
   },
   {
@@ -220,6 +230,7 @@ export const PLACES: Place[] = [
     keySites: ['Perge', 'Aspendos', 'Side', 'Termessos', 'Sagalassos', 'Hacılar Höyük'],
     museums: ['Antalya Müzesi', 'Burdur Müzesi', 'Isparta Müzesi', 'Side Müzesi'],
     wiki: { tr: 'Perge', en: 'Perga' },
+    photo: ['en:Aspendos'],
     accent: '#C08B5C',
   },
   {
@@ -242,6 +253,7 @@ export const PLACES: Place[] = [
     keySites: ['Göreme', 'Derinkuyu', 'Kaymaklı', 'Ihlara Vadisi', 'Aşıklı Höyük', 'Sultanhanı'],
     museums: ['Nevşehir Müzesi', 'Aksaray Müzesi', 'Niğde Müzesi', 'Kayseri Arkeoloji Müzesi'],
     wiki: { tr: 'Kapadokya', en: 'Cappadocia' },
+    photo: ['en:Göreme', 'en:Cappadocia'],
     accent: '#C2703D',
   },
   {
@@ -265,6 +277,7 @@ export const PLACES: Place[] = [
     keySites: ['Göbekli Tepe', 'Karahan Tepe', 'Nemrut Dağı', 'Zeugma', 'Arsameia', 'Arslantepe'],
     museums: ['Şanlıurfa Arkeoloji Müzesi', 'Zeugma Mozaik Müzesi', 'Adıyaman Müzesi', 'Malatya Müzesi'],
     wiki: { tr: 'Nemrut Dağı', en: 'Mount Nemrut' },
+    photo: ['en:Mount Nemrut'],
     accent: '#9C5B2E',
   },
   {
@@ -287,6 +300,7 @@ export const PLACES: Place[] = [
     keySites: ['Hasankeyf', 'Dara', 'Çayönü', 'Deyrulzafaran Manastırı', 'Diyarbakır Surları'],
     museums: ['Mardin Müzesi', 'Diyarbakır Arkeoloji Müzesi', 'Hasankeyf Müzesi', 'Batman Müzesi'],
     wiki: { tr: 'Hasankeyf', en: 'Hasankeyf' },
+    photo: ['en:Hasankeyf', 'en:Mardin'],
     accent: '#B07A45',
   },
   {
@@ -309,6 +323,7 @@ export const PLACES: Place[] = [
     keySites: ['Çatalhöyük', 'Alaeddin Tepesi', 'Binbir Kilise', 'Kerkenes (Yozgat, komşu)', 'Kubadabad Sarayı'],
     museums: ['Konya Arkeoloji Müzesi', 'Karatay Çini Eserler Müzesi', 'Karaman Müzesi'],
     wiki: { tr: 'Çatalhöyük', en: 'Çatalhöyük' },
+    photo: ['en:Çatalhöyük'],
     accent: '#A3683A',
   },
   {
@@ -331,6 +346,7 @@ export const PLACES: Place[] = [
     keySites: ['Amasya Kral Kaya Mezarları', 'İkiztepe', 'Sinope', 'Pompeiopolis (Taşköprü)', 'Sümela'],
     museums: ['Amasya Müzesi', 'Samsun Müzesi', 'Sinop Müzesi', 'Kastamonu Arkeoloji Müzesi'],
     wiki: { tr: 'Amasya Kral Kaya Mezarları', en: 'Amasya' },
+    photo: ['en:Amasya'],
     accent: '#5E7A55',
   },
   {
@@ -353,6 +369,7 @@ export const PLACES: Place[] = [
     keySites: ['Yenikapı', 'Kırklareli Dolmenleri', 'Aşağı Pınar', 'Kırklareli Tümülüsleri', 'Perinthos (Marmara Ereğlisi)'],
     museums: ['İstanbul Arkeoloji Müzeleri', 'Edirne Müzesi', 'Kırklareli Müzesi', 'Tekirdağ Müzesi'],
     wiki: { tr: 'Dolmen', en: 'Dolmen' },
+    photo: ['en:Hagia Sophia'],
     accent: '#5A6E8C',
   },
   {
@@ -375,6 +392,7 @@ export const PLACES: Place[] = [
     keySites: ['Antakya', 'Karatepe-Aslantaş', 'Uzuncaburç (Olba)', 'Anazarbos', 'Yumuktepe', 'Korykos'],
     museums: ['Hatay Arkeoloji Müzesi', 'Mersin Müzesi', 'Adana Müzesi', 'Karatepe-Aslantaş Açıkhava Müzesi'],
     wiki: { tr: 'Karatepe-Aslantaş Millî Parkı', en: 'Karatepe' },
+    photo: ['en:Kızkalesi', 'en:Corycus'],
     accent: '#A15C4A',
   },
   {
@@ -396,6 +414,7 @@ export const PLACES: Place[] = [
     keySites: ['Ani', 'Ahlat Selçuklu Meydan Mezarlığı', 'Sos Höyük', 'Karaz Höyük'],
     museums: ['Kars Müzesi', 'Erzurum Arkeoloji Müzesi', 'Ahlat Müzesi'],
     wiki: { tr: 'Ani', en: 'Ani' },
+    photo: ['en:Ani'],
     accent: '#6E5A7E',
   },
 ];

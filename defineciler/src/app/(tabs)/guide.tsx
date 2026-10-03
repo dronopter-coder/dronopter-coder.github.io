@@ -27,7 +27,13 @@ export default function GuideScreen() {
           <Pressable
             onPress={() => router.push({ pathname: '/guide/[id]', params: { id: item.id } })}
             style={({ pressed }) => [styles.card, { width: cardWidth }, pressed && { opacity: 0.85 }]}>
-            <WikiImage wiki={item.wiki} accent={item.accent} icon={item.icon} style={styles.image} />
+            <WikiImage
+              photoKey={`guide:${item.id}`}
+              wiki={item.wiki}
+              accent={item.accent}
+              icon={item.icon}
+              style={styles.image}
+            />
             <View style={styles.badge}>
               <MaterialCommunityIcons name={item.icon} size={18} color={Colors.onGold} />
             </View>
