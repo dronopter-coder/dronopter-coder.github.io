@@ -63,8 +63,11 @@ export function normalizeResult(raw: unknown): AnalysisResult {
   };
 }
 
-/** Gemini'ye fotoğrafı ve yapılandırılmış çıktı şemasını gönderir. */
-export async function analyzeWithGemini(req: AnalyzeRequest, apiKey: string, model: string): Promise<AnalysisResult> {
+/** Bu durum kodlarında sıradaki modele geçilir (yoğunluk, kota, geçici hata, model yok). */
+const RETRYABLE = new Set([404, 408, 429, 500, 502, 503, 504]);
+
+/** Tek bir modele istek atar; başarıda sonucu, geçici hatada null döndürür. */
+async function callModel(req: AnalyzeRequest, apiKey: string, model: string): Promise<AnalysisResult | null> {
   const userText =
     'Bu fotoğraftaki objeyi tanımla.' + (req.note ? `\nKullanıcının ek notu (boyut, bulunduğu yer vb.): """${req.note}"""` : '');
 
@@ -73,6 +76,7 @@ export async function analyzeWithGemini(req: AnalyzeRequest, apiKey: string, mod
     res = await fetch(`${GEMINI_BASE}/${encodeURIComponent(model)}:generateContent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+      signal: AbortSignal.timeout(40_000),
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents: [
@@ -90,18 +94,17 @@ export async function analyzeWithGemini(req: AnalyzeRequest, apiKey: string, mod
       }),
     });
   } catch (e) {
-    console.error('Gemini fetch failed', String(e));
-    throw new HttpError(502, 'Yapay zeka servisine ulaşılamadı. Lütfen tekrar deneyin.', 'upstream');
+    console.error('Gemini fetch failed', model, String(e));
+    return null;
   }
 
   if (!res.ok) {
     const detail = await res.text().catch(() => '');
-    console.error('Gemini error', res.status, detail.slice(0, 500));
-    if (res.status === 429)
-      throw new HttpError(503, 'Yapay zeka şu anda çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.', 'busy');
+    console.error('Gemini error', model, res.status, detail.slice(0, 500));
+    if (RETRYABLE.has(res.status)) return null;
     if (res.status === 400 && /image|inline/i.test(detail))
       throw new HttpError(400, 'Fotoğraf işlenemedi. Farklı bir fotoğraf deneyin.', 'bad_image');
-    throw new HttpError(502, 'Yapay zeka servisine ulaşılamadı. Lütfen tekrar deneyin.', 'upstream');
+    throw new HttpError(502, 'Yapay zeka servisine ulaşılamadı. Lütfen tekrar deneyin.', `upstream_${res.status}`);
   }
 
   const data = (await res.json()) as any;
@@ -114,15 +117,33 @@ export async function analyzeWithGemini(req: AnalyzeRequest, apiKey: string, mod
     .map((p: any) => p.text)
     .join('');
   if (!text) {
-    console.error('Gemini empty', JSON.stringify(data).slice(0, 500));
-    throw new HttpError(502, 'Yapay zekadan yanıt alınamadı. Lütfen tekrar deneyin.', 'empty');
+    console.error('Gemini empty', model, JSON.stringify(data).slice(0, 500));
+    return null;
   }
   try {
     return normalizeResult(JSON.parse(text));
   } catch {
-    console.error('Gemini bad JSON', cand?.finishReason, text.slice(0, 300));
-    throw new HttpError(502, 'Yapay zeka yanıtı okunamadı. Lütfen tekrar deneyin.', 'bad_json');
+    console.error('Gemini bad JSON', model, cand?.finishReason, text.slice(0, 300));
+    return null;
   }
+}
+
+/**
+ * Gemini'ye fotoğrafı ve yapılandırılmış çıktı şemasını gönderir. Model yoğunsa (503/429 vb.)
+ * sıradaki yedek modeli dener; hepsi başarısız olursa "yoğun" hatası verir.
+ */
+export async function analyzeWithGemini(
+  req: AnalyzeRequest,
+  apiKey: string,
+  models: string[],
+): Promise<{ result: AnalysisResult; model: string }> {
+  const list = [...new Set(models.map((m) => m.trim()).filter(Boolean))];
+  for (const [i, model] of list.entries()) {
+    if (i > 0) await new Promise((r) => setTimeout(r, 400));
+    const result = await callModel(req, apiKey, model);
+    if (result) return { result, model };
+  }
+  throw new HttpError(503, 'Yapay zeka şu anda çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.', 'busy');
 }
 
 /** MOCK_GEMINI=1 iken kullanılan örnek sonuç (anahtar olmadan test için). */

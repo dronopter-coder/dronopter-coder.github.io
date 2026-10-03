@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { HttpError, MOCK_RESULT, normalizeResult, parseAnalyzeRequest } from '../src/gemini';
+import { analyzeWithGemini, HttpError, MOCK_RESULT, normalizeResult, parseAnalyzeRequest } from '../src/gemini';
 import { RESPONSE_SCHEMA } from '../src/schema';
 
 const IMG = 'A'.repeat(200);
@@ -39,5 +39,46 @@ describe('normalizeResult', () => {
 
   it('örnek sonuç şemadaki tüm zorunlu alanlara sahip', () => {
     for (const key of RESPONSE_SCHEMA.required) expect(MOCK_RESULT).toHaveProperty(key);
+  });
+});
+
+describe('analyzeWithGemini', () => {
+  const ok = (body: unknown) => new Response(JSON.stringify(body), { status: 200 });
+  const geminiBody = (r: unknown) => ({ candidates: [{ content: { parts: [{ text: JSON.stringify(r) }] } }] });
+
+  it('yoğun modelde sıradaki yedek modele geçer', async () => {
+    const calls: string[] = [];
+    vi.stubGlobal('fetch', async (url: string) => {
+      calls.push(url);
+      if (url.includes('busy-model')) return new Response('{"error":{"message":"high demand"}}', { status: 503 });
+      return ok(geminiBody({ verdict: 'artifact', title: 'Sikke', confidence: 80 }));
+    });
+    const { result, model } = await analyzeWithGemini({ image: IMG, mimeType: 'image/jpeg' }, 'k', ['busy-model', 'good-model']);
+    expect(model).toBe('good-model');
+    expect(result.title).toBe('Sikke');
+    expect(calls).toHaveLength(2);
+    vi.unstubAllGlobals();
+  });
+
+  it('tüm modeller yoğunsa 503 busy hatası verir', async () => {
+    vi.stubGlobal('fetch', async () => new Response('busy', { status: 503 }));
+    await expect(analyzeWithGemini({ image: IMG, mimeType: 'image/jpeg' }, 'k', ['a', 'b'])).rejects.toMatchObject({
+      status: 503,
+      code: 'busy',
+    });
+    vi.unstubAllGlobals();
+  });
+
+  it('kalıcı istemci hatasında yedeğe geçmeden durur', async () => {
+    let n = 0;
+    vi.stubGlobal('fetch', async () => {
+      n++;
+      return new Response('bad image inline data', { status: 400 });
+    });
+    await expect(analyzeWithGemini({ image: IMG, mimeType: 'image/jpeg' }, 'k', ['a', 'b'])).rejects.toMatchObject({
+      code: 'bad_image',
+    });
+    expect(n).toBe(1);
+    vi.unstubAllGlobals();
   });
 });

@@ -10,6 +10,8 @@
     // Gemini model adı. "gemini-flash-latest" Google'ın en güncel Flash modeline yönlenir.
     // Sabit bir sürüm isterseniz örn. "gemini-3.8-flash" yazın.
     "GEMINI_MODEL": "gemini-flash-latest",
+    // Ana model yoğunsa (503) veya kota dolarsa sırayla denenecek yedek modeller.
+    "GEMINI_FALLBACK_MODELS": "gemini-3.8-flash,gemini-3.7-flash,gemini-3.5-flash,gemini-flash-lite-latest",
     // Uygulamanın gönderdiği X-App-Key başlığı (app.json → extra.appKey ile aynı olmalı).
     "APP_KEY": "defineciler-android-v1",
     // IP başına günlük en fazla analiz (USAGE KV bağlıysa uygulanır).

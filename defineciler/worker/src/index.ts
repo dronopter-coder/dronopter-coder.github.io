@@ -4,6 +4,7 @@ import { buildNews } from './news';
 export interface Env {
   GEMINI_API_KEY?: string;
   GEMINI_MODEL?: string;
+  GEMINI_FALLBACK_MODELS?: string;
   APP_KEY?: string;
   DAILY_LIMIT_PER_IP?: string;
   MOCK_GEMINI?: string;
@@ -53,8 +54,9 @@ async function handleAnalyze(req: Request, env: Env) {
   if (!env.GEMINI_API_KEY) throw new HttpError(500, 'Sunucu yapılandırılmamış (GEMINI_API_KEY eksik).', 'config');
 
   await enforceLimits(req, env);
-  const result = await analyzeWithGemini(body, env.GEMINI_API_KEY, env.GEMINI_MODEL || 'gemini-flash-latest');
-  return json({ result });
+  const models = [env.GEMINI_MODEL || 'gemini-flash-latest', ...(env.GEMINI_FALLBACK_MODELS ?? '').split(',')];
+  const { result, model } = await analyzeWithGemini(body, env.GEMINI_API_KEY, models);
+  return json({ result, model });
 }
 
 async function handleNews(req: Request, ctx: ExecutionContext) {
