@@ -220,7 +220,7 @@ export const GUIDE: GuideTopic[] = [
     subtitle: 'Replika ve taklitleri ayırt etme',
     icon: 'magnify-scan',
     wiki: { en: 'Art forgery' },
-    photo: ['en:Art forgery', 'en:Replica', 'en:Forgery'],
+    photo: ['en:Magnifying glass', 'en:Loupe', 'en:Replica'],
     accent: '#5A6E8C',
     sections: [
       {

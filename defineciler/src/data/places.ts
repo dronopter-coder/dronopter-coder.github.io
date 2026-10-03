@@ -67,7 +67,7 @@ export const PLACES: Place[] = [
     keySites: ['Gordion', 'Midas Tümülüsü', 'Midas Şehri (Yazılıkaya)', 'Aslantaş', 'Pessinus (Ballıhisar)'],
     museums: ['Gordion Müzesi', 'Anadolu Medeniyetleri Müzesi', 'Afyonkarahisar Müzesi', 'Eskişehir Arkeoloji Müzesi'],
     wiki: { tr: 'Gordion', en: 'Gordion' },
-    photo: ['en:Midas City', 'en:Gordion'],
+    photo: ['en:Midas Tumulus', 'en:Gordion', 'en:Phrygian Valley'],
     accent: '#8C6D3F',
   },
   {
@@ -392,7 +392,7 @@ export const PLACES: Place[] = [
     keySites: ['Antakya', 'Karatepe-Aslantaş', 'Uzuncaburç (Olba)', 'Anazarbos', 'Yumuktepe', 'Korykos'],
     museums: ['Hatay Arkeoloji Müzesi', 'Mersin Müzesi', 'Adana Müzesi', 'Karatepe-Aslantaş Açıkhava Müzesi'],
     wiki: { tr: 'Karatepe-Aslantaş Millî Parkı', en: 'Karatepe' },
-    photo: ['en:Kızkalesi', 'en:Corycus'],
+    photo: ['en:Corycus', 'en:Kızkalesi'],
     accent: '#A15C4A',
   },
   {

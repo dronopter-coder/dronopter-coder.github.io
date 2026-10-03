@@ -34,12 +34,6 @@ export const PHOTOS: Record<string, Photo> = {
     license: "Public domain",
     url: "https://commons.wikimedia.org/wiki/File:Cylinder_seal_king_Louvre_AO6620.jpg",
   },
-  'guide:sahte': {
-    image: require('../../assets/photos/guide-sahte.jpg'),
-    author: "Lucas Velázquez",
-    license: "Public domain",
-    url: "https://commons.wikimedia.org/wiki/File:La_ciudad_sobre_la_roca,_por_Eugenio_Lucas_Vel%C3%A1zquez.jpg",
-  },
   'guide:seramik': {
     image: require('../../assets/photos/guide-seramik.jpg'),
     author: "Ad Meskens",
@@ -69,12 +63,6 @@ export const PHOTOS: Record<string, Photo> = {
     author: "Teomancimit",
     license: "CC BY-SA 3.0",
     url: "https://commons.wikimedia.org/wiki/File:G%C3%B6bekli_Tepe,_Urfa.jpg",
-  },
-  'place:frigya': {
-    image: require('../../assets/photos/place-frigya.jpg'),
-    author: "Zeynel Cebeci",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Street_in_Yaz%C4%B1l%C4%B1kaya_01.jpg",
   },
   'place:hitit': {
     image: require('../../assets/photos/place-hitit.jpg'),
@@ -111,12 +99,6 @@ export const PHOTOS: Record<string, Photo> = {
     author: "Carole Raddato from FRANKFURT, Germany",
     license: "CC BY-SA 2.0",
     url: "https://commons.wikimedia.org/wiki/File:The_Temple_of_Aphrodite,_built_in_the_Ionic_order_in_stages_during_the_Roman_period_(from_1st_century_BC_to_2nd_century_AD)_and_later_converted_into_a_Christian_basilica,_Aphrodisias,_Caria,_Turkey_(20300922019).jpg",
-  },
-  'place:kilikya': {
-    image: require('../../assets/photos/place-kilikya.jpg'),
-    author: "Zcebeci",
-    license: "Public domain",
-    url: "https://commons.wikimedia.org/wiki/File:K%C4%B1zkalesi_(Korykos),_Mersin,Turkey_1.jpg",
   },
   'place:kommagene': {
     image: require('../../assets/photos/place-kommagene.jpg'),
