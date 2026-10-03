@@ -1,0 +1,67 @@
+name: Defineciler Android APK
+
+on:
+  push:
+    paths:
+      - 'defineciler/**'
+      - '.github/workflows/defineciler-android.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: defineciler-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: defineciler
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            defineciler/package-lock.json
+            defineciler/worker/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx expo lint
+      - name: Worker testleri
+        working-directory: defineciler/worker
+        run: |
+          npm ci
+          npx tsc --noEmit
+          npx vitest run
+
+  apk:
+    needs: check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: defineciler
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: defineciler/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - run: npm ci
+      - name: Android projesini üret
+        run: npx expo prebuild --platform android --no-install
+      - name: APK derle
+        working-directory: defineciler/android
+        run: ./gradlew assembleRelease --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: defineciler-apk
+          path: defineciler/android/app/build/outputs/apk/release/*.apk
+          retention-days: 14

@@ -1,0 +1,4 @@
+# GitHub Pages: uygulama kaynak kodu sitede yayınlanmasın.
+exclude:
+  - defineciler
+  - README.md

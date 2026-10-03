@@ -1,0 +1,26 @@
+{
+  // Cloudflare Worker: Gemini API anahtarını uygulamadan gizleyen ara sunucu.
+  // Kurulum adımları için ../README.md dosyasına bakın.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "defineciler-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "observability": { "enabled": true },
+  "vars": {
+    // Gemini model adı. "gemini-flash-latest" Google'ın en güncel Flash modeline yönlenir.
+    // Sabit bir sürüm isterseniz örn. "gemini-3.8-flash" yazın.
+    "GEMINI_MODEL": "gemini-flash-latest",
+    // Uygulamanın gönderdiği X-App-Key başlığı (app.json → extra.appKey ile aynı olmalı).
+    "APP_KEY": "defineciler-android-v1",
+    // IP başına günlük en fazla analiz (USAGE KV bağlıysa uygulanır).
+    "DAILY_LIMIT_PER_IP": "30"
+  },
+  // IP başına dakikada en fazla 6 analiz isteği.
+  "ratelimits": [
+    { "name": "ANALYZE_LIMITER", "namespace_id": "1001", "simple": { "limit": 6, "period": 60 } }
+  ]
+  // Günlük limit için isteğe bağlı KV:
+  //   npx wrangler kv namespace create USAGE
+  // komutunun verdiği id ile aşağıdakini ekleyin:
+  // "kv_namespaces": [{ "binding": "USAGE", "id": "<id>" }]
+}
