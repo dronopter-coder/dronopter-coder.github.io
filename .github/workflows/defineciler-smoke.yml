@@ -1,0 +1,34 @@
+name: Defineciler sunucu testi
+
+# Yayındaki Worker'a gerçek bir analiz ve haber isteği gönderir (APK derlemesini tetiklemez).
+on:
+  push:
+    paths:
+      - '.github/workflows/defineciler-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    env:
+      API: ${{ vars.DEFINECILER_API_URL || 'https://defineciler-api.dronopter.workers.dev' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sağlık
+        run: curl -fsS "$API/health"
+      - name: Analiz (örnek görsel)
+        run: |
+          python3 - <<'PY'
+          import base64, json
+          img = base64.b64encode(open('defineciler/assets/images/icon.png', 'rb').read()).decode()
+          json.dump({"image": img, "mimeType": "image/png", "note": "Test: uygulama simgesi"}, open('body.json', 'w'))
+          PY
+          code=$(curl -sS -o res.json -w '%{http_code}' -X POST "$API/analyze" \
+            -H 'Content-Type: application/json' -H 'X-App-Key: defineciler-android-v1' --data @body.json)
+          echo "HTTP $code"
+          python3 -c "import json; r=json.load(open('res.json')); print(json.dumps(r, ensure_ascii=False, indent=2)[:1500])"
+          test "$code" = "200"
+      - name: Haberler (sunucu yedeği)
+        run: |
+          curl -sS "$API/news" -o news.json -w 'HTTP %{http_code}\n'
+          python3 -c "import json; d=json.load(open('news.json')); items=d.get('items', []); print(len(items), 'haber'); [print('-', i['source'], '|', i['title'][:90]) for i in items[:5]]"
