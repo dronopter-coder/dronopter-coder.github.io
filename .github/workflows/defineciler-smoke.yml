@@ -16,6 +16,19 @@ jobs:
       - uses: actions/checkout@v4
       - name: Sağlık
         run: curl -fsS "$API/health"
+      - name: Gemini anahtarı ve model kontrolü (doğrudan)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          curl -sS -H "x-goog-api-key: $GEMINI_API_KEY" \
+            "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200" -o models.json -w 'models HTTP %{http_code}\n'
+          python3 -c "import json; d=json.load(open('models.json')); print(d.get('error') or [m['name'] for m in d.get('models', []) if 'flash' in m['name']])"
+          for m in gemini-flash-latest gemini-3.8-flash gemini-2.5-flash; do
+            code=$(curl -sS -o gen.json -w '%{http_code}' -H "x-goog-api-key: $GEMINI_API_KEY" -H 'Content-Type: application/json' \
+              "https://generativelanguage.googleapis.com/v1beta/models/$m:generateContent" \
+              -d '{"contents":[{"parts":[{"text":"Sadece OK yaz."}]}]}')
+            echo "$m → HTTP $code: $(python3 -c "import json; d=json.load(open('gen.json')); print((d.get('error') or {}).get('message') or d['candidates'][0]['content']['parts'][-1].get('text','')[:80])")"
+          done
       - name: Analiz (örnek görsel)
         run: |
           python3 - <<'PY'
