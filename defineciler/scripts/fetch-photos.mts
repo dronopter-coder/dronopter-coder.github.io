@@ -14,7 +14,7 @@ const CREDITS = new URL('assets/photos/credits.json', ROOT);
 const GENERATED = new URL('src/data/photos.generated.ts', ROOT);
 const UA = 'DefinecilerBuild/1.0 (https://dronopter-coder.github.io; dronopter@gmail.com)';
 // Wikimedia yalnızca standart küçük resim genişliklerini üretir; sırayla denenir.
-const WIDTHS = [1280, 960, 500];
+const WIDTHS = [960, 1280, 500];
 
 // v: kayıt biçimi sürümü; daha eski kayıtlar (atıf doğrulaması öncesi) yeniden indirilir.
 const CREDIT_VERSION = 2;

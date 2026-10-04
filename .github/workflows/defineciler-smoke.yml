@@ -5,6 +5,8 @@ on:
   push:
     paths:
       - '.github/workflows/defineciler-smoke.yml'
+      - 'defineciler/src/services/news-image-core.ts'
+      - 'defineciler/scripts/test-news-images.mts'
   workflow_dispatch:
 
 jobs:
@@ -45,3 +47,9 @@ jobs:
         run: |
           curl -sS "$API/news" -o news.json -w 'HTTP %{http_code}\n'
           python3 -c "import json; d=json.load(open('news.json')); items=d.get('items', []); print(len(items), 'haber'); [print('-', i['source'], '|', i['title'][:90]) for i in items[:5]]"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Haber görselleri (Google Haberler adres çözme + og:image)
+        working-directory: defineciler
+        run: node --experimental-strip-types scripts/test-news-images.mts --live

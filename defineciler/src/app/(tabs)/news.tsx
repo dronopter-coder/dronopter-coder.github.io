@@ -1,4 +1,3 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import * as WebBrowser from 'expo-web-browser';
 import { useCallback, useEffect, useState } from 'react';
@@ -9,6 +8,7 @@ import { Button, EmptyState } from '@/components/ui';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { ApiError } from '@/services/api';
 import { getCachedNews, loadNews, type NewsItem } from '@/services/news';
+import { fallbackPhoto, useArticleImage } from '@/services/news-image';
 
 function timeAgo(iso: string | null) {
   if (!iso) return '';
@@ -23,13 +23,28 @@ function timeAgo(iso: string | null) {
 }
 
 function NewsCard({ item, featured }: { item: NewsItem; featured?: boolean }) {
+  const found = useArticleImage(item.link, item.image);
+  const [broken, setBroken] = useState(false);
+  const real = found && !broken ? found : null;
   return (
     <Pressable
       onPress={() => WebBrowser.openBrowserAsync(item.link)}
       style={({ pressed }) => [styles.card, featured && styles.featured, pressed && { opacity: 0.85 }]}>
       <View style={featured ? styles.featuredImage : styles.thumb}>
-        <MaterialCommunityIcons name="newspaper-variant-outline" size={featured ? 48 : 28} color={Colors.border} />
-        {item.image && <Image source={{ uri: item.image }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />}
+        {real ? (
+          <Image
+            source={{ uri: real }}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            transition={250}
+            onError={() => setBroken(true)}
+          />
+        ) : (
+          <>
+            <Image source={fallbackPhoto(item.title, item.id).image} style={StyleSheet.absoluteFill} contentFit="cover" />
+            <Text style={styles.badge}>TEMSİLİ</Text>
+          </>
+        )}
       </View>
       <View style={[styles.cardBody, featured && { padding: Spacing.lg }]}>
         <Text style={[styles.title, featured && styles.featuredTitle]} numberOfLines={featured ? 3 : 3}>
@@ -130,7 +145,20 @@ const styles = StyleSheet.create({
   featuredImage: { height: 190, backgroundColor: Colors.surfaceRaised, alignItems: 'center', justifyContent: 'center' },
   cardBody: { flex: 1, padding: Spacing.md, gap: 6, justifyContent: 'space-between' },
   title: { color: Colors.text, fontSize: 15, fontWeight: '700', lineHeight: 21 },
-  featuredTitle: { fontFamily: Fonts.serif, fontSize: 20, lineHeight: 26 },
+  featuredTitle: { fontFamily: Fonts.serif, fontWeight: 'normal', fontSize: 20, lineHeight: 27 },
+  badge: {
+    position: 'absolute',
+    left: 6,
+    bottom: 6,
+    color: 'rgba(242,235,221,0.85)',
+    backgroundColor: 'rgba(10,15,12,0.6)',
+    fontSize: 8,
+    letterSpacing: 1.2,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
   summary: { color: Colors.textSecondary, fontSize: 14, lineHeight: 20 },
   meta: { flexDirection: 'row', justifyContent: 'space-between', gap: Spacing.sm },
   source: { color: Colors.gold, fontSize: 12, fontWeight: '700', flex: 1 },

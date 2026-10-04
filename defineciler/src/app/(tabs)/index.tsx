@@ -10,6 +10,7 @@ import { LogoMark, Wordmark } from '@/components/logo';
 import { Sparkle } from '@/components/sparkle';
 import { Button, type IconName } from '@/components/ui';
 import { DAILY_FREE_SCANS } from '@/constants/config';
+import { PHOTOS } from '@/data/photos.generated';
 import { Colors, Fonts, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useRemainingScans } from '@/hooks/use-quota';
 import { useScans } from '@/hooks/use-scans';
@@ -28,10 +29,10 @@ const STEPS: { icon: IconName; title: string; text: string }[] = [
   { icon: 'script-text-outline', title: 'Öğren', text: 'Dönem, uygarlık, içerik' },
 ];
 
-const EXPLORE: { href: '/places' | '/guide' | '/news'; icon: IconName; title: string; text: string }[] = [
-  { href: '/places', icon: 'map-marker-radius', title: 'Tarihi Bölgeler', text: 'Uygarlıkların izinde 17 bölge' },
-  { href: '/guide', icon: 'book-open-page-variant', title: 'Rehber', text: 'Sikke, seramik, işaretler' },
-  { href: '/news', icon: 'newspaper-variant-outline', title: 'Haberler', text: 'Güncel kazı ve keşifler' },
+const EXPLORE: { href: '/places' | '/guide' | '/news'; icon: IconName; title: string; text: string; photo: string }[] = [
+  { href: '/places', icon: 'map-marker-radius', title: 'Bölgeler', text: '17 tarihi bölge', photo: 'place:kapadokya' },
+  { href: '/guide', icon: 'book-open-page-variant', title: 'Rehber', text: 'Eser rehberi', photo: 'guide:sikkeler' },
+  { href: '/news', icon: 'newspaper-variant-outline', title: 'Haberler', text: 'Güncel kazılar', photo: 'guide:fotograf' },
 ];
 
 /**
@@ -81,11 +82,9 @@ export default function ScanHome() {
               <LogoMark size={44} />
               <Wordmark />
             </View>
-            <Link href="/settings" asChild>
-              <Pressable hitSlop={12} accessibilityLabel="Ayarlar">
-                <MaterialCommunityIcons name="cog-outline" size={24} color={Colors.sage} />
-              </Pressable>
-            </Link>
+            <Pressable hitSlop={12} accessibilityLabel="Ayarlar" onPress={() => router.push('/settings')}>
+              <MaterialCommunityIcons name="cog-outline" size={24} color={Colors.sage} />
+            </Pressable>
           </View>
 
           <View style={styles.intro}>
@@ -155,17 +154,18 @@ export default function ScanHome() {
               </View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: Spacing.md }}>
                 {recent.map((s) => (
-                  <Link key={s.id} href={{ pathname: '/result/[id]', params: { id: s.id } }} asChild>
-                    <Pressable style={styles.recent}>
-                      <Image source={{ uri: s.imageUri }} style={styles.recentImg} contentFit="cover" />
-                      <Text style={styles.recentTitle} numberOfLines={2}>
-                        {s.result.title}
-                      </Text>
-                      <Text style={styles.recentSub} numberOfLines={1}>
-                        {s.result.period || s.result.category}
-                      </Text>
-                    </Pressable>
-                  </Link>
+                  <Pressable
+                    key={s.id}
+                    style={styles.recent}
+                    onPress={() => router.push({ pathname: '/result/[id]', params: { id: s.id } })}>
+                    <Image source={{ uri: s.imageUri }} style={styles.recentImg} contentFit="cover" />
+                    <Text style={styles.recentTitle} numberOfLines={2}>
+                      {s.result.title}
+                    </Text>
+                    <Text style={styles.recentSub} numberOfLines={1}>
+                      {s.result.period || s.result.category}
+                    </Text>
+                  </Pressable>
                 ))}
               </ScrollView>
             </View>
@@ -173,20 +173,31 @@ export default function ScanHome() {
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Keşfet</Text>
-            <View style={{ gap: Spacing.md }}>
+            <View style={styles.exploreRow}>
               {EXPLORE.map((e) => (
-                <Link key={e.href} href={e.href} asChild>
-                  <Pressable style={({ pressed }) => [styles.explore, pressed && { opacity: 0.85 }]}>
-                    <View style={styles.exploreIcon}>
-                      <MaterialCommunityIcons name={e.icon} size={22} color={Colors.gold} />
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.exploreTitle}>{e.title}</Text>
-                      <Text style={styles.exploreText}>{e.text}</Text>
-                    </View>
-                    <MaterialCommunityIcons name="chevron-right" size={22} color={Colors.sage} />
-                  </Pressable>
-                </Link>
+                <Pressable
+                  key={e.href}
+                  onPress={() => router.push(e.href)}
+                  accessibilityLabel={e.title}
+                  style={({ pressed }) => [styles.tile, pressed && { opacity: 0.85, transform: [{ scale: 0.98 }] }]}>
+                  <Image source={PHOTOS[e.photo]?.image} style={StyleSheet.absoluteFill} contentFit="cover" />
+                  <LinearGradient
+                    colors={['rgba(10,15,12,0.15)', 'rgba(10,15,12,0.55)', 'rgba(10,15,12,0.95)']}
+                    locations={[0, 0.45, 1]}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <View style={styles.tileIcon}>
+                    <MaterialCommunityIcons name={e.icon} size={18} color={Colors.goldLight} />
+                  </View>
+                  <View style={styles.tileText}>
+                    <Text style={styles.tileTitle} numberOfLines={1} adjustsFontSizeToFit>
+                      {e.title}
+                    </Text>
+                    <Text style={styles.tileSub} numberOfLines={1}>
+                      {e.text}
+                    </Text>
+                  </View>
+                </Pressable>
               ))}
             </View>
           </View>
@@ -293,24 +304,31 @@ const styles = StyleSheet.create({
   recentImg: { width: 140, height: 140, borderRadius: Radius.md, backgroundColor: 'rgba(255,255,255,0.05)' },
   recentTitle: { color: '#F2EBDD', fontWeight: '700', fontSize: 14 },
   recentSub: { color: Colors.sage, fontSize: 12 },
-  explore: {
+  exploreRow: { flexDirection: 'row', gap: Spacing.sm },
+  tile: {
     ...glass,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-    padding: Spacing.md,
+    flex: 1,
+    aspectRatio: 1,
     borderRadius: Radius.lg,
+    overflow: 'hidden',
+    backgroundColor: Colors.nightDeep,
   },
-  exploreIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: Radius.md,
-    backgroundColor: 'rgba(212,162,76,0.12)',
+  tileIcon: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(10,15,12,0.6)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(232,199,122,0.45)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  exploreTitle: { color: '#F2EBDD', fontWeight: '700', fontSize: 16 },
-  exploreText: { color: Colors.sage, fontSize: 13, marginTop: 2 },
+  tileText: { position: 'absolute', left: 9, right: 6, bottom: 9 },
+  tileTitle: { fontFamily: Fonts.display, color: '#F2EBDD', fontSize: 15 },
+  tileSub: { color: Colors.sage, fontSize: 11, marginTop: 1 },
   footnote: {
     color: 'rgba(169,184,164,0.6)',
     fontSize: 12,

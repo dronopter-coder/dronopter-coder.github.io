@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Link, router, Stack, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 
@@ -199,15 +199,13 @@ export default function ResultScreen() {
           )}
 
           {isArtifact && (
-            <Link href={{ pathname: '/guide/[id]', params: { id: 'yasal' } }} asChild>
-              <Pressable style={styles.legal}>
-                <MaterialCommunityIcons name="scale-balance" size={22} color={Colors.warning} />
-                <Text style={styles.legalText}>
-                  Bu bir tarihi eserse, 2863 sayılı Kanun gereği 3 gün içinde en yakın müzeye veya mülki amirliğe bildirmeniz
-                  gerekir. Bildirene ikramiye verilir. Ayrıntılar için dokunun.
-                </Text>
-              </Pressable>
-            </Link>
+            <Pressable style={styles.legal} onPress={() => router.push({ pathname: '/guide/[id]', params: { id: 'yasal' } })}>
+              <MaterialCommunityIcons name="scale-balance" size={22} color={Colors.warning} />
+              <Text style={styles.legalText}>
+                Bu bir tarihi eserse, 2863 sayılı Kanun gereği 3 gün içinde en yakın müzeye veya mülki amirliğe bildirmeniz
+                gerekir. Bildirene ikramiye verilir. Ayrıntılar için dokunun.
+              </Text>
+            </Pressable>
           )}
 
           <Text style={styles.disclaimer}>

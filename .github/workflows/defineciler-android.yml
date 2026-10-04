@@ -168,7 +168,19 @@ jobs:
         run: npx expo prebuild --platform android --no-install
       - name: APK derle
         working-directory: defineciler/android
-        run: ./gradlew assembleRelease --no-daemon
+        # Yalnızca arm64 (günümüz telefonlarının tamamı); Play Store için AAB ayrıca tüm mimarilerle derlenir.
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --no-daemon
+      - name: APK boyutu
+        working-directory: defineciler/android/app/build/outputs/apk/release
+        run: |
+          ls -la *.apk
+          {
+            echo "### APK boyutu: $(du -h *.apk | cut -f1)"
+            echo '```'
+            unzip -l *.apk | awk '{print $4}' | grep -E '^lib/' | cut -d/ -f2 | sort | uniq -c
+            unzip -l *.apk | sort -k1 -n -r | head -12
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
           name: defineciler-apk
