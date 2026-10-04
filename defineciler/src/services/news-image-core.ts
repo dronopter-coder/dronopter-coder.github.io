@@ -135,7 +135,7 @@ export async function decodeGoogleNewsUrl(link: string): Promise<string | null> 
 export async function resolveArticleImage(link: string): Promise<string | null> {
   const article = isGoogleNewsLink(link) ? await decodeGoogleNewsUrl(link) : link;
   if (!article) return null;
-  const page = await get(article, { headers: { Accept: 'text/html' } });
+  const page = await get(article, { headers: { Accept: 'text/html,application/xhtml+xml,*/*;q=0.8' } });
   if (!page) return null;
   const img = extractMetaImage(page.text.slice(0, MAX_HTML), page.url);
   // Site logoları/varsayılan paylaşım görselleri haber görseli değildir.
