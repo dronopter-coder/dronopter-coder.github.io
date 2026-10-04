@@ -2,24 +2,26 @@
 // Çevrimdışı birim kontrolleri her zaman çalışır; --live ile Google Haberler/Arkeofili beslemelerinden gerçek haberler çözülür.
 import assert from 'node:assert/strict';
 
-import { decodeGoogleNewsUrl, extractMetaImage, resolveArticleImage } from '../src/services/news-image-core.ts';
+import { decodeGoogleNewsUrl, extractMetaImage, resolveArticleImage, setDebug } from '../src/services/news-image-core.ts';
 
 // ── Birim kontrolleri ──
 assert.equal(
   extractMetaImage('<meta property="og:image" content="https://a.com/x.jpg?a=1&amp;b=2">', 'https://a.com/haber'),
   'https://a.com/x.jpg?a=1&b=2',
 );
-assert.equal(extractMetaImage(`<meta content='/img/k.jpg' property='og:image' />`, 'https://b.com/h/1'), 'https://b.com/img/k.jpg');
+assert.equal(
+  extractMetaImage(`<meta content='/img/k.jpg' property='og:image' />`, 'https://b.com/h/1'),
+  'https://b.com/img/k.jpg',
+);
 assert.equal(extractMetaImage('<meta name="twitter:image" content="//c.com/t.png">', 'https://c.com/'), 'https://c.com/t.png');
 assert.equal(extractMetaImage('<link rel="image_src" href="http://d.com/i.jpg">', 'https://d.com/'), 'https://d.com/i.jpg');
 assert.equal(extractMetaImage('<title>yok</title>', 'https://e.com/'), null);
 console.log('✓ birim kontrolleri');
 
 if (process.argv.includes('--live')) {
+  setDebug((m) => console.log('    · ' + m));
   const rss = await (
-    await fetch(
-      'https://news.google.com/rss/search?q=arkeoloji+OR+%22antik+kent%22+when:7d&hl=tr&gl=TR&ceid=TR:tr',
-    )
+    await fetch('https://news.google.com/rss/search?q=arkeoloji+OR+%22antik+kent%22+when:7d&hl=tr&gl=TR&ceid=TR:tr')
   ).text();
   const links = [...rss.matchAll(/<item>[\s\S]*?<link>([^<]+)<\/link>/g)].map((m) => m[1]).slice(0, 6);
   // Tanı: ilk haberin Google sayfası nasıl dönüyor?

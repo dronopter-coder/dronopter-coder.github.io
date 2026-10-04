@@ -15,6 +15,10 @@ const decodeAmp = (s: string) =>
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'");
 
+let debug: ((msg: string) => void) | null = null;
+/** Testlerde ara adımları görmek için. */
+export const setDebug = (fn: typeof debug) => (debug = fn);
+
 async function get(url: string, init: RequestInit = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -24,9 +28,13 @@ async function get(url: string, init: RequestInit = {}) {
       signal: controller.signal,
       headers: { 'User-Agent': UA, 'Accept-Language': 'tr-TR,tr;q=0.9', ...(init.headers ?? {}) },
     });
-    if (!res.ok) return null;
-    return { url: res.url || url, text: (await res.text()).slice(0, MAX_HTML) };
-  } catch {
+    if (!res.ok) {
+      debug?.(`HTTP ${res.status} ← ${url.slice(0, 90)}`);
+      return null;
+    }
+    return { url: res.url || url, text: await res.text() };
+  } catch (e) {
+    debug?.(`hata ${(e as Error).message} ← ${url.slice(0, 90)}`);
     return null;
   } finally {
     clearTimeout(timer);
@@ -75,13 +83,17 @@ export const isGoogleNewsLink = (link: string) => GN_RE.test(link);
 export async function decodeGoogleNewsUrl(link: string): Promise<string | null> {
   const id = link.match(GN_RE)?.[1];
   if (!id) return null;
-  const page = await get(`https://news.google.com/articles/${id}?hl=tr&gl=TR&ceid=TR:tr`);
+  // rss/articles sayfası daha küçüktür; imza ve zaman damgası sayfanın sonlarına doğru yer alır.
+  const page = await get(`https://news.google.com/rss/articles/${id}`);
   if (!page) return null;
   // Bazı durumlarda sayfa doğrudan makaleye yönlenir.
   if (!/news\.google\.com/.test(page.url)) return page.url;
   const sig = page.text.match(/data-n-a-sg="([^"]+)"/)?.[1];
   const ts = page.text.match(/data-n-a-ts="([^"]+)"/)?.[1];
-  if (!sig || !ts) return null;
+  if (!sig || !ts) {
+    debug?.('imza bulunamadı');
+    return null;
+  }
   const inner = JSON.stringify([
     'garturlreq',
     [
@@ -113,7 +125,8 @@ export async function decodeGoogleNewsUrl(link: string): Promise<string | null> 
     const payload = JSON.parse(chunk)[0][2];
     const url = JSON.parse(payload)[1];
     return typeof url === 'string' && /^https?:\/\//.test(url) ? url : null;
-  } catch {
+  } catch (e) {
+    debug?.(`yanıt çözülemedi: ${(e as Error).message} | ${res.text.slice(0, 300)}`);
     return null;
   }
 }
@@ -124,7 +137,7 @@ export async function resolveArticleImage(link: string): Promise<string | null> 
   if (!article) return null;
   const page = await get(article, { headers: { Accept: 'text/html' } });
   if (!page) return null;
-  const img = extractMetaImage(page.text, page.url);
+  const img = extractMetaImage(page.text.slice(0, MAX_HTML), page.url);
   // Site logoları/varsayılan paylaşım görselleri haber görseli değildir.
   if (!img || /logo|favicon|default[-_]?(share|og)|placeholder/i.test(img)) return null;
   return img;
