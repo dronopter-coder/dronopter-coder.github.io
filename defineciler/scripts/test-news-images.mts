@@ -22,6 +22,17 @@ if (process.argv.includes('--live')) {
     )
   ).text();
   const links = [...rss.matchAll(/<item>[\s\S]*?<link>([^<]+)<\/link>/g)].map((m) => m[1]).slice(0, 6);
+  // Tanı: ilk haberin Google sayfası nasıl dönüyor?
+  const id = links[0]?.match(/articles\/([^?]+)/)?.[1];
+  for (const u of [`https://news.google.com/articles/${id}`, `https://news.google.com/rss/articles/${id}`]) {
+    const r = await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) Chrome/126.0 Mobile' } });
+    const t = await r.text();
+    console.log(
+      `tanı ${u.slice(0, 60)}… → HTTP ${r.status}, son adres ${r.url.slice(0, 80)}, ` +
+        `sg=${/data-n-a-sg=/.test(t)} ts=${/data-n-a-ts=/.test(t)} uzunluk=${t.length}`,
+    );
+    if (!/data-n-a-sg=/.test(t)) console.log(t.slice(0, 600).replace(/\s+/g, ' '));
+  }
   let decoded = 0;
   let images = 0;
   for (const link of links) {
