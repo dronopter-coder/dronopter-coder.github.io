@@ -2,7 +2,11 @@ name: Defineciler varlık indir
 
 # Verilen adres(ler)den bir görseli indirip dala kaydeder (ör. Canva'da üretilen görseller).
 # Adresler boşlukla ayrılır; ilk başarılı ve en büyük dosya kullanılır.
+# Tetikleme: .github/asset-request.json dosyası ({"urls": [...], "out": "..."}) güncellenip push'lanır.
 on:
+  push:
+    paths:
+      - '.github/asset-request.json'
   workflow_dispatch:
     inputs:
       urls:
@@ -20,10 +24,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: İndir
-        env:
-          URLS: ${{ github.event.inputs.urls }}
-          OUT: ${{ github.event.inputs.out }}
         run: |
+          if [ -n "${{ github.event.inputs.out }}" ]; then
+            URLS='${{ github.event.inputs.urls }}'; OUT='${{ github.event.inputs.out }}'
+          else
+            URLS=$(python3 -c "import json;print(' '.join(json.load(open('.github/asset-request.json'))['urls']))")
+            OUT=$(python3 -c "import json;print(json.load(open('.github/asset-request.json'))['out'])")
+          fi
+          echo "OUT=$OUT" >> "$GITHUB_ENV"
           mkdir -p "$(dirname "$OUT")"
           best=0; i=0
           for u in $URLS; do
@@ -37,8 +45,6 @@ jobs:
           test -f "$OUT"
           identify "$OUT"
       - name: Dala kaydet
-        env:
-          OUT: ${{ github.event.inputs.out }}
         run: |
           git add "$OUT"
           git diff --cached --quiet && exit 0
