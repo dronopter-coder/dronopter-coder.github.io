@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   hero: { height: 360, justifyContent: 'flex-end', backgroundColor: Colors.surface },
   heroText: { padding: Spacing.lg, gap: Spacing.sm },
-  title: { fontFamily: Fonts.serif, fontSize: 28, fontWeight: '700', color: Colors.text, lineHeight: 34 },
+  title: { fontFamily: Fonts.serif, fontSize: 28, color: Colors.text, lineHeight: 34 },
   body: { paddingHorizontal: Spacing.lg, gap: Spacing.lg },
   facts: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.md },
   fact: {

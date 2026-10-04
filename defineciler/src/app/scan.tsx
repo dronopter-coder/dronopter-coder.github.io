@@ -17,9 +17,10 @@ import Animated, {
 import { Button, Card, Notice } from '@/components/ui';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { useRemainingScans } from '@/hooks/use-quota';
-import { adsReady, initAds, maybeShowInterstitial, rewardedConfigured, showRewarded } from '@/services/ads';
+import { adsReady, initAds, maybeShowInterstitial, rewardedConfigured, showRewarded, warmUpRewarded } from '@/services/ads';
 import { analyzeArtifact, ApiError } from '@/services/api';
-import { addBonusScans, consumeScan } from '@/services/quota';
+import { addBonusScans, consumeScan, grantFallbackBonus } from '@/services/quota';
+import { playDone, playError, startScanLoop, stopScanLoop } from '@/services/sfx';
 import { saveScan } from '@/storage/history';
 
 const MESSAGES = [
@@ -68,10 +69,17 @@ export default function ScanScreen() {
 
   const noQuota = remaining !== null && remaining <= 0;
 
+  // Hak azaldığında ödüllü reklamı önceden yüklemeye başla; ekrandan çıkınca tarama sesini durdur.
+  useEffect(() => {
+    if (remaining !== null && remaining <= 1) initAds().then(warmUpRewarded);
+  }, [remaining]);
+  useEffect(() => () => stopScanLoop(), []);
+
   async function analyze() {
     if (!params.uri || busy) return;
     setBusy(true);
     setError(null);
+    startScanLoop();
     try {
       const { result, processedUri } = await analyzeArtifact({
         uri: params.uri,
@@ -82,10 +90,13 @@ export default function ScanScreen() {
       await consumeScan();
       const record = await saveScan({ imageUri: processedUri, note: note.trim() || undefined, result });
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      await playDone();
+      await new Promise((r) => setTimeout(r, 700));
       await maybeShowInterstitial();
       router.replace({ pathname: '/result/[id]', params: { id: record.id } });
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.');
+      playError();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
     } finally {
       setBusy(false);
@@ -96,12 +107,19 @@ export default function ScanScreen() {
     setRewardBusy(true);
     try {
       await initAds();
-      // Reklam onayı verilmemiş/AdMob kullanılamıyorsa kullanıcıyı bekletmeden hak ver (sunucu tarafı sınır yine geçerlidir).
-      const earned = adsReady() && rewardedConfigured() ? await showRewarded() : true;
-      if (earned) {
+      const canShow = adsReady() && rewardedConfigured();
+      const outcome = canShow ? await showRewarded() : 'unavailable';
+      if (outcome === 'earned') {
         await addBonusScans(1);
+      } else if (outcome === 'dismissed') {
+        Alert.alert('Ödül alınamadı', 'Ek hak için reklamı sonuna kadar izlemeniz gerekiyor.');
+      } else if (await grantFallbackBonus()) {
+        Alert.alert('Bu analiz bizden 🎁', 'Şu an gösterilecek reklam bulunamadı. Size hediye +1 analiz hakkı tanımlandı.');
       } else {
-        Alert.alert('Reklam şu anda hazır değil', 'Lütfen biraz sonra tekrar deneyin.');
+        Alert.alert(
+          'Bugünlük hediye haklarınız bitti',
+          'Şu an gösterilecek reklam yok. Birkaç dakika sonra tekrar deneyebilir veya yarın yenilenen ücretsiz haklarınızı kullanabilirsiniz.',
+        );
       }
     } finally {
       setRewardBusy(false);
@@ -151,6 +169,7 @@ export default function ScanScreen() {
               icon="play-circle-outline"
               onPress={watchAd}
               loading={rewardBusy}
+              loadingLabel="Reklam hazırlanıyor…"
               style={{ alignSelf: 'stretch' }}
             />
           </Card>
@@ -217,7 +236,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   overlayText: { color: Colors.text, fontWeight: '600', fontSize: 13 },
-  label: { color: Colors.goldLight, fontWeight: '700', fontSize: 14, fontFamily: Fonts.serif },
+  label: { color: Colors.goldLight, fontSize: 14, fontFamily: Fonts.serif },
   input: {
     minHeight: 80,
     color: Colors.text,

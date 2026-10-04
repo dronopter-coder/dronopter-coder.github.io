@@ -59,3 +59,25 @@ export async function addBonusScans(n = 1) {
   s.bonus += n;
   await write(s);
 }
+
+/** Reklam bulunamadığında verilen hediye hak sınırı (günlük). */
+export const DAILY_FALLBACK_GIFTS = 3;
+const GIFT_KEY = 'quota:gifts:v1';
+
+/**
+ * Ödüllü reklam gösterilemediğinde kullanıcıyı bekletmemek için hediye +1 hak verir.
+ * Günde en fazla DAILY_FALLBACK_GIFTS kez; verildiyse true döner.
+ */
+export async function grantFallbackBonus(): Promise<boolean> {
+  let state = { day: today(), count: 0 };
+  try {
+    const raw = await AsyncStorage.getItem(GIFT_KEY);
+    const s = raw ? (JSON.parse(raw) as typeof state) : null;
+    if (s && s.day === today()) state = s;
+  } catch {}
+  if (state.count >= DAILY_FALLBACK_GIFTS) return false;
+  state.count += 1;
+  await AsyncStorage.setItem(GIFT_KEY, JSON.stringify(state)).catch(() => {});
+  await addBonusScans(1);
+  return true;
+}

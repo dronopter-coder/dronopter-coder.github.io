@@ -1,7 +1,0 @@
-{
-  "urls": [
-    "https://media.canva.com/v2/image-resize/format:JPG/height:1456/quality:92/uri:ifs%3A%2F%2FM%2F1ab39f35-0638-49e1-8558-076a49869ffa/watermark:F/width:1088?csig=AAAAAAAAAAAAAAAAAAAAABTxgYK9eNOtEj8COBCrbdaPc4YMTmYdvsAy7JY73SCE&exp=1791120877&osig=AAAAAAAAAAAAAAAAAAAAAAxSQF9ykcBND2sawxHPjb9ITJida2y9mv20CPSK5PAU&signer=media-rpc&token=AAIAAU0AJDFhYjM5ZjM1LTA2MzgtNDllMS04NTU4LTA3NmE0OTg2OWZmYQAAAAABoQcfpcgG0IwG8RELdbjIxiC7u0GqGlTtPtKeoDcrquAoXVbMrQ",
-    "https://media.canva.com/v2/image-resize/format:JPG/height:200/quality:75/uri:ifs%3A%2F%2FM%2F1ab39f35-0638-49e1-8558-076a49869ffa/watermark:F/width:149?csig=AAAAAAAAAAAAAAAAAAAAABTxgYK9eNOtEj8COBCrbdaPc4YMTmYdvsAy7JY73SCE&exp=1791120877&osig=AAAAAAAAAAAAAAAAAAAAAAxSQF9ykcBND2sawxHPjb9ITJida2y9mv20CPSK5PAU&signer=media-rpc&token=AAIAAU0AJDFhYjM5ZjM1LTA2MzgtNDllMS04NTU4LTA3NmE0OTg2OWZmYQAAAAABoQcfpcgG0IwG8RELdbjIxiC7u0GqGlTtPtKeoDcrquAoXVbMrQ&x-canva-quality=thumbnail"
-  ],
-  "out": "defineciler/assets/hero/canva-hero.jpg"
-}

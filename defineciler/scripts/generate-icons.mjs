@@ -2,20 +2,21 @@
 import { Resvg } from '@resvg/resvg-js';
 import { readFileSync, writeFileSync } from 'node:fs';
 
-const emblem = readFileSync(new URL('../assets/source/emblem.svg', import.meta.url), 'utf8');
-const inner = emblem.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
-const BG = '#14100C';
+// Önce amblemi üretin: node scripts/build-emblem.mjs
+const strip = (svg) => svg.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+const inner = strip(readFileSync(new URL('../assets/source/emblem.svg', import.meta.url), 'utf8'));
+const innerMono = strip(readFileSync(new URL('../assets/source/emblem-mono.svg', import.meta.url), 'utf8'));
+const BG = '#121D19';
 
 /** Amblemi verilen kenar boşluğuyla kare bir tuvale yerleştirir. */
 function compose({ size, scale, background, mono = false, glow = false }) {
   const s = 100 * scale;
   const off = (100 - s) / 2;
-  let body = inner;
-  if (mono) body = body.replace(/fill="url\(#coin\)"/g, 'fill="#000"').replace(/#7A5418|#F3E9DA/g, '#000');
+  const body = mono ? innerMono : inner;
   const bg = background
     ? `<rect width="100" height="100" fill="${background}"/>` +
       (glow
-        ? `<defs><radialGradient id="g" cx="0.45" cy="0.45" r="0.6"><stop offset="0" stop-color="#5A4422"/><stop offset="1" stop-color="${background}"/></radialGradient></defs><rect width="100" height="100" fill="url(#g)"/>`
+        ? `<defs><radialGradient id="g" cx="0.45" cy="0.45" r="0.6"><stop offset="0" stop-color="#3A3418"/><stop offset="1" stop-color="${background}"/></radialGradient></defs><rect width="100" height="100" fill="url(#g)"/>`
         : '')
     : '';
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="${size}" height="${size}">${bg}<g transform="translate(${off} ${off}) scale(${scale})">${body}</g></svg>`;

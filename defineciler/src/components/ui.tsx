@@ -64,11 +64,13 @@ type ButtonProps = {
   icon?: IconName;
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   loading?: boolean;
+  /** Yüklenirken dönen simgenin yanında gösterilecek metin */
+  loadingLabel?: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
-export function Button({ title, onPress, icon, variant = 'primary', loading, disabled, style }: ButtonProps) {
+export function Button({ title, onPress, icon, variant = 'primary', loading, loadingLabel, disabled, style }: ButtonProps) {
   const fg =
     variant === 'primary'
       ? Colors.onGold
@@ -93,7 +95,10 @@ export function Button({ title, onPress, icon, variant = 'primary', loading, dis
         style,
       ]}>
       {loading ? (
-        <ActivityIndicator color={fg} />
+        <>
+          <ActivityIndicator color={fg} />
+          {loadingLabel && <Text style={[styles.buttonText, { color: fg }]}>{loadingLabel}</Text>}
+        </>
       ) : (
         <>
           {icon && <MaterialCommunityIcons name={icon} size={20} color={fg} />}
@@ -143,7 +148,6 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: Fonts.serif,
     fontSize: 26,
-    fontWeight: '700',
     color: Colors.text,
     letterSpacing: 0.3,
   },
@@ -151,7 +155,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontFamily: Fonts.serif,
     fontSize: 17,
-    fontWeight: '700',
     color: Colors.goldLight,
     letterSpacing: 0.3,
   },
@@ -200,7 +203,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
   },
-  emptyTitle: { fontFamily: Fonts.serif, fontSize: 18, fontWeight: '700', color: Colors.text, textAlign: 'center' },
+  emptyTitle: { fontFamily: Fonts.serif, fontSize: 18, color: Colors.text, textAlign: 'center' },
   notice: {
     flexDirection: 'row',
     gap: Spacing.sm,

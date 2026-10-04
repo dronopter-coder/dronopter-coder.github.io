@@ -78,6 +78,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.surface,
   },
   cardBody: { padding: Spacing.md, paddingTop: Spacing.xl, gap: 4 },
-  title: { color: Colors.text, fontFamily: Fonts.serif, fontWeight: '700', fontSize: 16 },
+  title: { color: Colors.text, fontFamily: Fonts.serif, fontSize: 16 },
   subtitle: { color: Colors.textMuted, fontSize: 12, lineHeight: 17 },
 });

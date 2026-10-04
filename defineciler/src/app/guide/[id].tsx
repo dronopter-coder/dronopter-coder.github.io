@@ -68,6 +68,6 @@ export default function GuideTopicScreen() {
 const styles = StyleSheet.create({
   hero: { height: 200 },
   body: { padding: Spacing.lg, gap: Spacing.lg },
-  title: { color: Colors.text, fontFamily: Fonts.serif, fontSize: 28, fontWeight: '700' },
+  title: { color: Colors.text, fontFamily: Fonts.serif, fontSize: 28 },
   subtitle: { color: Colors.textSecondary, fontSize: 15 },
 });

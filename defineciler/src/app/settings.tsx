@@ -1,16 +1,22 @@
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
-import { Alert, Linking, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Alert, Linking, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { LogoMark } from '@/components/logo';
 import { Body, Button, Card, SectionTitle } from '@/components/ui';
 import { APP_NAME, CONTACT_EMAIL, DAILY_FREE_SCANS, PRIVACY_URL } from '@/constants/config';
 import { Colors, Fonts, Spacing } from '@/constants/theme';
 import { showPrivacyOptions } from '@/services/ads';
+import { getSfxEnabled, setSfxEnabled } from '@/services/sfx';
 import { clearScans } from '@/storage/history';
 
 export default function SettingsScreen() {
   const version = Constants.expoConfig?.version ?? '1.0.0';
+  const [sfx, setSfx] = useState(true);
+  useEffect(() => {
+    getSfxEnabled().then(setSfx);
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
@@ -27,6 +33,24 @@ export default function SettingsScreen() {
           {DAILY_FREE_SCANS} ücretsiz analiz hakkınız vardır; reklam izleyerek ek hak kazanabilirsiniz. Yapay zeka sonuçları
           tahmini niteliktedir ve uzman görüşünün yerini tutmaz.
         </Body>
+      </Card>
+
+      <Card style={styles.row}>
+        <View style={{ flex: 1 }}>
+          <SectionTitle icon="volume-high" style={{ marginBottom: 2 }}>
+            Ses efektleri
+          </SectionTitle>
+          <Text style={styles.rowHint}>Tarama sırasında analiz sesi ve sonuç zili</Text>
+        </View>
+        <Switch
+          value={sfx}
+          onValueChange={(v) => {
+            setSfx(v);
+            setSfxEnabled(v);
+          }}
+          trackColor={{ true: Colors.goldDark, false: Colors.border }}
+          thumbColor={sfx ? Colors.goldLight : Colors.textMuted}
+        />
       </Card>
 
       <Card style={{ gap: Spacing.md }}>
@@ -93,6 +117,8 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   content: { padding: Spacing.lg, gap: Spacing.lg, paddingBottom: Spacing.xxl },
   brand: { alignItems: 'center', gap: 6, paddingVertical: Spacing.lg },
-  name: { fontFamily: Fonts.serif, fontSize: 28, fontWeight: '700', color: Colors.goldLight },
+  name: { fontFamily: Fonts.serif, fontSize: 28, color: Colors.goldLight },
   version: { color: Colors.textMuted, fontSize: 13 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  rowHint: { color: Colors.textMuted, fontSize: 12 },
 });

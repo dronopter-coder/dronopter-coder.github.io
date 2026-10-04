@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
   },
   thumb: { width: 72, height: 72, borderRadius: Radius.md, backgroundColor: Colors.surfaceRaised },
-  title: { color: Colors.text, fontFamily: Fonts.serif, fontSize: 16, fontWeight: '700' },
+  title: { color: Colors.text, fontFamily: Fonts.serif, fontSize: 16 },
   sub: { color: Colors.textSecondary, fontSize: 13 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   dot: { width: 8, height: 8, borderRadius: 4 },

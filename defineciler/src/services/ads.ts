@@ -68,11 +68,39 @@ function preloadInterstitial() {
   interstitial.load();
 }
 
+type RewardedState = 'idle' | 'loading' | 'loaded' | 'failed';
+let rewardedState: RewardedState = 'idle';
+let rewardedRetry: ReturnType<typeof setTimeout> | null = null;
+let rewardedAttempts = 0;
+const RETRY_DELAYS = [5_000, 15_000, 45_000, 120_000];
+
+/** Ödüllü reklamı yükler; yüklenemezse artan aralıklarla (5 sn → 2 dk) yeniden dener. */
 function preloadRewarded() {
   if (!canRequestAds) return;
+  if (rewardedRetry) clearTimeout(rewardedRetry);
+  rewardedRetry = null;
   rewarded?.removeAllListeners();
-  rewarded = RewardedInterstitialAd.createForAdRequest(AD_UNITS.rewarded);
-  rewarded.load();
+  const ad = RewardedInterstitialAd.createForAdRequest(AD_UNITS.rewarded);
+  rewarded = ad;
+  rewardedState = 'loading';
+  ad.addAdEventListener(RewardedAdEventType.LOADED, () => {
+    rewardedState = 'loaded';
+    rewardedAttempts = 0;
+  });
+  ad.addAdEventListener(AdEventType.ERROR, (e) => {
+    if (rewarded !== ad || rewardedState === 'loaded') return;
+    rewardedState = 'failed';
+    if (__DEV__) console.warn('Ödüllü reklam yüklenemedi', e);
+    const delay = RETRY_DELAYS[Math.min(rewardedAttempts++, RETRY_DELAYS.length - 1)];
+    rewardedRetry = setTimeout(preloadRewarded, delay);
+  });
+  ad.load();
+}
+
+/** Hak bitmek üzereyken / tarama ekranı açılınca çağrılır: reklam hazır değilse yüklemeyi başlatır. */
+export function warmUpRewarded() {
+  if (!canRequestAds) return;
+  if (rewardedState === 'failed' || rewardedState === 'idle') preloadRewarded();
 }
 
 /**
@@ -103,47 +131,41 @@ export async function maybeShowInterstitial(): Promise<void> {
   lastInterstitialAt = Date.now();
 }
 
-export const rewardedAvailable = () => !!rewarded?.loaded;
+export const rewardedAvailable = () => rewardedState === 'loaded';
 
 /** Yayın sürümünde ödüllü reklam birimi henüz tanımlı değilse reklam gösterilmeden hak verilir. */
 export const rewardedConfigured = () => __DEV__ || !isPlaceholder(PRODUCTION_AD_UNITS.rewarded);
 
-/**
- * Ödüllü reklamı gösterir. Kullanıcı ödülü kazandıysa true döner.
- * Reklam henüz yüklenmediyse yüklenmesini en fazla 8 sn bekler.
- */
-export async function showRewarded(): Promise<boolean> {
-  if (!canRequestAds) return false;
-  if (!rewarded) preloadRewarded();
-  const ad = rewarded!;
+export type RewardOutcome = 'earned' | 'dismissed' | 'unavailable';
 
-  if (!ad.loaded) {
+/**
+ * Ödüllü reklamı gösterir. Reklam hazır değilse yüklenmesini en fazla 15 sn bekler.
+ * - earned: kullanıcı ödülü kazandı
+ * - dismissed: reklam açıldı ama sonuna kadar izlenmedi
+ * - unavailable: gösterilecek reklam bulunamadı (yeni hesaplarda sık görülür)
+ */
+export async function showRewarded(): Promise<RewardOutcome> {
+  if (!canRequestAds) return 'unavailable';
+  if (rewardedState !== 'loaded' && rewardedState !== 'loading') preloadRewarded();
+  const ad = rewarded;
+  if (!ad) return 'unavailable';
+
+  if (rewardedState !== 'loaded') {
     const loaded = await new Promise<boolean>((resolve) => {
-      const timer = setTimeout(() => {
-        offLoaded();
-        offError();
-        resolve(false);
-      }, 8000);
-      const offLoaded = ad.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      const timer = setTimeout(() => done(false), 15_000);
+      const offLoaded = ad.addAdEventListener(RewardedAdEventType.LOADED, () => done(true));
+      const offError = ad.addAdEventListener(AdEventType.ERROR, () => done(false));
+      function done(v: boolean) {
         clearTimeout(timer);
         offLoaded();
         offError();
-        resolve(true);
-      });
-      const offError = ad.addAdEventListener(AdEventType.ERROR, () => {
-        clearTimeout(timer);
-        offLoaded();
-        offError();
-        resolve(false);
-      });
+        resolve(v);
+      }
     });
-    if (!loaded) {
-      preloadRewarded();
-      return false;
-    }
+    if (!loaded) return 'unavailable';
   }
 
-  const earned = await new Promise<boolean>((resolve) => {
+  const outcome = await new Promise<RewardOutcome>((resolve) => {
     let gotReward = false;
     const offReward = ad.addAdEventListener(RewardedAdEventType.EARNED_REWARD, () => {
       gotReward = true;
@@ -151,16 +173,17 @@ export async function showRewarded(): Promise<boolean> {
     const offClosed = ad.addAdEventListener(AdEventType.CLOSED, () => {
       offReward();
       offClosed();
-      resolve(gotReward);
+      resolve(gotReward ? 'earned' : 'dismissed');
     });
     ad.show().catch(() => {
       offReward();
       offClosed();
-      resolve(false);
+      resolve('unavailable');
     });
   });
+  rewardedState = 'idle';
   preloadRewarded();
-  return earned;
+  return outcome;
 }
 
 /** Ayarlar ekranından gizlilik/onay seçeneklerini yeniden açar. */

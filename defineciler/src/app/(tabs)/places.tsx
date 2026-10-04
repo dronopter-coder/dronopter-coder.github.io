@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   cardBody: { padding: Spacing.lg, gap: 6 },
   cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cardArea: { color: Colors.gold, fontSize: 11, fontWeight: '800', letterSpacing: 1 },
-  cardTitle: { color: Colors.text, fontFamily: Fonts.serif, fontSize: 21, fontWeight: '700' },
+  cardTitle: { color: Colors.text, fontFamily: Fonts.serif, fontSize: 21 },
   cardSummary: { color: Colors.textSecondary, fontSize: 14, lineHeight: 20 },
   cardMeta: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
   cardMetaText: { color: Colors.textMuted, fontSize: 12 },

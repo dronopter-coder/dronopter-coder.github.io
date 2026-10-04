@@ -5,5 +5,7 @@ export const adsReady = () => false;
 export const maybeShowInterstitial = async () => {};
 export const rewardedAvailable = () => false;
 export const rewardedConfigured = () => false;
-export const showRewarded = async () => true;
+export type RewardOutcome = 'earned' | 'dismissed' | 'unavailable';
+export const showRewarded = async (): Promise<RewardOutcome> => 'earned';
+export const warmUpRewarded = () => {};
 export const showPrivacyOptions = async () => {};

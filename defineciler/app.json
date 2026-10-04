@@ -7,14 +7,14 @@
     "icon": "./assets/images/icon.png",
     "scheme": "defineciler",
     "userInterfaceStyle": "dark",
-    "backgroundColor": "#14100C",
+    "backgroundColor": "#121D19",
     "primaryColor": "#D4A24C",
     "description": "Yapay zeka ile tarihi eser tanımlama: fotoğrafını çek, dönemini, uygarlığını ve içeriğini öğren.",
     "android": {
       "package": "com.dronopter.defineciler",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#14100C",
+        "backgroundColor": "#121D19",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -41,7 +41,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#14100C",
+          "backgroundColor": "#121D19",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 180
         }

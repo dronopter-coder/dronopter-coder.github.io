@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   hero: { height: 240 },
   body: { padding: Spacing.lg, gap: Spacing.lg },
   area: { color: Colors.gold, fontSize: 12, fontWeight: '800', letterSpacing: 1 },
-  title: { color: Colors.text, fontFamily: Fonts.serif, fontSize: 30, fontWeight: '700' },
+  title: { color: Colors.text, fontFamily: Fonts.serif, fontSize: 30 },
   densityRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   densityLabel: { color: Colors.textMuted, fontSize: 13 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
