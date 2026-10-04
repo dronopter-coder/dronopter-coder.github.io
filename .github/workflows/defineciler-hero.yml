@@ -1,0 +1,40 @@
+name: Defineciler ana sayfa görseli
+
+# Gemini görsel modeliyle ana sayfa kahraman görseli adayları üretir ve dala kaydeder.
+on:
+  push:
+    paths:
+      - '.github/workflows/defineciler-hero.yml'
+      - '.github/scripts/generate-hero.mjs'
+  workflow_dispatch:
+
+jobs:
+  hero:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Görselleri üret
+        run: node .github/scripts/generate-hero.mjs raw 4
+      - name: JPEG'e çevir (1080px)
+        run: |
+          mkdir -p defineciler/assets/hero/candidates
+          for f in raw/*; do
+            n=$(basename "${f%.*}")
+            convert "$f" -resize 1080x -strip -quality 82 "defineciler/assets/hero/candidates/$n.jpg"
+          done
+          ls -la defineciler/assets/hero/candidates
+      - name: Dala kaydet
+        run: |
+          git add defineciler/assets/hero/candidates
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Ana sayfa görseli adayları (Gemini)"
+          git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"
