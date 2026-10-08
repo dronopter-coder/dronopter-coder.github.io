@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 
 /**
- * Tarama ses efektleri: analiz sırasında döngüde çalan "tarayıcı" sesi, sonuç ve hata sesleri.
+ * Ses efektleri: analiz sırasında döngüde çalan "tarayıcı" sesi, sonuç/hata sesleri ve kamera geçişi sesleri.
  * Ses ayarı kapalıysa hiçbir şey çalmaz. Sesler scripts/generate-sounds.mjs ile sentezlenir.
  */
 const KEY = 'settings:sfx';
@@ -12,6 +12,8 @@ let ready = false;
 let loopPlayer: AudioPlayer | null = null;
 let donePlayer: AudioPlayer | null = null;
 let errorPlayer: AudioPlayer | null = null;
+let rollPlayer: AudioPlayer | null = null;
+let portalPlayer: AudioPlayer | null = null;
 
 async function ensure() {
   if (ready) return;
@@ -27,6 +29,8 @@ async function ensure() {
   loopPlayer.volume = 0.7;
   donePlayer = createAudioPlayer(require('../../assets/sounds/scan-done.m4a'));
   errorPlayer = createAudioPlayer(require('../../assets/sounds/scan-error.m4a'));
+  rollPlayer = createAudioPlayer(require('../../assets/sounds/roll.m4a'));
+  portalPlayer = createAudioPlayer(require('../../assets/sounds/portal.m4a'));
 }
 
 /** Uygulama açılışında oynatıcıları önceden hazırlar. */
@@ -76,4 +80,16 @@ export async function playDone() {
 export async function playError() {
   stopScanLoop();
   if (enabled) await playOnce(errorPlayer);
+}
+
+/** Ana sayfadaki mührün yuvarlanma sesi. */
+export async function playRoll() {
+  await ensure();
+  if (enabled) await playOnce(rollPlayer);
+}
+
+/** Kamera açılırken boyut kapısı sesi. */
+export async function playPortal() {
+  await ensure();
+  if (enabled) await playOnce(portalPlayer);
 }

@@ -210,7 +210,7 @@ export const GUIDE: GuideTopic[] = [
       },
       {
         heading: 'Uygulamada kullanmak',
-        body: 'Bir kaya işaretinin fotoğrafını çekip tarattığınızda yapay zeka, işaretin insan yapımı mı doğal mı olduğunu ve tarihsel olarak neyle ilişkili olabileceğini değerlendirir.',
+        body: 'Bir kaya işaretinin fotoğrafını çekip tarattığınızda Defineciler, işaretin insan yapımı mı doğal mı olduğunu ve tarihsel olarak neyle ilişkili olabileceğini değerlendirir.',
       },
     ],
   },
@@ -273,7 +273,7 @@ export const GUIDE: GuideTopic[] = [
   {
     id: 'fotograf',
     title: 'İyi Fotoğraf Nasıl Çekilir?',
-    subtitle: 'Yapay zekadan en doğru sonucu almak için',
+    subtitle: 'Defineciler’den en doğru sonucu almak için',
     icon: 'camera-iris',
     photo: ['en:Excavation (archaeology)', 'en:Archaeology', 'en:Archaeological field survey'],
     accent: '#C08B5C',

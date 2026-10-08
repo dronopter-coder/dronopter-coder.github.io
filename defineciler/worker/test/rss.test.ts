@@ -53,6 +53,20 @@ describe('mergeItems', () => {
     expect(merged[0].source).toBe('Arkeofili');
     expect(merged.find((i) => i.title.startsWith('Göbekli'))?.image).toBe('https://img/x.jpg');
   });
+
+  it('farklı başlıklarla verilen aynı olayı birleştirir, farklı olayları ayırır', () => {
+    const base = { link: 'https://x', summary: '', image: null, publishedAt: '2026-10-08T10:00:00Z' };
+    const merged = mergeItems([
+      [
+        { ...base, title: 'Anamur’da tarihi eser kaçakçılığı operasyonu', source: 'A' },
+        { ...base, title: "Mersin Anamur'da tarihi eser satmak isteyen şüpheli yakalandı, 6 obje ele geçirildi", source: 'B' },
+        { ...base, title: 'Anamur’da tarihi eser operasyonu: 6 obje ele geçirildi', source: 'C' },
+        { ...base, title: "İzmir'de tarihi eser operasyonu: 3 obje ele geçirildi", source: 'D' },
+      ],
+    ]);
+    expect(merged).toHaveLength(2);
+    expect(merged.find((i) => i.source !== 'D')?.alsoIn).toHaveLength(2);
+  });
 });
 
 it('decodeEntities', () => {

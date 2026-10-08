@@ -35,6 +35,8 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit
       - run: npx expo lint
+      - name: Haber tekrarı testi
+        run: node --experimental-strip-types scripts/test-news-dedupe.mts
       - name: Worker testleri
         working-directory: defineciler/worker
         run: |

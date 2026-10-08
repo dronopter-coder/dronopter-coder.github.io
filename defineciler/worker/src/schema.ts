@@ -120,4 +120,5 @@ Kurallar:
 - Parasal değer veya satış fiyatı belirtme. Eser ticareti Türkiye'de yasa dışıdır.
 - Kullanıcıyı izinsiz kazıya yönlendirme.
 - Sikkelerde yazıları (lejant) okumaya çalış, hükümdar/darphane tespiti yap.
-- Fotoğraf yetersizse photoTips alanında neyin çekilmesi gerektiğini belirt.`;
+- Fotoğraf yetersizse photoTips alanında neyin çekilmesi gerektiğini belirt.
+- Metinlerde kendinden "yapay zeka", "model" veya "AI" diye söz etme; gerekirse "Defineciler analizi" de.`;

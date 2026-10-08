@@ -9,9 +9,9 @@
     "userInterfaceStyle": "dark",
     "backgroundColor": "#121D19",
     "primaryColor": "#D4A24C",
-    "description": "Yapay zeka ile tarihi eser tanımlama: fotoğrafını çek, dönemini, uygarlığını ve içeriğini öğren.",
+    "description": "Defineciler ile tarihi eserleri tanıyın: fotoğrafını çek, dönemini, uygarlığını ve içeriğini öğren.",
     "android": {
-      "package": "com.dronopter.defineciler",
+      "package": "com.defineciler.app",
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#121D19",
@@ -30,7 +30,7 @@
       "predictiveBackGestureEnabled": false
     },
     "ios": {
-      "bundleIdentifier": "com.dronopter.defineciler"
+      "bundleIdentifier": "com.defineciler.app"
     },
     "web": {
       "output": "single",
@@ -49,7 +49,7 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Eserin fotoğrafını çekip yapay zeka ile analiz edebilmek için kameraya erişim gerekiyor.",
+          "cameraPermission": "Eserin fotoğrafını çekip Defineciler ile analiz edebilmek için kameraya erişim gerekiyor.",
           "photosPermission": "Galerinizdeki eser fotoğraflarını analiz edebilmek için fotoğraflara erişim gerekiyor.",
           "microphonePermission": false
         }
@@ -77,7 +77,7 @@
     "extra": {
       "apiUrl": "",
       "appKey": "defineciler-android-v1",
-      "dailyFreeScans": 3
+      "dailyFreeScans": 2
     },
     "experiments": {
       "typedRoutes": true,

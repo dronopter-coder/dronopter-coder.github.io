@@ -9,3 +9,5 @@ export const startScanLoop = async () => {};
 export const stopScanLoop = () => {};
 export const playDone = async () => {};
 export const playError = async () => {};
+export const playRoll = async () => {};
+export const playPortal = async () => {};

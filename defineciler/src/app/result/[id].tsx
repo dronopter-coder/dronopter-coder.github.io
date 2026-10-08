@@ -8,6 +8,7 @@ import { ActivityIndicator, Alert, Pressable, ScrollView, Share, StyleSheet, Tex
 import { AdBanner } from '@/components/ad-banner';
 import { ConfidenceMeter } from '@/components/confidence-meter';
 import { Body, Bullets, Button, Card, Chip, EmptyState, SectionTitle, type IconName } from '@/components/ui';
+import { APP_SHARE_URL } from '@/constants/config';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { deleteScan, getScan } from '@/storage/history';
 import type { AuthenticityAssessment, ScanRecord, Verdict } from '@/types/analysis';
@@ -50,7 +51,7 @@ function shareText(s: ScanRecord) {
     '',
     r.summary,
     '',
-    'Defineciler uygulaması ile yapay zeka analizi yapıldı.',
+    `🔍 Defineciler uygulaması ile analiz edildi: ${APP_SHARE_URL}`,
   ]
     .filter((x): x is string => typeof x === 'string')
     .join('\n');
@@ -209,7 +210,7 @@ export default function ResultScreen() {
           )}
 
           <Text style={styles.disclaimer}>
-            Bu analiz yapay zeka tarafından fotoğraf üzerinden yapılmış bir tahmindir ve kesinlik taşımaz. Kesin tespit için müze
+            Bu analiz Defineciler tarafından fotoğraf üzerinden yapılmış bir tahmindir ve kesinlik taşımaz. Kesin tespit için müze
             uzmanlarına danışın.
           </Text>
 

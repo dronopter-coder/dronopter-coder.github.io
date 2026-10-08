@@ -61,7 +61,7 @@ export async function addBonusScans(n = 1) {
 }
 
 /** Reklam bulunamadığında verilen hediye hak sınırı (günlük). */
-export const DAILY_FALLBACK_GIFTS = 3;
+export const DAILY_FALLBACK_GIFTS = 2;
 const GIFT_KEY = 'quota:gifts:v1';
 
 /**

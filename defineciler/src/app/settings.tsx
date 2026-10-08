@@ -29,9 +29,9 @@ export default function SettingsScreen() {
       <Card style={{ gap: Spacing.sm }}>
         <SectionTitle icon="information-outline">Hakkında</SectionTitle>
         <Body muted>
-          Defineciler, tarihi eser meraklıları için yapay zeka destekli bir tanımlama ve öğrenme uygulamasıdır. Her gün{' '}
-          {DAILY_FREE_SCANS} ücretsiz analiz hakkınız vardır; reklam izleyerek ek hak kazanabilirsiniz. Yapay zeka sonuçları
-          tahmini niteliktedir ve uzman görüşünün yerini tutmaz.
+          Defineciler, tarihi eser meraklıları için bir tanımlama ve öğrenme uygulamasıdır. Her gün {DAILY_FREE_SCANS} ücretsiz
+          analiz hakkınız vardır; sonrasında her analiz için kısa bir reklam izlenir. Defineciler analizleri tahmini niteliktedir
+          ve uzman görüşünün yerini tutmaz.
         </Body>
       </Card>
 
@@ -56,8 +56,8 @@ export default function SettingsScreen() {
       <Card style={{ gap: Spacing.md }}>
         <SectionTitle icon="shield-account-outline">Gizlilik</SectionTitle>
         <Body muted>
-          Analiz için gönderdiğiniz fotoğraf ve not, yalnızca tanımlama amacıyla Google Gemini yapay zeka servisine iletilir;
-          sunucumuzda saklanmaz. Tarama geçmişiniz yalnızca cihazınızda tutulur. Reklamlar Google AdMob tarafından gösterilir.
+          Analiz için gönderdiğiniz fotoğraf ve not, yalnızca tanımlama amacıyla Google bulut servislerine iletilir; sunucumuzda
+          saklanmaz. Tarama geçmişiniz yalnızca cihazınızda tutulur. Reklamlar Google AdMob tarafından gösterilir.
         </Body>
         <Button
           title="Gizlilik Politikası"
@@ -107,7 +107,7 @@ export default function SettingsScreen() {
         <Body muted>
           Bölge ve rehber fotoğrafları Wikimedia Commons’tan alınmıştır; her fotoğrafın yazarı ve lisansı fotoğrafın üzerinde
           belirtilir. Özetler Wikipedia’dandır (CC BY-SA). Haber başlıkları ilgili yayın kuruluşlarına aittir; habere
-          dokunduğunuzda kaynağın kendi sayfası açılır. Eser analizi Google Gemini yapay zeka modeliyle yapılır.
+          dokunduğunuzda kaynağın kendi sayfası açılır. Eser analizinde Google bulut servisleri kullanılır.
         </Body>
       </Card>
     </ScrollView>

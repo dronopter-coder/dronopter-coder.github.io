@@ -19,7 +19,7 @@ export default function TabsLayout() {
         tabBarStyle: { backgroundColor: Colors.surface, borderTopColor: Colors.border },
         tabBarActiveTintColor: Colors.gold,
         tabBarInactiveTintColor: Colors.textMuted,
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '600', lineHeight: 16 },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '600', lineHeight: 15 },
         sceneStyle: { backgroundColor: Colors.background },
       }}>
       <Tabs.Screen
@@ -32,6 +32,14 @@ export default function TabsLayout() {
           title: 'Bölgeler',
           headerTitle: 'Tarihi Bölgeler',
           tabBarIcon: (p) => <TabIcon name="map-marker-radius" {...p} />,
+        }}
+      />
+      <Tabs.Screen
+        name="documents"
+        options={{
+          title: 'Belgeler',
+          headerTitle: 'Eşkıya Belgeleri',
+          tabBarIcon: (p) => <TabIcon name="script-text-outline" {...p} />,
         }}
       />
       <Tabs.Screen

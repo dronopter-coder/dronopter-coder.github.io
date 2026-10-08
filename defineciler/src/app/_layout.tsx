@@ -55,6 +55,7 @@ export default function RootLayout() {
         <Stack.Screen name="result/[id]" options={{ title: 'Analiz Sonucu' }} />
         <Stack.Screen name="place/[id]" options={{ title: '' }} />
         <Stack.Screen name="guide/[id]" options={{ title: '' }} />
+        <Stack.Screen name="documents/[group]" options={{ title: '' }} />
         <Stack.Screen name="settings" options={{ title: 'Ayarlar ve Hakkında' }} />
       </Stack>
     </ThemeProvider>

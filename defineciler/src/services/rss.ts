@@ -2,6 +2,8 @@
  * Hafif, bağımlılıksız RSS/Atom ayrıştırıcı. Haberler doğrudan cihazdan çekilir
  * (worker/src/rss.ts ile aynı mantık; Hermes uyumlu).
  */
+import { dedupeStories } from '@/services/news-dedupe';
+
 export type FeedItem = {
   title: string;
   link: string;
@@ -9,6 +11,8 @@ export type FeedItem = {
   publishedAt: string | null;
   image: string | null;
   summary: string;
+  /** Aynı haberi veren diğer kaynaklar */
+  alsoIn?: string[];
 };
 
 const ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
@@ -94,25 +98,9 @@ export function parseFeed(xml: string, fallbackSource: string): FeedItem[] {
     .filter((i) => i.title && /^https?:\/\//.test(i.link));
 }
 
-const norm = (t: string) =>
-  t
-    .replace(/İ/g, 'i')
-    .replace(/I/g, 'ı')
-    .toLowerCase()
-    .replace(/[^a-z0-9çğıöşüâîû ]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 60);
-
-/** Aynı haberi farklı kaynaklardan bir kez gösterir, resimli olanı tercih eder, tarihe göre sıralar. */
+/** Aynı olayı anlatan haberleri tek kayda indirir (resimliyi tercih eder) ve tarihe göre sıralar. */
 export function mergeItems(lists: FeedItem[][], limit = 60): FeedItem[] {
-  const map = new Map<string, FeedItem>();
-  for (const item of lists.flat()) {
-    const key = norm(item.title);
-    const prev = map.get(key);
-    if (!prev || (!prev.image && item.image)) map.set(key, item);
-  }
-  return [...map.values()]
+  return dedupeStories(lists.flat())
     .sort((a, b) => (b.publishedAt ? Date.parse(b.publishedAt) : 0) - (a.publishedAt ? Date.parse(a.publishedAt) : 0))
     .slice(0, limit);
 }

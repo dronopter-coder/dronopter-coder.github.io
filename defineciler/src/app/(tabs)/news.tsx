@@ -58,6 +58,7 @@ function NewsCard({ item, featured }: { item: NewsItem; featured?: boolean }) {
         <View style={styles.meta}>
           <Text style={styles.source} numberOfLines={1}>
             {item.source}
+            {item.alsoIn?.length ? <Text style={styles.more}> +{item.alsoIn.length} kaynak</Text> : null}
           </Text>
           <Text style={styles.time}>{timeAgo(item.publishedAt)}</Text>
         </View>
@@ -163,4 +164,5 @@ const styles = StyleSheet.create({
   meta: { flexDirection: 'row', justifyContent: 'space-between', gap: Spacing.sm },
   source: { color: Colors.gold, fontSize: 12, fontWeight: '700', flex: 1 },
   time: { color: Colors.textMuted, fontSize: 12 },
+  more: { color: Colors.textMuted, fontWeight: '600' },
 });

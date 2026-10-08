@@ -1,3 +1,6 @@
+// Haber tekrarı mantığı uygulamayla ortaktır.
+import { dedupeStories } from '../../src/services/news-dedupe';
+
 /** Workers ortamında DOMParser olmadığı için hafif, bağımlılıksız bir RSS/Atom ayrıştırıcı. */
 export type FeedItem = {
   title: string;
@@ -6,6 +9,8 @@ export type FeedItem = {
   publishedAt: string | null;
   image: string | null;
   summary: string;
+  /** Aynı haberi veren diğer kaynaklar */
+  alsoIn?: string[];
 };
 
 const ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
@@ -91,23 +96,9 @@ export function parseFeed(xml: string, fallbackSource: string): FeedItem[] {
     .filter((i) => i.title && /^https?:\/\//.test(i.link));
 }
 
-const norm = (t: string) =>
-  t
-    .toLocaleLowerCase('tr')
-    .replace(/[^\p{L}\p{N} ]/gu, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 60);
-
-/** Aynı haberi farklı kaynaklardan bir kez gösterir, resimli olanı tercih eder, tarihe göre sıralar. */
+/** Aynı olayı anlatan haberleri tek kayda indirir (resimliyi tercih eder) ve tarihe göre sıralar. */
 export function mergeItems(lists: FeedItem[][], limit = 60): FeedItem[] {
-  const map = new Map<string, FeedItem>();
-  for (const item of lists.flat()) {
-    const key = norm(item.title);
-    const prev = map.get(key);
-    if (!prev || (!prev.image && item.image)) map.set(key, item);
-  }
-  return [...map.values()]
+  return dedupeStories(lists.flat())
     .sort((a, b) => (b.publishedAt ? Date.parse(b.publishedAt) : 0) - (a.publishedAt ? Date.parse(a.publishedAt) : 0))
     .slice(0, limit);
 }

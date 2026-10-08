@@ -172,3 +172,60 @@ function save(name, buf) {
   });
   save('scan-error', normalize(reverb(buf, 0.2), 0.7));
 }
+
+// ── 4) Yuvarlanma: taş/kil silindirin zeminde yuvarlanması (gürleme + düzensiz tıkırtılar) ──
+{
+  const len = Math.round(0.85 * SR);
+  const buf = new Float32Array(len);
+  const lp = svf();
+  const bp = svf();
+  let clickEnv = 0;
+  for (let n = 0; n < len; n++) {
+    const t = n / SR;
+    const p = t / 0.85;
+    const env = Math.min(1, t / 0.04) * Math.pow(1 - p, 1.6);
+    const noise = rand() * 2 - 1;
+    // derin gürleme: dönüş hızıyla (≈ 9 → 14 Hz) dalgalanan alçak geçiren gürültü
+    const rumble = lp(noise, 160 + 120 * p, 0.6) * (0.65 + 0.35 * Math.sin(2 * Math.PI * (9 + 5 * p) * t));
+    // yüzey pürüzü tıkırtıları
+    if (rand() < 0.0016 + 0.002 * (1 - p)) clickEnv = 1;
+    clickEnv *= 0.993;
+    const grit = bp(noise, 1800 + rand() * 1200, 0.3) * clickEnv;
+    const thump = Math.sin(2 * Math.PI * 70 * t) * Math.exp(-t * 18) * 0.8;
+    buf[n] = (rumble * 2.2 + grit * 0.55 + thump) * env;
+  }
+  save('roll', normalize(reverb(buf, 0.18), 0.8));
+}
+
+// ── 5) Boyut kapısı: yükselen girdap uğultusu + açılış parıltısı ──
+{
+  const len = Math.round(1.5 * SR);
+  const buf = new Float32Array(len);
+  const bp = svf();
+  const bp2 = svf();
+  let ph1 = 0;
+  let ph2 = 0;
+  for (let n = 0; n < len; n++) {
+    const t = n / SR;
+    const p = t / 1.5;
+    const env = Math.min(1, t / 0.5) * (p < 0.82 ? 1 : Math.max(0, 1 - (p - 0.82) / 0.18));
+    const noise = rand() * 2 - 1;
+    // girdap: hızlanan filtre süpürmesi
+    const swirl = bp(noise, 300 + 3200 * p * p + 400 * Math.sin(2 * Math.PI * (3 + 10 * p) * t), 0.18);
+    const air = bp2(noise, 6000, 0.6) * 0.15 * p;
+    // yükselen iki ton (hafif akortsuz → genişlik)
+    ph1 += (2 * Math.PI * (110 + 330 * p * p)) / SR;
+    ph2 += (2 * Math.PI * (110.8 + 333 * p * p)) / SR;
+    const tone = (Math.sin(ph1) + Math.sin(ph2) + 0.4 * Math.sin(ph1 * 2)) * 0.18;
+    buf[n] = (swirl * 0.9 + air + tone) * env;
+  }
+  // açılış anında parlak "şıng"
+  const hit = 1.05;
+  [1568, 2349.3, 3136, 4186].forEach((f, i) => {
+    for (let n = Math.round(hit * SR); n < len; n++) {
+      const dt = n / SR - hit;
+      buf[n] += Math.sin(2 * Math.PI * f * dt) * Math.exp(-dt * (5 + i)) * 0.22;
+    }
+  });
+  save('portal', normalize(reverb(buf, 0.3), 0.85));
+}

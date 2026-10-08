@@ -5,7 +5,7 @@ import { hashId, mergeItems, parseFeed, type FeedItem } from '@/services/rss';
 
 export type NewsItem = FeedItem & { id: string };
 
-const CACHE_KEY = 'news:cache:v2';
+const CACHE_KEY = 'news:cache:v3';
 
 type Cached = { items: NewsItem[]; updatedAt: string };
 

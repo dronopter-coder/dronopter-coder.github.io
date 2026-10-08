@@ -2,21 +2,22 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, router } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { useRef } from 'react';
+import { Pressable, ScrollView, Share, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { DustField } from '@/components/dust-field';
+import { HeroScene, useCameraTransition } from '@/components/hero-portal';
 import { LogoMark, Wordmark } from '@/components/logo';
+import { MarqueeBanner } from '@/components/marquee-banner';
 import { Sparkle } from '@/components/sparkle';
 import { Button, type IconName } from '@/components/ui';
-import { DAILY_FREE_SCANS } from '@/constants/config';
+import { APP_SHARE_MESSAGE, DAILY_FREE_SCANS } from '@/constants/config';
+import { DOC_GROUPS, DOCS_TITLE } from '@/data/belgeler.generated';
 import { PHOTOS } from '@/data/photos.generated';
 import { Colors, Fonts, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useRemainingScans } from '@/hooks/use-quota';
 import { useScans } from '@/hooks/use-scans';
 import { pickFromGallery, takePhoto, type PickedImage } from '@/services/picker';
-
-const HERO = require('../../../assets/images/home-hero.jpg');
 
 function openScan(img: PickedImage | null) {
   if (!img) return;
@@ -25,7 +26,7 @@ function openScan(img: PickedImage | null) {
 
 const STEPS: { icon: IconName; title: string; text: string }[] = [
   { icon: 'camera-outline', title: 'Çek', text: 'Eseri net ve aydınlık çekin' },
-  { icon: 'brain', title: 'Analiz', text: 'Yapay zeka inceler' },
+  { icon: 'magnify-scan', title: 'Analiz', text: 'Defineciler inceler' },
   { icon: 'script-text-outline', title: 'Öğren', text: 'Dönem, uygarlık, içerik' },
 ];
 
@@ -35,56 +36,51 @@ const EXPLORE: { href: '/places' | '/guide' | '/news'; icon: IconName; title: st
   { href: '/news', icon: 'newspaper-variant-outline', title: 'Haberler', text: 'Güncel kazılar', photo: 'guide:fotograf' },
 ];
 
-/**
- * Kahraman görseli: kare fotoğraf; içindeki hazır cam kartın (x %51–94, y %78–94) üstüne yazılar
- * görselin genişliğine oranlı konumlanır, böylece her ekran boyutunda karta oturur.
- */
-function Hero({ width }: { width: number }) {
-  const W = width;
-  return (
-    <View style={{ width: W, height: W }}>
-      <Image source={HERO} style={StyleSheet.absoluteFill} contentFit="cover" transition={300} />
-      {/* görselin üst kenarını zemine erit */}
-      <LinearGradient colors={[Colors.night, 'transparent']} style={[styles.fade, { height: W * 0.22 }]} />
-      <LinearGradient
-        colors={['transparent', Colors.night]}
-        style={[styles.fade, { top: undefined, bottom: 0, height: W * 0.05 }]}
-      />
-      <DustField />
-      <View style={{ position: 'absolute', left: W * 0.575, top: W * 0.792, right: W * 0.075 }} pointerEvents="none">
-        <Text
-          style={[styles.cardLabel, { fontSize: Math.max(7.5, W * 0.0195), letterSpacing: W * 0.0018 }]}
-          numberOfLines={1}
-          adjustsFontSizeToFit>
-          HER DETAY BİR İPUCU
-        </Text>
-        <Text style={[styles.cardTitle, { fontSize: W * 0.045, lineHeight: W * 0.052, marginTop: W * 0.012 }]} numberOfLines={2}>
-          Görünenden{'\n'}fazlası.
-        </Text>
-      </View>
-    </View>
-  );
-}
-
 export default function ScanHome() {
   const remaining = useRemainingScans();
   const scans = useScans();
   const recent = scans?.slice(0, 8) ?? [];
   const { width } = useWindowDimensions();
   const heroWidth = Math.min(width, MaxContentWidth);
+  const heroRef = useRef<View>(null);
+  const camera = useCameraTransition(heroRef, heroWidth);
+
+  const shootAndScan = async () => {
+    if (!(await camera.run())) return;
+    try {
+      const img = await takePhoto();
+      openScan(img);
+    } finally {
+      camera.restore();
+    }
+  };
+
+  const announce = (
+    <MarqueeBanner
+      label="YENİ"
+      text={`${DOCS_TITLE}  ·  ${DOC_GROUPS.length} bölümde Martin Voyvoda, Manuk Bey ve 32 kişilik çetenin izinde  ·  Okumak için dokunun  ·`}
+      onPress={() => router.push('/documents')}
+    />
+  );
 
   return (
     <View style={styles.screen}>
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
-            <View style={styles.brand}>
-              <LogoMark size={44} />
-              <Wordmark />
+            <LogoMark size={88} />
+            <Wordmark fill />
+            <View style={styles.headerActions}>
+              <Pressable
+                hitSlop={10}
+                accessibilityLabel="Uygulamayı paylaş"
+                onPress={() => Share.share({ message: APP_SHARE_MESSAGE })}>
+                <MaterialCommunityIcons name="share-variant-outline" size={24} color={Colors.sage} />
+              </Pressable>
+              <Pressable hitSlop={10} accessibilityLabel="Ayarlar" onPress={() => router.push('/settings')}>
+                <MaterialCommunityIcons name="cog-outline" size={24} color={Colors.sage} />
+              </Pressable>
             </View>
-            <Pressable hitSlop={12} accessibilityLabel="Ayarlar" onPress={() => router.push('/settings')}>
-              <MaterialCommunityIcons name="cog-outline" size={24} color={Colors.sage} />
-            </Pressable>
           </View>
 
           <View style={styles.intro}>
@@ -101,17 +97,11 @@ export default function ScanHome() {
 
           {/* Görselin boş, karanlık üst kısmı metnin altına girer */}
           <View style={{ marginTop: -heroWidth * 0.3, alignSelf: 'center' }}>
-            <Hero width={heroWidth} />
+            <HeroScene width={heroWidth} roll={camera.roll} viewRef={heroRef} />
           </View>
-          <Text style={styles.caption}>TEMSİLİ ESER GÖRSELİ</Text>
 
           <View style={styles.actions}>
-            <Button
-              title="Fotoğraf Çek ve Tara"
-              icon="camera"
-              onPress={async () => openScan(await takePhoto())}
-              style={styles.primaryBtn}
-            />
+            <Button title="Fotoğraf Çek ve Tara" icon="camera" onPress={shootAndScan} style={styles.primaryBtn} />
             <Pressable
               onPress={async () => openScan(await pickFromGallery())}
               style={({ pressed }) => [styles.glassBtn, pressed && { opacity: 0.8 }]}>
@@ -143,6 +133,8 @@ export default function ScanHome() {
               </View>
             ))}
           </View>
+
+          <View style={styles.announce}>{announce}</View>
 
           {recent.length > 0 && (
             <View style={styles.section}>
@@ -203,11 +195,12 @@ export default function ScanHome() {
           </View>
 
           <Text style={styles.footnote}>
-            Her gün {DAILY_FREE_SCANS} ücretsiz analiz. Yapay zeka sonuçları tahminidir; kesin tespit için müze uzmanlarına
+            Her gün {DAILY_FREE_SCANS} ücretsiz analiz. Defineciler analizleri tahminidir; kesin tespit için müze uzmanlarına
             danışın. Bulunan eserlerin 3 gün içinde müzeye bildirilmesi yasal zorunluluktur.
           </Text>
         </ScrollView>
       </SafeAreaView>
+      {camera.overlay}
     </View>
   );
 }
@@ -224,11 +217,12 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.xl,
-    paddingTop: Spacing.md,
+    gap: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
   },
-  brand: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: Spacing.lg },
+  announce: { paddingHorizontal: Spacing.xl, marginTop: Spacing.xxl },
   intro: { paddingHorizontal: Spacing.xl, paddingTop: Spacing.xl, zIndex: 2 },
   eyebrowRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   eyebrowDot: {
@@ -251,17 +245,6 @@ const styles = StyleSheet.create({
   },
   titleAccent: { fontFamily: Fonts.displayItalic, color: '#D9B46A' },
   subtitle: { color: Colors.sage, fontSize: 16, lineHeight: 24, marginTop: Spacing.sm },
-  fade: { position: 'absolute', top: 0, left: 0, right: 0 },
-  cardLabel: { color: 'rgba(242,235,221,0.75)', fontWeight: '600' },
-  cardTitle: { fontFamily: Fonts.display, color: '#F2EBDD' },
-  caption: {
-    color: 'rgba(169,184,164,0.55)',
-    fontSize: 10,
-    letterSpacing: 2.5,
-    textAlign: 'right',
-    paddingHorizontal: Spacing.xl,
-    marginTop: Spacing.sm,
-  },
   actions: { paddingHorizontal: Spacing.xl, gap: Spacing.md, marginTop: Spacing.lg },
   primaryBtn: {
     minHeight: 58,
