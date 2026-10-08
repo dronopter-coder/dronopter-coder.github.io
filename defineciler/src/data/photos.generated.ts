@@ -4,6 +4,18 @@
 export type Photo = { image: number; author: string; license: string; url: string };
 
 export const PHOTOS: Record<string, Photo> = {
+  'docs:cover': {
+    image: require('../../assets/photos/docs-cover.jpg'),
+    author: "Robert Louis Stevenson",
+    license: "Public domain",
+    url: "https://commons.wikimedia.org/wiki/File:Treasure-Island-map.jpg",
+  },
+  'guide:cam': {
+    image: require('../../assets/photos/guide-cam.jpg'),
+    author: "Vassil",
+    license: "CC0",
+    url: "https://commons.wikimedia.org/wiki/File:Munich_Cup_Diatretum_22102016_1.jpg",
+  },
   'guide:figurinler': {
     image: require('../../assets/photos/guide-figurinler.jpg'),
     author: "Sefer azeri",
@@ -28,11 +40,29 @@ export const PHOTOS: Record<string, Photo> = {
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Group_of_ancient_hellenistic_an_roan_oil_lamps.jpg",
   },
+  'guide:mezarlar': {
+    image: require('../../assets/photos/guide-mezarlar.jpg'),
+    author: "Jona Lendering",
+    license: "CC0",
+    url: "https://commons.wikimedia.org/wiki/File:Bin_Tepe,_large_tumulus.jpg",
+  },
+  'guide:mimari': {
+    image: require('../../assets/photos/guide-mimari.jpg'),
+    author: "Alexandre Mounayer",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Temple_of_Bacchus_at_Baalbek.jpg",
+  },
   'guide:muhurler': {
     image: require('../../assets/photos/guide-muhurler.jpg'),
     author: "Wikimedia Commons",
     license: "Public domain",
     url: "https://commons.wikimedia.org/wiki/File:Cylinder_seal_king_Louvre_AO6620.jpg",
+  },
+  'guide:patina': {
+    image: require('../../assets/photos/guide-patina.jpg'),
+    author: "w:User:Micahmn",
+    license: "CC BY 2.5",
+    url: "https://commons.wikimedia.org/wiki/File:Minneapolis_City_Hall.jpg",
   },
   'guide:sahte': {
     image: require('../../assets/photos/guide-sahte.jpg'),
@@ -52,17 +82,41 @@ export const PHOTOS: Record<string, Photo> = {
     license: "CC BY-SA 3.0",
     url: "https://commons.wikimedia.org/wiki/File:Kroisos._Circa_564-53-550-39_BC._AV_Stater_(16mm,_10.76_g)._Heavy_series._Sardes_mint.jpg",
   },
+  'guide:silahlar': {
+    image: require('../../assets/photos/guide-silahlar.jpg'),
+    author: "Didier Descouens",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Fleche_Cartailhac_MHNT_PRE_2009.0.232.2_simple.jpg",
+  },
+  'guide:sozluk': {
+    image: require('../../assets/photos/guide-sozluk.jpg'),
+    author: "Mario Modesto Mata",
+    license: "CC BY-SA 3.0",
+    url: "https://commons.wikimedia.org/wiki/File:Dolina-Pano-3_(cropped).jpg",
+  },
   'guide:takilar': {
     image: require('../../assets/photos/guide-takilar.jpg'),
     author: "Anonymous (Frankish) Unknown author",
     license: "Public domain",
     url: "https://commons.wikimedia.org/wiki/File:Frankish_-_Digitated_Fibula_-_Walters_542443.jpg",
   },
+  'guide:tasaletler': {
+    image: require('../../assets/photos/guide-tasaletler.png'),
+    author: "José-Manuel Benito",
+    license: "CC BY-SA 2.5",
+    url: "https://commons.wikimedia.org/wiki/File:Lithic_flake.png",
+  },
   'guide:yasal': {
     image: require('../../assets/photos/guide-yasal.jpg'),
     author: "Metuboy",
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Istanbularcheology.jpg",
+  },
+  'guide:yazitlar': {
+    image: require('../../assets/photos/guide-yazitlar.jpg'),
+    author: "Hans Hillewaert",
+    license: "CC BY-SA 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:Rosetta_Stone.JPG",
   },
   'guide:zaman': {
     image: require('../../assets/photos/guide-zaman.jpg'),
