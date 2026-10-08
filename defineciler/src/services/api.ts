@@ -29,7 +29,20 @@ async function prepareImage(uri: string, width?: number, height?: number) {
   return { uri: saved.uri, base64: saved.base64 };
 }
 
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Ağ hatasında (bağlantı kurulamadıysa) bir kez daha dener. */
 async function request<T>(path: string, init: RequestInit & { timeoutMs?: number } = {}): Promise<T> {
+  try {
+    return await requestOnce<T>(path, init);
+  } catch (e) {
+    if (!(e instanceof ApiError) || e.code !== 'network') throw e;
+    await wait(1500);
+    return requestOnce<T>(path, init);
+  }
+}
+
+async function requestOnce<T>(path: string, init: RequestInit & { timeoutMs?: number } = {}): Promise<T> {
   if (!API_URL) {
     throw new ApiError(
       'Sunucu adresi ayarlanmamış. app.json içindeki expo.extra.apiUrl alanına Worker adresini yazın.',
@@ -58,7 +71,8 @@ async function request<T>(path: string, init: RequestInit & { timeoutMs?: number
     if ((e as Error)?.name === 'AbortError') {
       throw new ApiError('İstek zaman aşımına uğradı. İnternet bağlantınızı kontrol edip tekrar deneyin.', 'timeout');
     }
-    throw new ApiError('Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin.', 'network');
+    const detail = (e as Error)?.message ? ` (Ayrıntı: ${(e as Error).message})` : '';
+    throw new ApiError(`Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin.${detail}`, 'network');
   } finally {
     clearTimeout(timer);
   }

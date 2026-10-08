@@ -1,10 +1,12 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Fragment } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
+import { DOCS_COVER } from '@/components/docs-banner';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { DOC_GROUPS, DOCS_INTRO, DOCS_TITLE } from '@/data/belgeler.generated';
 
@@ -15,13 +17,15 @@ export default function DocumentsScreen() {
   const note = DOCS_INTRO.find((b) => b.t === 'note')?.x;
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
-      <LinearGradient colors={['#2A2214', '#15110B']} style={styles.cover}>
+      <View style={styles.cover}>
+        <Image source={DOCS_COVER} style={StyleSheet.absoluteFill} contentFit="cover" />
+        <LinearGradient colors={['rgba(20,16,10,0.55)', 'rgba(20,16,10,0.95)']} style={StyleSheet.absoluteFill} />
         <MaterialCommunityIcons name="script-text-outline" size={30} color={Colors.goldLight} />
         <Text style={styles.coverTitle}>{DOCS_TITLE}</Text>
         <Text style={styles.coverMeta}>
           {DOC_GROUPS.length} bölüm · {SECTION_COUNT} başlık · Martin Voyvoda, Manuk Bey ve beraberindekiler
         </Text>
-      </LinearGradient>
+      </View>
 
       <View style={styles.warning}>
         <MaterialCommunityIcons name="alert-outline" size={20} color={Colors.warning} />
@@ -61,6 +65,9 @@ export default function DocumentsScreen() {
 const styles = StyleSheet.create({
   scroll: { padding: Spacing.lg, gap: Spacing.md, paddingBottom: Spacing.xxl },
   cover: {
+    overflow: 'hidden',
+    minHeight: 190,
+    justifyContent: 'flex-end',
     borderRadius: Radius.lg,
     padding: Spacing.xl,
     gap: Spacing.sm,

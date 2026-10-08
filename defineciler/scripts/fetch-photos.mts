@@ -29,7 +29,8 @@ const entries: Entry[] = [
   ...GUIDE.map((g) => ({
     key: `guide:${g.id}`,
     candidates: g.photo ?? ([g.wiki?.en && `en:${g.wiki.en}`, g.wiki?.tr && `tr:${g.wiki.tr}`].filter(Boolean) as string[]),
-  })),
+  })), // "Volçan Voyvoda ve Eşkıya Belgeleri" kapağı: eski hazine haritası / ferman
+  { key: 'docs:cover', candidates: ['en:Treasure map', 'tr:Ferman', 'en:Firman'] },
 ];
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

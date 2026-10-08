@@ -2,17 +2,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, router } from 'expo-router';
-import { useRef } from 'react';
 import { Pressable, ScrollView, Share, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { HeroScene, useCameraTransition } from '@/components/hero-portal';
+import { DocsBanner } from '@/components/docs-banner';
+import { HomeHero } from '@/components/home-hero';
 import { LogoMark, Wordmark } from '@/components/logo';
-import { MarqueeBanner } from '@/components/marquee-banner';
 import { Sparkle } from '@/components/sparkle';
 import { Button, type IconName } from '@/components/ui';
 import { APP_SHARE_MESSAGE, DAILY_FREE_SCANS } from '@/constants/config';
-import { DOC_GROUPS, DOCS_TITLE } from '@/data/belgeler.generated';
 import { PHOTOS } from '@/data/photos.generated';
 import { Colors, Fonts, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useRemainingScans } from '@/hooks/use-quota';
@@ -42,27 +40,6 @@ export default function ScanHome() {
   const recent = scans?.slice(0, 8) ?? [];
   const { width } = useWindowDimensions();
   const heroWidth = Math.min(width, MaxContentWidth);
-  const heroRef = useRef<View>(null);
-  const camera = useCameraTransition(heroRef, heroWidth);
-
-  const shootAndScan = async () => {
-    if (!(await camera.run())) return;
-    try {
-      const img = await takePhoto();
-      openScan(img);
-    } finally {
-      camera.restore();
-    }
-  };
-
-  const announce = (
-    <MarqueeBanner
-      label="YENİ"
-      text={`${DOCS_TITLE}  ·  ${DOC_GROUPS.length} bölümde Martin Voyvoda, Manuk Bey ve 32 kişilik çetenin izinde  ·  Okumak için dokunun  ·`}
-      onPress={() => router.push('/documents')}
-    />
-  );
-
   return (
     <View style={styles.screen}>
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
@@ -83,25 +60,27 @@ export default function ScanHome() {
             </View>
           </View>
 
-          <View style={styles.intro}>
-            <View style={styles.eyebrowRow}>
-              <View style={styles.eyebrowDot} />
-              <Text style={styles.eyebrow}>MERHABA, KAŞİF.</Text>
+          <HomeHero width={heroWidth}>
+            <View style={styles.intro}>
+              <View style={styles.eyebrowRow}>
+                <View style={styles.eyebrowDot} />
+                <Text style={styles.eyebrow}>MERHABA, KAŞİF.</Text>
+              </View>
+              <Text style={styles.title}>
+                Geçmişin{'\n'}kilidini <Text style={styles.titleAccent}>aç.</Text>
+              </Text>
+              <Text style={styles.subtitle}>Bir sikke. Bir sembol. Bir sır.</Text>
+              <Text style={styles.subtitle}>Elindeki izin hikâyesini bir fotoğrafla keşfet.</Text>
             </View>
-            <Text style={styles.title}>
-              Geçmişin{'\n'}kilidini <Text style={styles.titleAccent}>aç.</Text>
-            </Text>
-            <Text style={styles.subtitle}>Bir sikke. Bir sembol. Bir sır.</Text>
-            <Text style={styles.subtitle}>Elindeki izin hikâyesini bir fotoğrafla keşfet.</Text>
-          </View>
-
-          {/* Görselin boş, karanlık üst kısmı metnin altına girer */}
-          <View style={{ marginTop: -heroWidth * 0.3, alignSelf: 'center' }}>
-            <HeroScene width={heroWidth} roll={camera.roll} viewRef={heroRef} />
-          </View>
+          </HomeHero>
 
           <View style={styles.actions}>
-            <Button title="Fotoğraf Çek ve Tara" icon="camera" onPress={shootAndScan} style={styles.primaryBtn} />
+            <Button
+              title="Fotoğraf Çek ve Tara"
+              icon="camera"
+              onPress={async () => openScan(await takePhoto())}
+              style={styles.primaryBtn}
+            />
             <Pressable
               onPress={async () => openScan(await pickFromGallery())}
               style={({ pressed }) => [styles.glassBtn, pressed && { opacity: 0.8 }]}>
@@ -134,7 +113,9 @@ export default function ScanHome() {
             ))}
           </View>
 
-          <View style={styles.announce}>{announce}</View>
+          <View style={styles.announce}>
+            <DocsBanner onPress={() => router.push('/documents')} />
+          </View>
 
           {recent.length > 0 && (
             <View style={styles.section}>
@@ -200,7 +181,6 @@ export default function ScanHome() {
           </Text>
         </ScrollView>
       </SafeAreaView>
-      {camera.overlay}
     </View>
   );
 }
