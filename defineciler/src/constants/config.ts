@@ -21,6 +21,6 @@ export const APP_NAME = 'Defineciler';
 export const PRIVACY_URL = 'https://dronopter-coder.github.io/privacy.html';
 export const CONTACT_EMAIL = 'dronopter@gmail.com';
 
-/** Play Store adresi (paket adı app.json → android.package ile aynı olmalı). */
-export const APP_SHARE_URL = 'https://play.google.com/store/apps/details?id=com.defineciler.app';
+/** Play Store adresi (paket adı app.json → android.package ile aynı olmalı). Not: paket adı deneyi için geçici olarak eski kimliğe döndürüldü. */
+export const APP_SHARE_URL = 'https://play.google.com/store/apps/details?id=com.dronopter.defineciler';
 export const APP_SHARE_MESSAGE = `Defineciler — elindeki tarihi eseri fotoğrafla tanı; dönemini, uygarlığını ve hikâyesini öğren.\n${APP_SHARE_URL}`;

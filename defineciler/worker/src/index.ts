@@ -97,6 +97,19 @@ async function handleNews(req: Request, ctx: ExecutionContext) {
   return res;
 }
 
+/** Bağlantı testi: sunucu saati ve telefona hizmet veren Cloudflare veri merkezi. Gemini'ye dokunmaz. */
+function handlePing(req: Request) {
+  const cf = (req as Request & { cf?: { colo?: string; country?: string } }).cf;
+  return json({ ok: true, time: new Date().toISOString(), colo: cf?.colo ?? null, country: cf?.country ?? null });
+}
+
+/** Bağlantı testi: gövdeyi okuyup bayt sayısını döndürür (yükleme yolunu Gemini'den bağımsız sınar). */
+async function handleEcho(req: Request) {
+  const started = Date.now();
+  const bytes = (await req.arrayBuffer()).byteLength;
+  return json({ ok: true, bytes, readMs: Date.now() - started });
+}
+
 export default {
   async fetch(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(req.url);
@@ -104,6 +117,12 @@ export default {
     try {
       if (url.pathname === '/analyze' && req.method === 'POST') return await handleAnalyze(req, env, ctx);
       if (url.pathname === '/news' && req.method === 'GET') return await handleNews(req, ctx);
+      if (url.pathname === '/ping' && req.method === 'GET') return handlePing(req);
+      if (url.pathname === '/echo' && req.method === 'POST') {
+        const len = Number(req.headers.get('Content-Length') ?? '0');
+        if (len > 2 * 1024 * 1024) throw new HttpError(413, 'Gövde çok büyük.', 'too_large');
+        return await handleEcho(req);
+      }
       if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, service: 'defineciler-api' });
       return json({ error: 'Bulunamadı', code: 'not_found' }, 404);
     } catch (e) {

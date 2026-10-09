@@ -72,6 +72,8 @@ async function requestOnce<T>(path: string, init: RequestInit & { timeoutMs?: nu
   const device = await getDeviceId();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), init.timeoutMs ?? 30_000);
+  const started = Date.now();
+  const sizeKb = typeof init.body === 'string' ? Math.round(init.body.length / 1024) : 0;
   try {
     const res = await fetch(`${API_URL}${path}`, {
       ...init,
@@ -92,7 +94,11 @@ async function requestOnce<T>(path: string, init: RequestInit & { timeoutMs?: nu
     if (e instanceof ApiError) throw e;
     // Kendi zaman aşımımız: Expo'nun fetch'i bunu "Fetch request has been canceled" olarak bildirir.
     if (controller.signal.aborted || (e as Error)?.name === 'AbortError') {
-      throw new ApiError('Analiz beklenenden uzun sürdü. Lütfen birazdan tekrar deneyin.', 'timeout');
+      const sec = Math.round((Date.now() - started) / 1000);
+      throw new ApiError(
+        `Analiz beklenenden uzun sürdü. Lütfen birazdan tekrar deneyin. (Ayrıntı: ${sec} sn içinde yanıt gelmedi${sizeKb ? `, gönderilen ${sizeKb} KB` : ''})`,
+        'timeout',
+      );
     }
     const detail = (e as Error)?.message ? ` (Ayrıntı: ${(e as Error).message})` : '';
     throw new ApiError(`Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin.${detail}`, 'network');
@@ -125,4 +131,53 @@ export async function analyzeArtifact(input: AnalyzeInput): Promise<{ result: An
 
 export function fetchNews() {
   return request<{ items: NewsItem[]; updatedAt: string }>('/news', { method: 'GET' });
+}
+
+export type ProbeResult = { label: string; ok: boolean; ms: number; detail: string };
+
+/** Tek bir tanı isteği: hata fırlatmaz, süreyi ve sonucu döndürür. */
+async function probe(label: string, path: string, bytes?: number): Promise<ProbeResult> {
+  const device = await getDeviceId();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 25_000);
+  const started = Date.now();
+  try {
+    const res = await fetch(`${API_URL}${path}`, {
+      method: bytes ? 'POST' : 'GET',
+      signal: controller.signal,
+      headers: { 'Content-Type': 'application/json', 'X-App-Key': APP_KEY, ...(device ? { 'X-Device-Id': device } : {}) },
+      body: bytes ? 'x'.repeat(bytes) : undefined,
+    });
+    const body = (await res.json().catch(() => null)) as Record<string, unknown> | null;
+    const ms = Date.now() - started;
+    if (!res.ok) return { label, ok: false, ms, detail: `HTTP ${res.status}` };
+    const extra = body?.colo
+      ? `veri merkezi ${body.colo}`
+      : body?.bytes
+        ? `sunucu ${Math.round(Number(body.bytes) / 1024)} KB aldı`
+        : 'tamam';
+    return { label, ok: true, ms, detail: extra };
+  } catch (e) {
+    const ms = Date.now() - started;
+    return {
+      label,
+      ok: false,
+      ms,
+      detail: controller.signal.aborted ? '25 sn içinde yanıt gelmedi' : String((e as Error)?.message ?? e),
+    };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Ayarlar → Bağlantı testi: sunucuya ulaşım ve yükleme yolunu Gemini'den bağımsız ölçer. */
+export async function runDiagnostics(onStep: (r: ProbeResult) => void) {
+  if (!API_URL) {
+    onStep({ label: 'Sunucu adresi', ok: false, ms: 0, detail: 'ayarlanmamış' });
+    return;
+  }
+  onStep({ label: 'Sunucu adresi', ok: true, ms: 0, detail: API_URL.replace(/^https?:\/\//, '') });
+  onStep(await probe('Ulaşım (GET /ping)', '/ping'));
+  onStep(await probe('Yükleme 100 KB', '/echo', 100 * 1024));
+  onStep(await probe('Yükleme 400 KB', '/echo', 400 * 1024));
 }

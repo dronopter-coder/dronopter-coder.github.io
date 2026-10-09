@@ -1,0 +1,30 @@
+name: Defineciler tanı (Cloudflare istek kayıtları)
+
+# Telefondaki tarama denemeleri sunucuya ulaştı mı ve nasıl bitti? Cloudflare'in son 24 saatlik kayıtlarını okur.
+on:
+  push:
+    paths:
+      - '.github/workflows/defineciler-diag.yml'
+      - '.github/scripts/cf-diag.mjs'
+  workflow_dispatch:
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Cloudflare istek kayıtları
+        run: node .github/scripts/cf-diag.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Sunucu ulaşım testi (/ping, /echo)
+        env:
+          API: ${{ vars.DEFINECILER_API_URL || 'https://defineciler-api.dronopter.workers.dev' }}
+        run: |
+          curl -sS "$API/ping"; echo
+          head -c 400000 /dev/zero | tr '\0' 'x' > body.bin
+          curl -sS -X POST -H 'Content-Type: application/json' --data-binary @body.bin -w '\nHTTP %{http_code} · %{time_total} sn\n' "$API/echo"

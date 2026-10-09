@@ -8,12 +8,15 @@ import { Body, Button, Card, SectionTitle } from '@/components/ui';
 import { APP_NAME, CONTACT_EMAIL, DAILY_FREE_SCANS, PRIVACY_URL } from '@/constants/config';
 import { Colors, Fonts, Spacing } from '@/constants/theme';
 import { showPrivacyOptions } from '@/services/ads';
+import { runDiagnostics, type ProbeResult } from '@/services/api';
 import { getSfxEnabled, setSfxEnabled } from '@/services/sfx';
 import { clearScans } from '@/storage/history';
 
 export default function SettingsScreen() {
   const version = Constants.expoConfig?.version ?? '1.0.0';
   const [sfx, setSfx] = useState(true);
+  const [probing, setProbing] = useState(false);
+  const [steps, setSteps] = useState<ProbeResult[]>([]);
   useEffect(() => {
     getSfxEnabled().then(setSfx);
   }, []);
@@ -51,6 +54,29 @@ export default function SettingsScreen() {
           trackColor={{ true: Colors.goldDark, false: Colors.border }}
           thumbColor={sfx ? Colors.goldLight : Colors.textMuted}
         />
+      </Card>
+
+      <Card style={{ gap: Spacing.md }}>
+        <SectionTitle icon="wifi-check">Bağlantı testi</SectionTitle>
+        <Body muted>Tarama çalışmıyorsa bu testi çalıştırıp sonucun ekran görüntüsünü gönderin.</Body>
+        <Button
+          title={probing ? 'Test ediliyor…' : 'Bağlantıyı test et'}
+          icon="speedometer"
+          variant="secondary"
+          loading={probing}
+          onPress={async () => {
+            setProbing(true);
+            setSteps([]);
+            await runDiagnostics((r) => setSteps((prev) => [...prev, r]));
+            setProbing(false);
+          }}
+        />
+        {steps.map((r) => (
+          <Text key={r.label} style={[styles.probe, { color: r.ok ? Colors.success : Colors.danger }]}>
+            {r.ok ? '✓' : '✗'} {r.label}
+            {r.ms ? ` · ${(r.ms / 1000).toFixed(1)} sn` : ''} · {r.detail}
+          </Text>
+        ))}
       </Card>
 
       <Card style={{ gap: Spacing.md }}>
@@ -120,5 +146,6 @@ const styles = StyleSheet.create({
   name: { fontFamily: Fonts.serif, fontSize: 28, color: Colors.goldLight },
   version: { color: Colors.textMuted, fontSize: 13 },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  probe: { fontSize: 13, lineHeight: 19 },
   rowHint: { color: Colors.textMuted, fontSize: 12 },
 });
