@@ -5,7 +5,6 @@ on:
   push:
     paths:
       - '.github/workflows/defineciler-smoke.yml'
-      - '.github/scripts/bench-gemini.mts'
       - 'defineciler/src/services/news-image-core.ts'
       - 'defineciler/scripts/test-news-images.mts'
   workflow_dispatch:
@@ -45,8 +44,9 @@ jobs:
           echo "HTTP $code · toplam süre ${out#* } sn" | tee -a "$GITHUB_STEP_SUMMARY"
           python3 -c "import json; r=json.load(open('res.json')); print(json.dumps(r, ensure_ascii=False, indent=2)[:1500])"
           test "$code" = "200"
+      # Ücretsiz katman kotasını harcamamak için yalnızca elle çalıştırıldığında
       - name: Model hız testi (gerçek fotoğraf, doğrudan Gemini)
-        if: always()
+        if: always() && github.event_name == 'workflow_dispatch'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
