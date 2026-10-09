@@ -32,10 +32,10 @@ const run = async (fields) => {
   });
 };
 
-let out = await run('dimensions{${gran} status} sum{requests errors subrequests} quantiles{cpuTimeP50 cpuTimeP99 wallTimeP50 wallTimeP99}');
+let out = await run(`dimensions{${gran} status} sum{requests errors subrequests} quantiles{cpuTimeP50 cpuTimeP99 wallTimeP50 wallTimeP99}`);
 if (out.errors?.length) {
   console.log('Ayrıntılı sorgu reddedildi:', out.errors.map((e) => e.message).join(' | '));
-  out = await run('dimensions{${gran} status} sum{requests errors subrequests}');
+  out = await run(`dimensions{${gran} status} sum{requests errors subrequests}`);
 }
 if (out.errors?.length) {
   console.log('::warning::Cloudflare analitik okunamadı:', out.errors.map((e) => e.message).join(' | '));
