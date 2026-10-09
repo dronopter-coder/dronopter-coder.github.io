@@ -58,7 +58,10 @@ export default function SettingsScreen() {
 
       <Card style={{ gap: Spacing.md }}>
         <SectionTitle icon="wifi-check">Bağlantı testi</SectionTitle>
-        <Body muted>Tarama çalışmıyorsa bu testi çalıştırıp sonucun ekran görüntüsünü gönderin.</Body>
+        <Body muted>
+          Tarama çalışmıyorsa (özellikle mobil veride) bu testi çalıştırıp sonucun ekran görüntüsünü gönderin. Test yaklaşık 10
+          saniye sürer.
+        </Body>
         <Button
           title={probing ? 'Test ediliyor…' : 'Bağlantıyı test et'}
           icon="speedometer"

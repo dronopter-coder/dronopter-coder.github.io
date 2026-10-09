@@ -19,6 +19,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     extra: {
       ...config.extra,
       apiUrl: process.env.DEFINECILER_API_URL || config.extra?.apiUrl,
+      // Virgülle ayrılmış ek/yedek adresler: DEFINECILER_API_URLS="https://api.alanadi.com,https://x.workers.dev"
+      apiUrls: (process.env.DEFINECILER_API_URLS ?? '')
+        .split(',')
+        .map((u) => u.trim())
+        .filter(Boolean),
     },
   };
 };

@@ -138,23 +138,15 @@ jobs:
           retention-days: 1
 
   apk:
-    name: apk (${{ matrix.variant.label }})
     needs: [check, worker, photos]
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        # Paket adı karşılaştırması (A/B): aynı kod, iki uygulama kimliği; aynı telefonda yan yana kurulur.
-        variant:
-          - { label: A, artifact: defineciler-apk, package: com.dronopter.defineciler, name: Defineciler }
-          - { label: B, artifact: defineciler-apk-yeni-kimlik, package: com.defineciler.app, name: 'Defineciler B' }
     defaults:
       run:
         working-directory: defineciler
     env:
       DEFINECILER_API_URL: ${{ needs.worker.outputs.url || vars.DEFINECILER_API_URL }}
-      ANDROID_PACKAGE: ${{ matrix.variant.package }}
-      APP_NAME: ${{ matrix.variant.name }}
+      # Virgülle ayrılmış ek/yedek sunucu adresleri (ör. özel alan adı); vars.DEFINECILER_API_URLS ile verilir.
+      DEFINECILER_API_URLS: ${{ vars.DEFINECILER_API_URLS }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -203,6 +195,6 @@ jobs:
           grep -m1 'package=' android/app/src/main/AndroidManifest.xml || true
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.variant.artifact }}
+          name: defineciler-apk
           path: defineciler/android/app/build/outputs/apk/release/*.apk
           retention-days: 14

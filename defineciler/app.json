@@ -11,7 +11,7 @@
     "primaryColor": "#D4A24C",
     "description": "Defineciler ile tarihi eserleri tanıyın: fotoğrafını çek, dönemini, uygarlığını ve içeriğini öğren.",
     "android": {
-      "package": "com.dronopter.defineciler",
+      "package": "com.defineciler.app",
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#121D19",
@@ -30,7 +30,7 @@
       "predictiveBackGestureEnabled": false
     },
     "ios": {
-      "bundleIdentifier": "com.dronopter.defineciler"
+      "bundleIdentifier": "com.defineciler.app"
     },
     "web": {
       "output": "single",
