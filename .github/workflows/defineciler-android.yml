@@ -50,6 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       url: ${{ steps.deploy.outputs.url }}
+      custom_url: ${{ steps.deploy.outputs.custom_url }}
     defaults:
       run:
         working-directory: defineciler/worker
@@ -57,6 +58,9 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      # Özel alan adı (Cloudflare'de aktif bir bölge olmalı). workers.dev bazı mobil operatörlerde
+      # (Turkcell) açılmıyor; uygulama önce bu adresi, yedek olarak workers.dev'i dener.
+      CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN || 'api.defineciler.online' }}
     steps:
       - uses: actions/checkout@v4
       - name: Anahtar kontrolü
@@ -86,11 +90,22 @@ jobs:
           node ../../.github/scripts/ensure-kv.mjs || true
           CFG=wrangler.jsonc; [ -f wrangler.ci.jsonc ] && CFG=wrangler.ci.jsonc
           echo "Yapılandırma: $CFG"
-          npx wrangler deploy --config "$CFG" 2>&1 | tee deploy.log
+          custom=""
+          if [ -n "$CUSTOM_DOMAIN" ]; then
+            node ../../.github/scripts/add-route.mjs "$CFG" wrangler.domain.jsonc "$CUSTOM_DOMAIN"
+            if npx wrangler deploy --config wrangler.domain.jsonc 2>&1 | tee deploy.log; then
+              custom="https://$CUSTOM_DOMAIN"
+            else
+              echo "::warning::Özel alan adı ($CUSTOM_DOMAIN) bağlanamadı (bölge aktif mi, token'da Zone DNS/Workers Routes izni var mı?). Yalnızca workers.dev ile yayınlanıyor."
+            fi
+          fi
+          if [ -z "$custom" ]; then npx wrangler deploy --config "$CFG" 2>&1 | tee deploy.log; fi
           url=$(grep -oE 'https://[A-Za-z0-9.-]+\.workers\.dev' deploy.log | head -1)
           if [ -z "$url" ]; then echo "::error::Worker adresi bulunamadı (workers.dev alt alanınız açık mı?)"; exit 1; fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "custom_url=$custom" >> "$GITHUB_OUTPUT"
           echo "### Sunucu adresi: $url" >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$custom" ]; then echo "### Özel adres: $custom" >> "$GITHUB_STEP_SUMMARY"; fi
       - name: Gemini anahtarını sunucuya kaydet
         if: steps.keys.outputs.ready == 'true'
         run: |
@@ -104,6 +119,15 @@ jobs:
             sleep 5
           done
           echo "::warning::Sunucu henüz yanıt vermiyor (yeni workers.dev adresleri birkaç dakika sürebilir)."
+      - name: Özel adres sağlık kontrolü
+        if: steps.keys.outputs.ready == 'true' && steps.deploy.outputs.custom_url != ''
+        run: |
+          # Yeni alan adının DNS/sertifikası birkaç dakika sürebilir; yalnızca uyarı verir.
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            curl -fsS "${{ steps.deploy.outputs.custom_url }}/ping" && exit 0
+            sleep 15
+          done
+          echo "::warning::Özel adres henüz yanıt vermiyor (DNS yayılımı sürüyor olabilir)."
 
   photos:
     name: Fotoğrafları indir (Wikimedia Commons)
@@ -146,7 +170,7 @@ jobs:
     env:
       DEFINECILER_API_URL: ${{ needs.worker.outputs.url || vars.DEFINECILER_API_URL }}
       # Virgülle ayrılmış ek/yedek sunucu adresleri (ör. özel alan adı); vars.DEFINECILER_API_URLS ile verilir.
-      DEFINECILER_API_URLS: ${{ vars.DEFINECILER_API_URLS }}
+      DEFINECILER_API_URLS: ${{ needs.worker.outputs.custom_url || vars.DEFINECILER_API_URLS }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
