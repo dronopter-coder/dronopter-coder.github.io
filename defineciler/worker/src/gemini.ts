@@ -63,11 +63,14 @@ export function normalizeResult(raw: unknown): AnalysisResult {
   };
 }
 
+/** Toplam süre bütçesi: en fazla 50 sn; her model en fazla 30 sn; 8 sn'den az kaldıysa yeni model denenmez. */
+export const DEFAULT_BUDGET = { totalMs: 50_000, perModelMs: 30_000, minAttemptMs: 8_000 };
+
 /** Bu durum kodlarında sıradaki modele geçilir (yoğunluk, kota, geçici hata, model yok). */
 const RETRYABLE = new Set([404, 408, 429, 500, 502, 503, 504]);
 
 /** Tek bir modele istek atar; başarıda sonucu, geçici hatada null döndürür. */
-async function callModel(req: AnalyzeRequest, apiKey: string, model: string): Promise<AnalysisResult | null> {
+async function callModel(req: AnalyzeRequest, apiKey: string, model: string, timeoutMs: number): Promise<AnalysisResult | null> {
   const userText =
     'Bu fotoğraftaki objeyi tanımla.' + (req.note ? `\nKullanıcının ek notu (boyut, bulunduğu yer vb.): """${req.note}"""` : '');
 
@@ -76,7 +79,7 @@ async function callModel(req: AnalyzeRequest, apiKey: string, model: string): Pr
     res = await fetch(`${GEMINI_BASE}/${encodeURIComponent(model)}:generateContent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
-      signal: AbortSignal.timeout(40_000),
+      signal: AbortSignal.timeout(timeoutMs),
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents: [
@@ -104,7 +107,7 @@ async function callModel(req: AnalyzeRequest, apiKey: string, model: string): Pr
     if (RETRYABLE.has(res.status)) return null;
     if (res.status === 400 && /image|inline/i.test(detail))
       throw new HttpError(400, 'Fotoğraf işlenemedi. Farklı bir fotoğraf deneyin.', 'bad_image');
-    throw new HttpError(502, 'Yapay zeka servisine ulaşılamadı. Lütfen tekrar deneyin.', `upstream_${res.status}`);
+    throw new HttpError(502, 'Analiz servisine şu anda ulaşılamadı. Lütfen tekrar deneyin.', `upstream_${res.status}`);
   }
 
   const data = (await res.json()) as any;
@@ -136,14 +139,19 @@ export async function analyzeWithGemini(
   req: AnalyzeRequest,
   apiKey: string,
   models: string[],
+  budget: { totalMs: number; perModelMs: number; minAttemptMs: number } = DEFAULT_BUDGET,
 ): Promise<{ result: AnalysisResult; model: string }> {
   const list = [...new Set(models.map((m) => m.trim()).filter(Boolean))];
+  // İstemci en fazla ~70 sn bekler; sunucu her durumda bundan önce anlamlı bir yanıt vermeli.
+  const deadline = Date.now() + budget.totalMs;
   for (const [i, model] of list.entries()) {
-    if (i > 0) await new Promise((r) => setTimeout(r, 400));
-    const result = await callModel(req, apiKey, model);
+    if (i > 0) await new Promise((r) => setTimeout(r, 300));
+    const left = deadline - Date.now();
+    if (left < budget.minAttemptMs) break;
+    const result = await callModel(req, apiKey, model, Math.min(budget.perModelMs, left));
     if (result) return { result, model };
   }
-  throw new HttpError(503, 'Yapay zeka şu anda çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.', 'busy');
+  throw new HttpError(503, 'Analiz servisi şu anda çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.', 'busy');
 }
 
 /** MOCK_GEMINI=1 iken kullanılan örnek sonuç (anahtar olmadan test için). */

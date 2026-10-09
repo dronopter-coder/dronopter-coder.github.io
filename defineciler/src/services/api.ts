@@ -13,7 +13,7 @@ export class ApiError extends Error {
   }
 }
 
-const MAX_SIDE = 1280;
+const MAX_SIDE = 1024;
 
 /** Fotoğrafı yapay zekaya göndermeden önce küçültüp JPEG'e çevirir (veri ve hız tasarrufu). */
 async function prepareImage(uri: string, width?: number, height?: number) {
@@ -24,7 +24,7 @@ async function prepareImage(uri: string, width?: number, height?: number) {
     ctx.resize(w >= h ? { width: MAX_SIDE } : { height: MAX_SIDE });
   }
   const ref = await ctx.renderAsync();
-  const saved = await ref.saveAsync({ format: SaveFormat.JPEG, compress: 0.78, base64: true });
+  const saved = await ref.saveAsync({ format: SaveFormat.JPEG, compress: 0.72, base64: true });
   if (!saved.base64) throw new ApiError('Fotoğraf işlenemedi.');
   return { uri: saved.uri, base64: saved.base64 };
 }
@@ -68,8 +68,9 @@ async function requestOnce<T>(path: string, init: RequestInit & { timeoutMs?: nu
     return body as T;
   } catch (e) {
     if (e instanceof ApiError) throw e;
-    if ((e as Error)?.name === 'AbortError') {
-      throw new ApiError('İstek zaman aşımına uğradı. İnternet bağlantınızı kontrol edip tekrar deneyin.', 'timeout');
+    // Kendi zaman aşımımız: Expo'nun fetch'i bunu "Fetch request has been canceled" olarak bildirir.
+    if (controller.signal.aborted || (e as Error)?.name === 'AbortError') {
+      throw new ApiError('Analiz beklenenden uzun sürdü. Lütfen birazdan tekrar deneyin.', 'timeout');
     }
     const detail = (e as Error)?.message ? ` (Ayrıntı: ${(e as Error).message})` : '';
     throw new ApiError(`Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin.${detail}`, 'network');
@@ -90,7 +91,7 @@ export async function analyzeArtifact(input: AnalyzeInput): Promise<{ result: An
   const image = await prepareImage(input.uri, input.width, input.height);
   const data = await request<{ result: AnalysisResult }>('/analyze', {
     method: 'POST',
-    timeoutMs: 75_000,
+    timeoutMs: 70_000,
     body: JSON.stringify({
       image: image.base64,
       mimeType: 'image/jpeg',

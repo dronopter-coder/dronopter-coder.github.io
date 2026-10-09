@@ -81,4 +81,31 @@ describe('analyzeWithGemini', () => {
     expect(n).toBe(1);
     vi.unstubAllGlobals();
   });
+
+  it('süre bütçesi dolunca yeni model denemeden 503 döner', async () => {
+    const calls: string[] = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push(url);
+      // Yavaş model: kendisine verilen süre dolana kadar yanıt vermez
+      await new Promise((resolve, reject) => {
+        const t = setTimeout(resolve, 5_000);
+        init.signal?.addEventListener('abort', () => {
+          clearTimeout(t);
+          reject(new DOMException('timeout', 'TimeoutError'));
+        });
+      });
+      return ok(geminiBody({ title: 'geç' }));
+    });
+    const started = Date.now();
+    await expect(
+      analyzeWithGemini({ image: IMG, mimeType: 'image/jpeg' }, 'k', ['slow-a', 'slow-b', 'slow-c'], {
+        totalMs: 300,
+        perModelMs: 200,
+        minAttemptMs: 150,
+      }),
+    ).rejects.toMatchObject({ status: 503, code: 'busy' });
+    expect(Date.now() - started).toBeLessThan(1_000);
+    expect(calls).toHaveLength(1);
+    vi.unstubAllGlobals();
+  });
 });
