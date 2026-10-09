@@ -44,6 +44,11 @@ jobs:
           echo "HTTP $code · toplam süre ${out#* } sn" | tee -a "$GITHUB_STEP_SUMMARY"
           python3 -c "import json; r=json.load(open('res.json')); print(json.dumps(r, ensure_ascii=False, indent=2)[:1500])"
           test "$code" = "200"
+          # Aynı fotoğraf ikinci kez: önbellekten (model "cache") ve hızlı gelmeli
+          out2=$(curl -sS -o res2.json -w '%{http_code} %{time_total}' --max-time 120 -X POST "$API/analyze" \
+            -H 'Content-Type: application/json' -H 'X-App-Key: defineciler-android-v1' \
+            -H 'X-Device-Id: smoke-test-device-0001' --data @body.json || echo "000 -")
+          echo "2. istek: HTTP ${out2%% *} · süre ${out2#* } sn · model: $(python3 -c "import json; print(json.load(open('res2.json')).get('model'))")" | tee -a "$GITHUB_STEP_SUMMARY"
       # Ücretsiz katman kotasını harcamamak için yalnızca elle çalıştırıldığında
       - name: Model hız testi (gerçek fotoğraf, doğrudan Gemini)
         if: always() && github.event_name == 'workflow_dispatch'

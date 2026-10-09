@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 
 import { API_URL, APP_KEY } from '@/constants/config';
@@ -31,6 +32,25 @@ async function prepareImage(uri: string, width?: number, height?: number) {
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+const DEVICE_KEY = 'device:id:v1';
+let deviceId: string | null = null;
+
+/** Bu kuruluma ait rastgele kimlik; sunucuda günlük kullanım sınırı için kullanılır (kişisel veri içermez). */
+async function getDeviceId() {
+  if (deviceId) return deviceId;
+  try {
+    deviceId = await AsyncStorage.getItem(DEVICE_KEY);
+    if (!deviceId) {
+      const hex = () => Math.random().toString(16).slice(2, 10).padEnd(8, '0');
+      deviceId = `${hex()}-${hex()}-${hex()}-${hex()}`;
+      await AsyncStorage.setItem(DEVICE_KEY, deviceId);
+    }
+  } catch {
+    deviceId = null;
+  }
+  return deviceId;
+}
+
 /** Ağ hatasında (bağlantı kurulamadıysa) bir kez daha dener. */
 async function request<T>(path: string, init: RequestInit & { timeoutMs?: number } = {}): Promise<T> {
   try {
@@ -49,6 +69,7 @@ async function requestOnce<T>(path: string, init: RequestInit & { timeoutMs?: nu
       'config',
     );
   }
+  const device = await getDeviceId();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), init.timeoutMs ?? 30_000);
   try {
@@ -58,6 +79,7 @@ async function requestOnce<T>(path: string, init: RequestInit & { timeoutMs?: nu
       headers: {
         'Content-Type': 'application/json',
         'X-App-Key': APP_KEY,
+        ...(device ? { 'X-Device-Id': device } : {}),
         ...(init.headers ?? {}),
       },
     });

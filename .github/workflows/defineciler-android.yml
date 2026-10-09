@@ -82,7 +82,11 @@ jobs:
         run: |
           set -o pipefail
           if [ -n "$CF_ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID"; fi
-          npx wrangler deploy 2>&1 | tee deploy.log
+          # Günlük sayaçlar ve sonuç önbelleği için KV; hazırlanamazsa KV'siz yayınlanır.
+          node ../../.github/scripts/ensure-kv.mjs || true
+          CFG=wrangler.jsonc; [ -f wrangler.ci.jsonc ] && CFG=wrangler.ci.jsonc
+          echo "Yapılandırma: $CFG"
+          npx wrangler deploy --config "$CFG" 2>&1 | tee deploy.log
           url=$(grep -oE 'https://[A-Za-z0-9.-]+\.workers\.dev' deploy.log | head -1)
           if [ -z "$url" ]; then echo "::error::Worker adresi bulunamadı (workers.dev alt alanınız açık mı?)"; exit 1; fi
           echo "url=$url" >> "$GITHUB_OUTPUT"

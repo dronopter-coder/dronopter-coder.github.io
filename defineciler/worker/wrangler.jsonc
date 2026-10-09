@@ -14,15 +14,19 @@
     "GEMINI_FALLBACK_MODELS": "gemini-flash-lite-latest,gemini-3.8-flash",
     // Uygulamanın gönderdiği X-App-Key başlığı (app.json → extra.appKey ile aynı olmalı).
     "APP_KEY": "defineciler-android-v1",
-    // IP başına günlük en fazla analiz (USAGE KV bağlıysa uygulanır).
-    "DAILY_LIMIT_PER_IP": "30"
+    // Günlük sınırlar (USAGE KV bağlıysa uygulanır; dağıtım iş akışı KV'yi kendisi oluşturup bağlar).
+    // Cihaz başına: 2 ücretsiz + reklamla açılan analizler için cömert, kötüye kullanıma kapalı.
+    "DEVICE_DAILY_LIMIT": "15",
+    // IP başına: mobil operatörlerde çok kullanıcı aynı IP'yi paylaşabilir, bu yüzden geniş.
+    "DAILY_LIMIT_PER_IP": "150",
+    // Tüm kullanıcılar için günlük toplam: ücretsiz Gemini kotasını ve ileride faturayı korur.
+    "GLOBAL_DAILY_LIMIT": "1500"
   },
   // IP başına dakikada en fazla 6 analiz isteği.
   "ratelimits": [
     { "name": "ANALYZE_LIMITER", "namespace_id": "1001", "simple": { "limit": 6, "period": 60 } }
   ]
-  // Günlük limit için isteğe bağlı KV:
-  //   npx wrangler kv namespace create USAGE
-  // komutunun verdiği id ile aşağıdakini ekleyin:
+  // USAGE (günlük sayaçlar + sonuç önbelleği) KV'si: .github/scripts/ensure-kv.mjs oluşturup bağlar.
+  // Elle kurmak için: npx wrangler kv namespace create USAGE, çıkan id'yi şuraya yazın:
   // "kv_namespaces": [{ "binding": "USAGE", "id": "<id>" }]
 }

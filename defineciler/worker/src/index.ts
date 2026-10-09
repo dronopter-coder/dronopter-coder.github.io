@@ -1,4 +1,14 @@
 import { analyzeWithGemini, HttpError, MOCK_RESULT, parseAnalyzeRequest } from './gemini';
+import {
+  assertWithinLimits,
+  fingerprint,
+  getCachedResult,
+  limitsFromEnv,
+  parseDeviceId,
+  putCachedResult,
+  recordUsage,
+  type Who,
+} from './limits';
 import { buildNews } from './news';
 
 export interface Env {
@@ -7,6 +17,8 @@ export interface Env {
   GEMINI_FALLBACK_MODELS?: string;
   APP_KEY?: string;
   DAILY_LIMIT_PER_IP?: string;
+  DEVICE_DAILY_LIMIT?: string;
+  GLOBAL_DAILY_LIMIT?: string;
   MOCK_GEMINI?: string;
   ANALYZE_LIMITER?: RateLimit;
   USAGE?: KVNamespace;
@@ -15,7 +27,7 @@ export interface Env {
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, X-App-Key',
+  'Access-Control-Allow-Headers': 'Content-Type, X-App-Key, X-Device-Id',
 };
 
 const json = (data: unknown, status = 200, extra: Record<string, string> = {}) =>
@@ -26,22 +38,19 @@ const json = (data: unknown, status = 200, extra: Record<string, string> = {}) =
 
 const NEWS_TTL = 30 * 60;
 
-async function enforceLimits(req: Request, env: Env) {
-  const ip = req.headers.get('CF-Connecting-IP') ?? 'unknown';
-  if (env.ANALYZE_LIMITER) {
-    const { success } = await env.ANALYZE_LIMITER.limit({ key: ip });
-    if (!success) throw new HttpError(429, 'Çok hızlı istek gönderildi. Lütfen bir dakika bekleyin.', 'rate_limited');
-  }
-  if (env.USAGE) {
-    const limit = Number(env.DAILY_LIMIT_PER_IP ?? '30');
-    const key = `d:${new Date().toISOString().slice(0, 10)}:${ip}`;
-    const used = Number((await env.USAGE.get(key)) ?? '0');
-    if (used >= limit) throw new HttpError(429, 'Bugünkü analiz sınırına ulaşıldı. Yarın tekrar deneyin.', 'daily_limit');
-    await env.USAGE.put(key, String(used + 1), { expirationTtl: 60 * 60 * 48 });
-  }
+const whoIs = (req: Request): Who => ({
+  ip: req.headers.get('CF-Connecting-IP') ?? 'unknown',
+  device: parseDeviceId(req.headers.get('X-Device-Id')),
+});
+
+/** Dakikalık hız sınırı (KV gerektirmez). */
+async function enforceRate(who: Who, env: Env) {
+  if (!env.ANALYZE_LIMITER) return;
+  const { success } = await env.ANALYZE_LIMITER.limit({ key: who.device ?? who.ip });
+  if (!success) throw new HttpError(429, 'Çok hızlı istek gönderildi. Lütfen bir dakika bekleyin.', 'rate_limited');
 }
 
-async function handleAnalyze(req: Request, env: Env) {
+async function handleAnalyze(req: Request, env: Env, ctx: ExecutionContext) {
   if (env.APP_KEY && req.headers.get('X-App-Key') !== env.APP_KEY) {
     throw new HttpError(401, 'Yetkisiz istek.', 'unauthorized');
   }
@@ -53,9 +62,25 @@ async function handleAnalyze(req: Request, env: Env) {
   if (env.MOCK_GEMINI === '1') return json({ result: MOCK_RESULT, mock: true });
   if (!env.GEMINI_API_KEY) throw new HttpError(500, 'Sunucu yapılandırılmamış (GEMINI_API_KEY eksik).', 'config');
 
-  await enforceLimits(req, env);
+  const who = whoIs(req);
+  await enforceRate(who, env);
+
+  // Aynı fotoğraf (ve not) daha önce analiz edildiyse Gemini'ye gitmeden önceki sonuç verilir.
+  const fp = env.USAGE ? await fingerprint(body.image, body.note) : null;
+  if (env.USAGE && fp) {
+    const hit = await getCachedResult<unknown>(env.USAGE, fp);
+    if (hit) return json({ result: hit, model: 'cache' });
+    await assertWithinLimits(env.USAGE, who, limitsFromEnv(env));
+  }
+
   const models = [env.GEMINI_MODEL || 'gemini-flash-latest', ...(env.GEMINI_FALLBACK_MODELS ?? '').split(',')];
   const { result, model } = await analyzeWithGemini(body, env.GEMINI_API_KEY, models);
+  if (env.USAGE && fp) {
+    // Sonuç dönmüşken yanıtı geciktirmeden kaydet; kayıt hatası kullanıcıya yansımaz.
+    ctx.waitUntil(
+      Promise.all([recordUsage(env.USAGE, who), putCachedResult(env.USAGE, fp, result)]).catch((e) => console.error('kv', e)),
+    );
+  }
   return json({ result, model });
 }
 
@@ -77,7 +102,7 @@ export default {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
     try {
-      if (url.pathname === '/analyze' && req.method === 'POST') return await handleAnalyze(req, env);
+      if (url.pathname === '/analyze' && req.method === 'POST') return await handleAnalyze(req, env, ctx);
       if (url.pathname === '/news' && req.method === 'GET') return await handleNews(req, ctx);
       if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, service: 'defineciler-api' });
       return json({ error: 'Bulunamadı', code: 'not_found' }, 404);
