@@ -2,9 +2,9 @@
 export default {
   async fetch(req, env) {
     if (req.headers.get('x-key') !== env.KEY) return new Response('forbidden', { status: 403 });
-    const { prompt, seed, model } = await req.json();
+    const { prompt, model } = await req.json();
     try {
-      const out = await env.AI.run(model || '@cf/black-forest-labs/flux-1-schnell', { prompt, steps: 8, seed });
+      const out = await env.AI.run(model || '@cf/black-forest-labs/flux-1-schnell', { prompt, steps: 8 });
       return Response.json({ image: out.image });
     } catch (e) {
       return Response.json({ error: String(e?.message ?? e) }, { status: 500 });
