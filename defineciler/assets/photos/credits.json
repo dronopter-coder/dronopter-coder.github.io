@@ -307,6 +307,13 @@
     "url": "https://commons.wikimedia.org/wiki/File:Khatchkar_at_Goshavank_Monastery_in_Armenia.jpg",
     "v": 2
   },
+  "sign:insan": {
+    "file": "sign-insan.jpg",
+    "author": "The original uploader was Clicgauche at French Wikipedia .",
+    "license": "CC BY-SA 1.0",
+    "url": "https://commons.wikimedia.org/wiki/File:8_ligne_infanterie_stele.jpg",
+    "v": 2
+  },
   "sign:kartal": {
     "file": "sign-kartal.jpg",
     "author": "Yusef Majidzadeh",
@@ -321,11 +328,25 @@
     "url": "https://commons.wikimedia.org/wiki/File:Tomb_of_Amyntas_2020-03-15-2.jpg",
     "v": 2
   },
+  "sign:kazan": {
+    "file": "sign-kazan.jpg",
+    "author": "ד\"ר אבישי טייכר",
+    "license": "CC BY 2.5",
+    "url": "https://commons.wikimedia.org/wiki/File:PikiWiki_Israel_13706_Wine_press_in_Shivta.jpg",
+    "v": 2
+  },
   "sign:keci": {
     "file": "sign-keci.jpg",
     "author": "Asef-m-m",
     "license": "CC BY-SA 4.0",
     "url": "https://commons.wikimedia.org/wiki/File:Golpayegan.petroglyphs0101.jpg",
+    "v": 2
+  },
+  "sign:kenet": {
+    "file": "sign-kenet.jpg",
+    "author": "Rubyk",
+    "license": "CC BY-SA 2.5",
+    "url": "https://commons.wikimedia.org/wiki/File:Perfectwall.jpg",
     "v": 2
   },
   "sign:kertenkele": {
@@ -347,6 +368,13 @@
     "author": "No machine-readable author provided. JeremyA assumed (based on copyright claims).",
     "license": "CC BY-SA 2.5",
     "url": "https://commons.wikimedia.org/wiki/File:Benchmark_in_Edinburgh.jpg",
+    "v": 2
+  },
+  "sign:sahte-kapi": {
+    "file": "sign-sahte-kapi.jpg",
+    "author": "Zeynel Cebeci",
+    "license": "CC BY-SA 4.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Street_in_Yaz%C4%B1l%C4%B1kaya_01.jpg",
     "v": 2
   },
   "sign:sarnic": {
@@ -396,6 +424,13 @@
     "author": "Hans Hillewaert",
     "license": "CC BY-SA 4.0",
     "url": "https://commons.wikimedia.org/wiki/File:Rosetta_Stone.JPG",
+    "v": 2
+  },
+  "sign:yilan": {
+    "file": "sign-yilan.jpg",
+    "author": "Kallimachos",
+    "license": "CC BY 2.5",
+    "url": "https://commons.wikimedia.org/wiki/File:NAMA_St%C3%A8le_d%27H%C3%A8g%C3%A8s%C3%B4.jpg",
     "v": 2
   },
   "sign:yuz": {
