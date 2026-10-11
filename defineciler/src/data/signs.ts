@@ -83,7 +83,7 @@ export const SIGNS: Sign[] = [
     where: 'Göbekli Tepe, Roma sunak ve mezar stelleri, Bizans ve Ermeni taş süslemeleri, Mardin–Tarsus Şahmeran motifleri.',
     limit:
       'Kayadaki kıvrımlı damarlar, kök izleri ve su oluklarının çoğu “yılan” sanılır. Gerçek bir kabartmanın düzgün işçiliği ve baş detayı olur. Varsa bile anlamı koruma ya da şifadır; bir gömüyü gösterdiğine dair kazı kanıtı yoktur.',
-    photo: ['en:Rod of Asclepius', 'en:Göbekli Tepe'],
+    photo: ['en:Grave Stele of Hegeso'],
     related: ['akrep', 'kertenkele', 'kaplumbaga'],
   },
   {
@@ -105,7 +105,6 @@ export const SIGNS: Sign[] = [
     where: 'Roma dönemi küçük figürinler; arazide ise çoğunlukla volkanik ve granit bölgelerdeki yuvarlak kayalar.',
     limit:
       'İnsan beyni rastgele şekillerde tanıdık figürler görür (pareidolia). Alet izi, simetri ve düzgün kenar yoksa kaya doğaldır. Yalnızca şekle bakarak kazı yapmak hem sonuçsuz kalır hem de suç teşkil edebilir.',
-    photo: ['en:Turtles in mythology', 'en:Pareidolia'],
     related: ['yilan', 'canak', 'tas-yigini'],
   },
   {
@@ -213,7 +212,6 @@ export const SIGNS: Sign[] = [
       'Yunanca “ikhthys” sözcüğünün harfleri “İsa Mesih, Tanrı’nın Oğlu, Kurtarıcı” ifadesinin baş harfleridir. Bu yüzden balık, erken Hristiyanların mezar taşlarında, kandillerde ve mozaiklerde inanç işareti olarak kullanılır.',
     where: 'Roma–Bizans dönemi mezar taşları, kandiller, kilise mozaikleri.',
     limit: 'Bir balık figürü, çoğunlukla bir Hristiyan mezarını ya da kutsal mekânı gösterir; definenin değil.',
-    photo: ['en:Ichthys'],
     related: ['hac', 'kus'],
   },
   {
@@ -287,7 +285,6 @@ export const SIGNS: Sign[] = [
       'Hilal, antik Byzantion’un ve ay tanrıçası Hekate’nin simgesidir; Sasani ve Bizans sikkelerinde de görülür. Selçuklu ve Osmanlı döneminde mezar taşlarında, cami alemlerinde ve sancaklarda yaygınlaşır.',
     where: 'Antik sikkeler, Bizans ve Osmanlı mezar taşları, cami ve türbe süslemeleri.',
     limit: 'Mezar taşındaki hilal, mezarın bir Müslümana ait olduğunu gösterir; gömü işareti değildir.',
-    photo: ['en:Star and crescent'],
     related: ['gunes', 'yildiz'],
   },
   {
@@ -319,7 +316,6 @@ export const SIGNS: Sign[] = [
       'Altı köşeli yıldız (Mühr-i Süleyman), İslam sanatında Hz. Süleyman’ın mührü olarak bilinir ve kötülüğe karşı koruyucu sayılır; cami, çeşme ve mezar taşlarında süs olarak işlenir. Beş köşeli yıldız Antik Çağ’dan beri bilinen geometrik bir motiftir.',
     where: 'Selçuklu ve Osmanlı yapıları, çeşmeler, mezar taşları, sikkeler.',
     limit: '“Tılsım” anlatıları kanıtlanamaz. Motif çoğu zaman yalnızca süslemedir.',
-    photo: ['en:Seal of Solomon', 'en:Hexagram'],
     related: ['hilal', 'gunes'],
   },
   {
@@ -357,7 +353,6 @@ export const SIGNS: Sign[] = [
       'At nalı, Orta Çağ’dan beri uğur ve nazarlık olarak kapılara asılır. Kayalardaki U biçimli oymaların bir kısmı ise hayvan bağlama yeri, kapı söve yuvası ya da su yatağıdır.',
     where: 'Köy evleri, ahırlar, eski yollar ve kaya yüzeyleri.',
     limit: 'U biçimli oymaların çoğu işlevseldir; “mağara işareti” yorumunun kanıtı yoktur.',
-    photo: ['en:Horseshoe'],
     related: ['hac', 'canak'],
   },
   {
@@ -388,7 +383,6 @@ export const SIGNS: Sign[] = [
       'Tamgalar Kayı, Bayındır gibi Oğuz boylarının ve sonraki Yörük aşiretlerinin damgasıdır. Hayvanlara, kayalara, mezar taşlarına ve halılara vurularak sahiplik, sınır ya da aidiyet belirtilir. Kaşgarlı Mahmut’un sözlüğünde 22 Oğuz boyunun damgası çizilmiştir.',
     where: 'Yaylalar, yörük mezarlıkları, kervan yolları, halı ve kilimler.',
     limit: 'Tamga bir otlak, sürü ya da mezarın kime ait olduğunu söyler; altın değil kimlik bilgisidir.',
-    photo: ['en:Tamga'],
     related: ['tas-yigini', 'sinir-tasi'],
   },
   {
@@ -420,7 +414,7 @@ export const SIGNS: Sign[] = [
       'Kayalardaki kazan biçimli oyuklar çoğunlukla dibek (tahıl ezme), şarap ve zeytinyağı işlik çukurları ya da sunu kaplarıdır. Antik işliklerde ezme teknesinin yanında süzme çukuru ve oluk bulunur.',
     where: 'Bağ ve zeytinlik alanları, köy çevreleri, antik çiftlik kalıntıları.',
     limit: 'Bir işlik ya da dibek, köylülerin yüzyıllarca kullandığı bir araçtır; içi zaten açıktadır.',
-    photo: ['en:Cauldron', 'en:Winepress'],
+    photo: ['en:Winepress'],
     related: ['canak', 'sarnic'],
   },
   {
@@ -475,7 +469,6 @@ export const SIGNS: Sign[] = [
       'Roma ve Helenistik tapınaklarında ziyaretçiler, tanrıya geldiklerini belgelemek için ayak izi işlenmiş adak taşları bırakırdı. Bazı ayak izleri ise bir tanrının ya da kutsal kişinin “izi” olarak saygı görür (Kadem-i Şerif gibi). Bizans döneminde hac yollarında da benzer işaretler bulunur.',
     where: 'Tapınak ve kutsal alan girişleri, hac yolları, türbeler.',
     limit: 'Ayak izi oyması bir ziyaret ya da adak işaretidir. Kayalardaki doğal çukurlar da kolayca ayak izine benzetilir.',
-    photo: ['en:Footprint'],
     related: ['el', 'yazit'],
   },
   {
@@ -564,7 +557,7 @@ export const SIGNS: Sign[] = [
       'Frig kült anıtlarında (Midas Anıtı, Arslankaya) kayaya oyulmuş kapı nişi, ana tanrıça Kybele’nin sembolik girişidir; arkasında oda yoktur. Mezar nişleri ise küçük adak, kandil ya da ölü küllerini koymak için açılır.',
     where: 'Frig Vadisi (Eskişehir–Afyon), Likya, Kapadokya, Roma nekropolleri.',
     limit: 'Kült cepheleri kasıtlı olarak “kapalı” yapılmıştır. Delinen kayalar geri getirilemez biçimde bozulur.',
-    photo: ['en:Midas Monument', 'en:Phrygian Valley'],
+    photo: ['en:Midas City'],
     related: ['kaya-mezari', 'basamak'],
   },
   {
@@ -580,7 +573,6 @@ export const SIGNS: Sign[] = [
       'Frig ve Urartu kutsal alanlarında kayaya oyulmuş basamaklı sunaklar (örneğin Frig “basamaklı sunakları”) tanrıya sunulan bir taht ya da sunu yeridir. Kalelerde kayaya oyulmuş basamaklar yukarı ve su kaynağına çıkan yollardır. Taş ocaklarında ise blok çıkarılırken basamaklı izler kalır.',
     where: 'Frig ve Urartu kaleleri, kale yamaçları, antik taş ocakları.',
     limit: 'Basamaklar çoğunlukla bir yere çıkmak ya da taş almak için yapılmıştır; altında bir şey saklı değildir.',
-    photo: ['en:Urartu', 'en:Quarry'],
     related: ['sahte-kapi', 'sarnic', 'canak'],
   },
   {
@@ -677,7 +669,7 @@ export const SIGNS: Sign[] = [
       'Antik taş yapılarda bloklar, demir ya da bronz kenetlerle birbirine bağlanır ve kenetler erimiş kurşunla sabitlenirdi. Taşın üstündeki “I” ya da “güvercin kuyruğu” biçimli oyuklar bu kenetlerin yuvalarıdır. Orta Çağ’da metal kenetler sökülüp yeniden kullanıldığı için yuvalar çoğunlukla boştur.',
     where: 'Tapınak, tiyatro ve sur blokları; köy evlerinde devşirme taşlar.',
     limit: 'Bu oyuklar yapım tekniğinin izidir; içi boş olması normaldir. Kurşun kalıntısı varsa da hiçbir değeri yoktur.',
-    photo: ['en:Dovetail joint', 'en:Ashlar'],
+    photo: ['en:Ashlar'],
     related: ['tasci', 'yazit'],
   },
 ];

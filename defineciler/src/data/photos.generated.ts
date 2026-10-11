@@ -232,30 +232,6 @@ export const PHOTOS: Record<string, Photo> = {
     license: "CC BY 2.0",
     url: "https://commons.wikimedia.org/wiki/File:Lyre_detail_(Royal_Cemetery_of_Ur).jpg",
   },
-  'sign:at-nali': {
-    image: require('../../assets/photos/sign-at-nali.jpg'),
-    author: "Wikimedia Commons",
-    license: "CC BY-SA 3.0",
-    url: "https://commons.wikimedia.org/wiki/File:Horseshoe.jpg",
-  },
-  'sign:ayak': {
-    image: require('../../assets/photos/sign-ayak.jpg'),
-    author: "Buzz Aldrin",
-    license: "Public domain",
-    url: "https://commons.wikimedia.org/wiki/File:Buzz_Aldrin%27s_bootprint_on_the_Moon,_AS11-40-5877.jpg",
-  },
-  'sign:balik': {
-    image: require('../../assets/photos/sign-balik.png'),
-    author: "Fibonacci",
-    license: "Public domain",
-    url: "https://commons.wikimedia.org/wiki/File:Ichthus.svg",
-  },
-  'sign:basamak': {
-    image: require('../../assets/photos/sign-basamak.png'),
-    author: "Sémhur",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Urartu_743-en.svg",
-  },
   'sign:boga': {
     image: require('../../assets/photos/sign-boga.jpg'),
     author: "No machine-readable author provided. Marsyas assumed (based on copyright claims).",
@@ -292,24 +268,6 @@ export const PHOTOS: Record<string, Photo> = {
     license: "CC BY 2.0",
     url: "https://commons.wikimedia.org/wiki/File:Khatchkar_at_Goshavank_Monastery_in_Armenia.jpg",
   },
-  'sign:hilal': {
-    image: require('../../assets/photos/sign-hilal.png'),
-    author: "Vladikuzasnij",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Islam_symbol.svg",
-  },
-  'sign:insan': {
-    image: require('../../assets/photos/sign-insan.jpg'),
-    author: "The original uploader was Clicgauche at French Wikipedia .",
-    license: "CC BY-SA 1.0",
-    url: "https://commons.wikimedia.org/wiki/File:8_ligne_infanterie_stele.jpg",
-  },
-  'sign:kaplumbaga': {
-    image: require('../../assets/photos/sign-kaplumbaga.jpg'),
-    author: "Merlingenial",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Felsengesicht_von_Dwejra_(Gozo,_Malta).jpg",
-  },
   'sign:kartal': {
     image: require('../../assets/photos/sign-kartal.jpg'),
     author: "Yusef Majidzadeh",
@@ -322,23 +280,11 @@ export const PHOTOS: Record<string, Photo> = {
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Tomb_of_Amyntas_2020-03-15-2.jpg",
   },
-  'sign:kazan': {
-    image: require('../../assets/photos/sign-kazan.jpg'),
-    author: "Lily15",
-    license: "CC BY-SA 3.0",
-    url: "https://commons.wikimedia.org/wiki/File:Gulyas080.jpg",
-  },
   'sign:keci': {
     image: require('../../assets/photos/sign-keci.jpg'),
     author: "Asef-m-m",
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Golpayegan.petroglyphs0101.jpg",
-  },
-  'sign:kenet': {
-    image: require('../../assets/photos/sign-kenet.jpg'),
-    author: "Wikimedia Commons",
-    license: "CC BY-SA 3.0",
-    url: "https://commons.wikimedia.org/wiki/File:Finished_dovetail.jpg",
   },
   'sign:kertenkele': {
     image: require('../../assets/photos/sign-kertenkele.jpg'),
@@ -358,12 +304,6 @@ export const PHOTOS: Record<string, Photo> = {
     license: "CC BY-SA 2.5",
     url: "https://commons.wikimedia.org/wiki/File:Benchmark_in_Edinburgh.jpg",
   },
-  'sign:sahte-kapi': {
-    image: require('../../assets/photos/sign-sahte-kapi.jpg'),
-    author: "Zeynel Cebeci",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Street_in_Yaz%C4%B1l%C4%B1kaya_01.jpg",
-  },
   'sign:sarnic': {
     image: require('../../assets/photos/sign-sarnic.jpg'),
     author: "Axel Rouvin from Bordeaux, France",
@@ -381,12 +321,6 @@ export const PHOTOS: Record<string, Photo> = {
     author: "Wikimedia Commons",
     license: "CC BY-SA 3.0",
     url: "https://commons.wikimedia.org/wiki/File:NautilusCutawayLogarithmicSpiral.jpg",
-  },
-  'sign:tamga': {
-    image: require('../../assets/photos/sign-tamga.png'),
-    author: "Ruzgar",
-    license: "Public domain",
-    url: "https://commons.wikimedia.org/wiki/File:Bayundur.svg",
   },
   'sign:tas-yigini': {
     image: require('../../assets/photos/sign-tas-yigini.jpg'),
@@ -411,18 +345,6 @@ export const PHOTOS: Record<string, Photo> = {
     author: "Hans Hillewaert",
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Rosetta_Stone.JPG",
-  },
-  'sign:yilan': {
-    image: require('../../assets/photos/sign-yilan.png'),
-    author: "Verdy p",
-    license: "Public domain",
-    url: "https://commons.wikimedia.org/wiki/File:Star_of_life2.svg",
-  },
-  'sign:yildiz': {
-    image: require('../../assets/photos/sign-yildiz.png'),
-    author: "User Securiger on en.wikipedia , SVG version User Pitoutom on fr.wikipedia",
-    license: "CC BY-SA 3.0",
-    url: "https://commons.wikimedia.org/wiki/File:Seal_of_Solomon_(Simple_Version).svg",
   },
   'sign:yuz': {
     image: require('../../assets/photos/sign-yuz.jpg'),
