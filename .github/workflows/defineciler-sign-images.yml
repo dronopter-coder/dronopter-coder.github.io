@@ -1,7 +1,12 @@
 name: Defineciler işaret görselleri (Gemini)
 
-# Elle tetiklenir: define işaretleri için fotoğraf gerçekçiliğinde görseller üretir ve dala kaydeder.
+# Define işaretleri için fotoğraf gerçekçiliğinde görseller üretir ve dala kaydeder.
+# Tetikleme: .github/sign-images-request dosyasına mod yazıp gönderin (probe | all | id1,id2)
+# ya da (ana dalda) elle çalıştırın.
 on:
+  push:
+    paths:
+      - '.github/sign-images-request'
   workflow_dispatch:
     inputs:
       mode:
@@ -23,12 +28,19 @@ jobs:
         with:
           node-version: 22
       - run: npm i --no-save --prefix .github/scripts sharp@0.34.5
+      - name: Modu belirle
+        id: mode
+        run: |
+          mode="${{ inputs.mode }}"
+          [ -z "$mode" ] && mode=$(head -1 .github/sign-images-request | tr -d '[:space:]')
+          echo "mode=${mode:-probe}" >> "$GITHUB_OUTPUT"
+          echo "Mod: ${mode:-probe}"
       - name: Görselleri üret
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           IMAGE_MODEL: ${{ inputs.model }}
           NODE_PATH: ${{ github.workspace }}/.github/scripts/node_modules
-        run: node --experimental-strip-types .github/scripts/gen-sign-images.mjs "${{ inputs.mode }}"
+        run: node --experimental-strip-types .github/scripts/gen-sign-images.mjs "${{ steps.mode.outputs.mode }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -36,7 +48,7 @@ jobs:
           path: defineciler/assets/signs
           if-no-files-found: ignore
       - name: Dala kaydet
-        if: inputs.mode != 'probe'
+        if: steps.mode.outputs.mode != 'probe'
         run: |
           git add defineciler/assets/signs
           if git diff --cached --quiet; then echo "Değişiklik yok."; exit 0; fi
