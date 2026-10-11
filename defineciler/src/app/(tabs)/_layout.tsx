@@ -59,9 +59,15 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="history"
-        options={{ title: 'Geçmiş', headerTitle: 'Taramalarım', tabBarIcon: (p) => <TabIcon name="history" {...p} /> }}
+        name="signs"
+        options={{
+          title: 'İşaretler',
+          headerTitle: 'Define İşaretleri',
+          tabBarIcon: (p) => <TabIcon name="sign-direction" {...p} />,
+        }}
       />
+      {/* Geçmiş sekme çubuğunda yok; ana sayfadaki "Son Taramalar → Tümü" ile açılır. */}
+      <Tabs.Screen name="history" options={{ href: null, title: 'Geçmiş', headerTitle: 'Taramalarım' }} />
     </Tabs>
   );
 }

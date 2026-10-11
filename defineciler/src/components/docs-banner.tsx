@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
 
+import type { IconName } from '@/components/ui';
 import { Colors, Fonts, Radius } from '@/constants/theme';
 import { DOC_GROUPS, DOCS_TITLE } from '@/data/belgeler.generated';
 import { PHOTOS } from '@/data/photos.generated';
@@ -13,12 +14,23 @@ export const DOCS_COVER = (PHOTOS['docs:cover'] ?? PHOTOS['guide:muhurler'])?.im
 
 const SECTIONS = DOC_GROUPS.reduce((n, g) => n + g.sections.length, 0);
 
-/** Ana sayfadaki "Volçan Voyvoda ve Eşkıya Belgeleri" duyurusu: görselli banner, ilk girişte sağdan kayarak gelir. */
-export function DocsBanner({ onPress }: { onPress: () => void }) {
+type BannerProps = {
+  image?: number;
+  icon: IconName;
+  badge: string;
+  title: string;
+  sub: string;
+  cta: string;
+  onPress: () => void;
+  delay?: number;
+};
+
+/** Ana sayfa duyuru kartı: görselli banner, ilk girişte sağdan kayarak gelir. */
+export function FeatureBanner({ image, icon, badge, title, sub, cta, onPress, delay = 0 }: BannerProps) {
   return (
-    <Animated.View entering={FadeInRight.duration(450)}>
+    <Animated.View entering={FadeInRight.duration(450).delay(delay)}>
       <Pressable onPress={onPress} style={({ pressed }) => [styles.card, pressed && { opacity: 0.9 }]}>
-        <Image source={DOCS_COVER} style={StyleSheet.absoluteFill} contentFit="cover" />
+        {image ? <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" /> : null}
         <LinearGradient
           colors={['rgba(12,10,6,0.95)', 'rgba(12,10,6,0.75)', 'rgba(12,10,6,0.25)']}
           start={{ x: 0, y: 0.5 }}
@@ -26,21 +38,36 @@ export function DocsBanner({ onPress }: { onPress: () => void }) {
           style={StyleSheet.absoluteFill}
         />
         <View style={styles.badge}>
-          <MaterialCommunityIcons name="script-text-outline" size={13} color={Colors.onGold} />
-          <Text style={styles.badgeText}>YENİ</Text>
+          <MaterialCommunityIcons name={icon} size={13} color={Colors.onGold} />
+          <Text style={styles.badgeText}>{badge}</Text>
         </View>
         <Text style={styles.title} numberOfLines={2}>
-          {DOCS_TITLE}
+          {title}
         </Text>
         <Text style={styles.sub} numberOfLines={2}>
-          {DOC_GROUPS.length} bölüm · {SECTIONS} mevki · Martin Voyvoda ve 32 kişilik çetenin izinde
+          {sub}
         </Text>
         <View style={styles.cta}>
-          <Text style={styles.ctaText}>Oku</Text>
+          <Text style={styles.ctaText}>{cta}</Text>
           <MaterialCommunityIcons name="arrow-right" size={16} color={Colors.onGold} />
         </View>
       </Pressable>
     </Animated.View>
+  );
+}
+
+/** Ana sayfadaki "Volçan Voyvoda ve Eşkıya Belgeleri" duyurusu. */
+export function DocsBanner({ onPress }: { onPress: () => void }) {
+  return (
+    <FeatureBanner
+      image={DOCS_COVER}
+      icon="script-text-outline"
+      badge="YENİ"
+      title={DOCS_TITLE}
+      sub={`${DOC_GROUPS.length} bölüm · ${SECTIONS} mevki · Martin Voyvoda ve 32 kişilik çetenin izinde`}
+      cta="Oku"
+      onPress={onPress}
+    />
   );
 }
 

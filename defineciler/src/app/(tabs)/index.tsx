@@ -6,6 +6,7 @@ import { Pressable, ScrollView, Share, StyleSheet, Text, useWindowDimensions, Vi
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { DocsBanner } from '@/components/docs-banner';
+import { SignsBanner } from '@/components/sign-glyph';
 import { HomeHero } from '@/components/home-hero';
 import { LogoMark, Wordmark } from '@/components/logo';
 import { Sparkle } from '@/components/sparkle';
@@ -115,6 +116,7 @@ export default function ScanHome() {
 
           <View style={styles.announce}>
             <DocsBanner onPress={() => router.push('/documents')} />
+            <SignsBanner onPress={() => router.push('/signs')} />
           </View>
 
           {recent.length > 0 && (
@@ -202,7 +204,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.sm,
   },
   headerActions: { flexDirection: 'row', alignItems: 'center', gap: Spacing.lg },
-  announce: { paddingHorizontal: Spacing.xl, marginTop: Spacing.xxl },
+  announce: { paddingHorizontal: Spacing.xl, marginTop: Spacing.xxl, gap: Spacing.md },
   intro: { paddingHorizontal: Spacing.xl, paddingTop: Spacing.xl, zIndex: 2 },
   eyebrowRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   eyebrowDot: {

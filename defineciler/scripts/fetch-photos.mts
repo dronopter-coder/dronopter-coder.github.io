@@ -7,6 +7,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 
 import { GUIDE } from '../src/data/guide.ts';
 import { PLACES } from '../src/data/places.ts';
+import { SIGNS } from '../src/data/signs.ts';
 
 const ROOT = new URL('../', import.meta.url);
 const PHOTO_DIR = new URL('assets/photos/', ROOT);
@@ -31,6 +32,9 @@ const entries: Entry[] = [
     candidates: g.photo ?? ([g.wiki?.en && `en:${g.wiki.en}`, g.wiki?.tr && `tr:${g.wiki.tr}`].filter(Boolean) as string[]),
   })), // "Volçan Voyvoda ve Eşkıya Belgeleri" kapağı: eski hazine haritası / ferman
   { key: 'docs:cover', candidates: ['en:Treasure map', 'tr:Ferman', 'en:Firman'] },
+  // Define işaretleri: her işaret için gerçek bir örnek; kapak için kaya resmi.
+  ...SIGNS.filter((s) => s.photo?.length).map((s) => ({ key: `sign:${s.id}`, candidates: s.photo! })),
+  { key: 'signs:cover', candidates: ['en:Petroglyph', 'en:Rock art', 'en:Cupule'] },
 ];
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
