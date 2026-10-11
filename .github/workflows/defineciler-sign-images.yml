@@ -40,10 +40,10 @@ jobs:
         working-directory: .github/imagegen
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          ACCT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -o pipefail
-          if [ -n "$CF_ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID"; fi
+          if [ -n "$ACCT" ]; then export CLOUDFLARE_ACCOUNT_ID="$ACCT"; fi
           key=$(openssl rand -hex 16)
           echo "::add-mask::$key"
           cat > wrangler.jsonc <<CFG
@@ -54,7 +54,13 @@ jobs:
           url=$(grep -oE 'https://[A-Za-z0-9.-]+\.workers\.dev' deploy.log | head -1)
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "key=$key" >> "$GITHUB_OUTPUT"
-          sleep 10
+          # Yeni workers.dev adresi birkaç dakikada yayılır; Worker'ımız 403 dönene kadar bekle.
+          for i in $(seq 1 40); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$url" || true)
+            echo "deneme $i: HTTP $code"
+            [ "$code" = "403" ] && break
+            sleep 10
+          done
       - name: Görselleri üret
         env:
           CF_IMAGE_URL: ${{ steps.cf.outputs.url }}
@@ -68,10 +74,10 @@ jobs:
         working-directory: .github/imagegen
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          ACCT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          if [ -n "$CF_ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID"; fi
-          npx -y wrangler@4 delete --name defineciler-imagegen --force || true
+          if [ -n "$ACCT" ]; then export CLOUDFLARE_ACCOUNT_ID="$ACCT"; fi
+          npx -y wrangler@4 delete --force || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
