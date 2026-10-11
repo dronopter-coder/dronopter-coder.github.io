@@ -4,10 +4,21 @@ import { SvgXml } from 'react-native-svg';
 import { FeatureBanner } from '@/components/docs-banner';
 import { Colors } from '@/constants/theme';
 import { PHOTOS } from '@/data/photos.generated';
+import { SIGN_ART } from '@/data/sign-art';
 import { EVIDENCE, glyphXml, SIGNS, type Sign, type SignEvidence } from '@/data/signs';
 
 /** İşaretler kapağı: derlemede indirilen kaya resmi fotoğrafı, yoksa rehberdeki işaretler fotoğrafı. */
 export const SIGNS_COVER = (PHOTOS['signs:cover'] ?? PHOTOS['guide:isaretler'])?.image;
+
+/** İşaretin görseli: önce hazırlanmış görsel, yoksa Wikimedia Commons örnek fotoğrafı (atıflı). */
+export function signImage(id: string): { image: number; credit?: string } | undefined {
+  const art = SIGN_ART[id];
+  if (art) return { image: art };
+  const photo = PHOTOS[`sign:${id}`];
+  return photo
+    ? { image: photo.image, credit: `Örnek fotoğraf: ${photo.author} · ${photo.license} · Wikimedia Commons` }
+    : undefined;
+}
 
 /** İşaretin çizgi piktogramı, altın renkli daire içinde. */
 export function SignGlyph({

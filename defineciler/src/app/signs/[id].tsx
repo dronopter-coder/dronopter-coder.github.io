@@ -6,10 +6,9 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
 import { Callout, Pairs } from '@/components/guide-blocks';
-import { EvidenceChip, SIGNS_COVER, SignGlyph } from '@/components/sign-glyph';
+import { EvidenceChip, SIGNS_COVER, SignGlyph, signImage } from '@/components/sign-glyph';
 import { Body, Bullets, Button, Card, EmptyState, SectionTitle } from '@/components/ui';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
-import { PHOTOS } from '@/data/photos.generated';
 import { EVIDENCE, getSign, SIGN_CATEGORIES, SIGNS_GUIDE } from '@/data/signs';
 
 /** "Okumadan önce: yorum sınırı" kılavuzu. */
@@ -53,7 +52,7 @@ export default function SignScreen() {
   const sign = getSign(id);
   if (!sign) return <EmptyState icon="sign-direction-remove" title="İşaret bulunamadı" />;
 
-  const photo = PHOTOS[`sign:${sign.id}`];
+  const photo = signImage(sign.id);
   const category = SIGN_CATEGORIES.find((c) => c.id === sign.category);
   const related = (sign.related ?? []).map(getSign).filter((s) => !!s);
   const evidence = EVIDENCE[sign.evidence];
@@ -68,9 +67,11 @@ export default function SignScreen() {
             <Image source={photo.image} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
             <LinearGradient colors={['transparent', 'rgba(20,16,10,0.9)']} locations={[0.4, 1]} style={StyleSheet.absoluteFill} />
             <SignGlyph sign={sign} size={64} style={styles.heroGlyph} />
-            <Text style={styles.credit} numberOfLines={1}>
-              Örnek fotoğraf: {photo.author} · {photo.license} · Wikimedia Commons
-            </Text>
+            {photo.credit ? (
+              <Text style={styles.credit} numberOfLines={1}>
+                {photo.credit}
+              </Text>
+            ) : null}
           </>
         ) : (
           <SignGlyph sign={sign} size={120} />

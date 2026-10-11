@@ -6,15 +6,14 @@ import { Fragment, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
-import { EvidenceChip, SIGNS_COVER, SignGlyph } from '@/components/sign-glyph';
+import { EvidenceChip, SIGNS_COVER, SignGlyph, signImage } from '@/components/sign-glyph';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
-import { PHOTOS } from '@/data/photos.generated';
 import { EVIDENCE, SIGN_CATEGORIES, SIGNS, SIGNS_GUIDE, type Sign, type SignCategory } from '@/data/signs';
 
 const open = (id: string) => router.push({ pathname: '/signs/[id]', params: { id } });
 
 function SignTile({ sign, width }: { sign: Sign; width: number }) {
-  const photo = PHOTOS[`sign:${sign.id}`];
+  const photo = signImage(sign.id);
   return (
     <Pressable onPress={() => open(sign.id)} style={({ pressed }) => [styles.tile, { width }, pressed && { opacity: 0.85 }]}>
       <View style={styles.tileArt}>
