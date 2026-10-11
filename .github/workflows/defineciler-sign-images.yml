@@ -35,12 +35,43 @@ jobs:
           [ -z "$mode" ] && mode=$(head -1 .github/sign-images-request | tr -d '[:space:]')
           echo "mode=${mode:-probe}" >> "$GITHUB_OUTPUT"
           echo "Mod: ${mode:-probe}"
+      - name: Geçici görsel Worker'ını yayınla (Cloudflare Workers AI)
+        id: cf
+        working-directory: .github/imagegen
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -o pipefail
+          if [ -n "$CF_ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID"; fi
+          key=$(openssl rand -hex 16)
+          echo "::add-mask::$key"
+          cat > wrangler.jsonc <<CFG
+          { "name": "defineciler-imagegen", "main": "index.js", "compatibility_date": "2026-09-01",
+            "workers_dev": true, "ai": { "binding": "AI" }, "vars": { "KEY": "$key" } }
+          CFG
+          npx -y wrangler@4 deploy 2>&1 | tee deploy.log
+          url=$(grep -oE 'https://[A-Za-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+          sleep 10
       - name: Görselleri üret
         env:
+          CF_IMAGE_URL: ${{ steps.cf.outputs.url }}
+          CF_IMAGE_KEY: ${{ steps.cf.outputs.key }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           IMAGE_MODEL: ${{ inputs.model }}
           NODE_PATH: ${{ github.workspace }}/.github/scripts/node_modules
         run: node --experimental-strip-types .github/scripts/gen-sign-images.mjs "${{ steps.mode.outputs.mode }}"
+      - name: Geçici Worker'ı sil
+        if: always() && steps.cf.outputs.url != ''
+        working-directory: .github/imagegen
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$CF_ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID"; fi
+          npx -y wrangler@4 delete --name defineciler-imagegen --force || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:

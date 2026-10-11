@@ -37,10 +37,24 @@ async function generate(model, prompt) {
   return Buffer.from(part.inlineData.data, 'base64');
 }
 
-const models = [process.env.IMAGE_MODEL, ...(await listImageModels())].filter(Boolean);
+// Cloudflare Workers AI (geçici Worker üzerinden) varsa onu, yoksa Gemini görsel modellerini kullan.
+const CF_URL = process.env.CF_IMAGE_URL;
+async function generateCf(model, prompt, seed) {
+  const res = await fetch(CF_URL, {
+    method: 'POST',
+    headers: { 'x-key': process.env.CF_IMAGE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, seed, model }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || !json.image) throw new Error(`HTTP ${res.status}: ${json.error ?? 'görsel yok'}`);
+  return Buffer.from(json.image, 'base64');
+}
+const models = CF_URL
+  ? [process.env.IMAGE_MODEL || '@cf/black-forest-labs/flux-1-schnell']
+  : [process.env.IMAGE_MODEL, ...(await listImageModels())].filter(Boolean);
 if (!models.length) process.exit(1);
 
-const ids = MODE === 'probe' ? ['yilan'] : MODE === 'all' ? SIGNS.map((s) => s.id) : MODE.split(',');
+const ids = MODE === 'probe' ? ['yilan', 'kartal', 'canak'] : MODE === 'all' ? SIGNS.map((s) => s.id) : MODE.split(',');
 mkdirSync(OUT, { recursive: true });
 let model = null;
 const failed = [];
@@ -51,7 +65,7 @@ for (const id of ids) {
   for (const m of model ? [model] : models) {
     for (let attempt = 0; attempt < 3 && !done; attempt++) {
       try {
-        const img = await generate(m, prompt);
+        const img = CF_URL ? await generateCf(m, prompt, 7 + attempt + id.length * 13) : await generate(m, prompt);
         await sharp(img).resize(960, 640, { fit: 'cover' }).jpeg({ quality: 78, mozjpeg: true }).toFile(`${OUT}/${id}.jpg`);
         console.log(`✓ ${id} (${m})`);
         model = m;
