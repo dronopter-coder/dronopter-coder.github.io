@@ -268,12 +268,6 @@ export const PHOTOS: Record<string, Photo> = {
     license: "CC BY 2.0",
     url: "https://commons.wikimedia.org/wiki/File:Khatchkar_at_Goshavank_Monastery_in_Armenia.jpg",
   },
-  'sign:insan': {
-    image: require('../../assets/photos/sign-insan.jpg'),
-    author: "The original uploader was Clicgauche at French Wikipedia .",
-    license: "CC BY-SA 1.0",
-    url: "https://commons.wikimedia.org/wiki/File:8_ligne_infanterie_stele.jpg",
-  },
   'sign:kartal': {
     image: require('../../assets/photos/sign-kartal.jpg'),
     author: "Yusef Majidzadeh",
@@ -322,12 +316,6 @@ export const PHOTOS: Record<string, Photo> = {
     license: "CC BY-SA 2.5",
     url: "https://commons.wikimedia.org/wiki/File:Benchmark_in_Edinburgh.jpg",
   },
-  'sign:sahte-kapi': {
-    image: require('../../assets/photos/sign-sahte-kapi.jpg'),
-    author: "Zeynel Cebeci",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Street_in_Yaz%C4%B1l%C4%B1kaya_01.jpg",
-  },
   'sign:sarnic': {
     image: require('../../assets/photos/sign-sarnic.jpg'),
     author: "Axel Rouvin from Bordeaux, France",
@@ -369,12 +357,6 @@ export const PHOTOS: Record<string, Photo> = {
     author: "Hans Hillewaert",
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Rosetta_Stone.JPG",
-  },
-  'sign:yilan': {
-    image: require('../../assets/photos/sign-yilan.jpg'),
-    author: "Kallimachos",
-    license: "CC BY 2.5",
-    url: "https://commons.wikimedia.org/wiki/File:NAMA_St%C3%A8le_d%27H%C3%A8g%C3%A8s%C3%B4.jpg",
   },
   'sign:yuz': {
     image: require('../../assets/photos/sign-yuz.jpg'),

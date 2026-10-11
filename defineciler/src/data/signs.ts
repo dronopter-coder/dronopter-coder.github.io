@@ -83,7 +83,6 @@ export const SIGNS: Sign[] = [
     where: 'Göbekli Tepe, Roma sunak ve mezar stelleri, Bizans ve Ermeni taş süslemeleri, Mardin–Tarsus Şahmeran motifleri.',
     limit:
       'Kayadaki kıvrımlı damarlar, kök izleri ve su oluklarının çoğu “yılan” sanılır. Gerçek bir kabartmanın düzgün işçiliği ve baş detayı olur. Varsa bile anlamı koruma ya da şifadır; bir gömüyü gösterdiğine dair kazı kanıtı yoktur.',
-    photo: ['en:Grave Stele of Hegeso'],
     related: ['akrep', 'kertenkele', 'kaplumbaga'],
   },
   {
@@ -502,7 +501,6 @@ export const SIGNS: Sign[] = [
       'Helenistik ve Roma döneminde ölen kişi, mezar stelinde tek başına ya da ailesiyle, sık sık “ölü yemeği” sahnesinde tasvir edilir. Frig ve Likya’da kaya mezarlarının cephelerinde de insan figürleri işlenir.',
     where: 'Antik nekropoller (mezarlıklar), kaya mezarı cepheleri, müzeler.',
     limit: 'Mezar steli bir mezarın varlığını gösterebilir; mezarlar ve içerikleri kanunla korunur.',
-    photo: ['en:Stele', 'en:Funerary banquet'],
     related: ['yuz', 'kaya-mezari', 'yazit'],
   },
 
@@ -557,7 +555,6 @@ export const SIGNS: Sign[] = [
       'Frig kült anıtlarında (Midas Anıtı, Arslankaya) kayaya oyulmuş kapı nişi, ana tanrıça Kybele’nin sembolik girişidir; arkasında oda yoktur. Mezar nişleri ise küçük adak, kandil ya da ölü küllerini koymak için açılır.',
     where: 'Frig Vadisi (Eskişehir–Afyon), Likya, Kapadokya, Roma nekropolleri.',
     limit: 'Kült cepheleri kasıtlı olarak “kapalı” yapılmıştır. Delinen kayalar geri getirilemez biçimde bozulur.',
-    photo: ['en:Midas City'],
     related: ['kaya-mezari', 'basamak'],
   },
   {
