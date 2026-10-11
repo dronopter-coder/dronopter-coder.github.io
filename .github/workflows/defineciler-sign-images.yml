@@ -1,0 +1,46 @@
+name: Defineciler işaret görselleri (Gemini)
+
+# Elle tetiklenir: define işaretleri için fotoğraf gerçekçiliğinde görseller üretir ve dala kaydeder.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'probe (tek görsel dener), all (hepsi) ya da virgülle kimlikler'
+        default: probe
+      model:
+        description: 'İsteğe bağlı model adı'
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm i --no-save --prefix .github/scripts sharp@0.34.5
+      - name: Görselleri üret
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          IMAGE_MODEL: ${{ inputs.model }}
+          NODE_PATH: ${{ github.workspace }}/.github/scripts/node_modules
+        run: node --experimental-strip-types .github/scripts/gen-sign-images.mjs "${{ inputs.mode }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sign-images
+          path: defineciler/assets/signs
+          if-no-files-found: ignore
+      - name: Dala kaydet
+        if: inputs.mode != 'probe'
+        run: |
+          git add defineciler/assets/signs
+          if git diff --cached --quiet; then echo "Değişiklik yok."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "İşaretler: Gemini ile üretilen görseller"
+          git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"
