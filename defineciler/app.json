@@ -77,7 +77,8 @@
     "extra": {
       "apiUrl": "",
       "appKey": "defineciler-android-v1",
-      "dailyFreeScans": 2
+      "dailyFreeScans": 2,
+      "revenuecatKey": "goog_waknTlRqoFXnRoISuPnnuDPohNc"
     },
     "experiments": {
       "typedRoutes": true,
