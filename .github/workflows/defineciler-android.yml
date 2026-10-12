@@ -60,7 +60,7 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       # Özel alan adı (Cloudflare'de aktif bir bölge olmalı). workers.dev bazı mobil operatörlerde
       # (Turkcell) açılmıyor; uygulama önce bu adresi, yedek olarak workers.dev'i dener.
-      CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN || 'api.defineciler.online' }}
+      CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN || 'api.defineciler.online,defineciler.online' }}
     steps:
       - uses: actions/checkout@v4
       - name: Anahtar kontrolü
@@ -94,7 +94,7 @@ jobs:
           if [ -n "$CUSTOM_DOMAIN" ]; then
             node ../../.github/scripts/add-route.mjs "$CFG" wrangler.domain.jsonc "$CUSTOM_DOMAIN"
             if npx wrangler deploy --config wrangler.domain.jsonc 2>&1 | tee deploy.log; then
-              custom="https://$CUSTOM_DOMAIN"
+              custom="https://${CUSTOM_DOMAIN%%,*}"
             else
               echo "::warning::Özel alan adı ($CUSTOM_DOMAIN) bağlanamadı (bölge aktif mi, token'da Zone DNS/Workers Routes izni var mı?). Yalnızca workers.dev ile yayınlanıyor."
             fi

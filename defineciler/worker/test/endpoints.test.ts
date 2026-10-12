@@ -29,4 +29,19 @@ describe('bağlantı testi uç noktaları', () => {
     });
     expect(res.status).toBe(413);
   });
+
+  it('/app-ads.txt AdMob yayıncı kimliğini döndürür', async () => {
+    const res = await call('/app-ads.txt');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Content-Type')).toContain('text/plain');
+    expect(await res.text()).toBe('google.com, pub-3204109869365538, DIRECT, f08c47fec0942fa0\n');
+  });
+
+  it('ana alan adı tanıtım ve gizlilik sayfalarına yönlendirir', async () => {
+    const home = await worker.fetch(new Request('https://defineciler.online/'), env, ctx);
+    expect(home.status).toBe(302);
+    expect(home.headers.get('Location')).toBe('https://dronopter-coder.github.io/');
+    const privacy = await worker.fetch(new Request('https://defineciler.online/gizlilik'), env, ctx);
+    expect(privacy.headers.get('Location')).toBe('https://dronopter-coder.github.io/privacy.html');
+  });
 });

@@ -110,10 +110,34 @@ async function handleEcho(req: Request) {
   return json({ ok: true, bytes, readMs: Date.now() - started });
 }
 
+/**
+ * AdMob yetkili satıcı dosyası (https://defineciler.online/app-ads.txt). Play Store'daki geliştirici web sitesinin
+ * kök dizininde bulunmalıdır; AdMob bu dosyayla reklam envanterinin size ait olduğunu doğrular.
+ */
+const APP_ADS_TXT = 'google.com, pub-3204109869365538, DIRECT, f08c47fec0942fa0\n';
+const SITE = 'https://dronopter-coder.github.io';
+const APEX_HOSTS = new Set(['defineciler.online', 'www.defineciler.online']);
+
+/** Ana alan adı (defineciler.online): app-ads.txt dışında tanıtım ve gizlilik sayfalarına yönlendirir. */
+function handleSite(url: URL): Response | null {
+  if (url.pathname === '/app-ads.txt') {
+    return new Response(APP_ADS_TXT, {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' },
+    });
+  }
+  if (!APEX_HOSTS.has(url.hostname)) return null;
+  if (url.pathname === '/gizlilik' || url.pathname === '/privacy') return Response.redirect(`${SITE}/privacy.html`, 302);
+  return Response.redirect(`${SITE}/`, 302);
+}
+
 export default {
   async fetch(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
+    if (req.method === 'GET') {
+      const site = handleSite(url);
+      if (site) return site;
+    }
     try {
       if (url.pathname === '/analyze' && req.method === 'POST') return await handleAnalyze(req, env, ctx);
       if (url.pathname === '/news' && req.method === 'GET') return await handleNews(req, ctx);
