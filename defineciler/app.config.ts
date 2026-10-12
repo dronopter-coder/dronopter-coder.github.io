@@ -10,11 +10,13 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
  */
 export default ({ config }: ConfigContext): ExpoConfig => {
   const pkg = process.env.ANDROID_PACKAGE;
+  // Play Store paketlerinde her yüklemede artan sürüm kodu (GitHub çalıştırma numarası)
+  const versionCode = Number(process.env.ANDROID_VERSION_CODE) || undefined;
   return {
     ...(config as ExpoConfig),
     name: process.env.APP_NAME || config.name || 'Defineciler',
     slug: config.slug ?? 'defineciler',
-    android: { ...config.android, ...(pkg ? { package: pkg } : {}) },
+    android: { ...config.android, ...(pkg ? { package: pkg } : {}), ...(versionCode ? { versionCode } : {}) },
     ios: { ...config.ios, ...(pkg ? { bundleIdentifier: pkg } : {}) },
     extra: {
       ...config.extra,

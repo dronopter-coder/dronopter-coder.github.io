@@ -1,0 +1,79 @@
+name: Defineciler Play Store paketi (AAB)
+
+# Play Console'a yüklenecek imzalı AAB'yi üretir. Tetikleme: .github/play-release dosyasını
+# değiştirip gönderin (ör. sürüm notu yazın) ya da (ana dalda) elle çalıştırın.
+# Gerekli secret'lar: ANDROID_UPLOAD_KEYSTORE_BASE64, ANDROID_UPLOAD_KEYSTORE_PASSWORD,
+#                     ANDROID_UPLOAD_KEY_ALIAS, ANDROID_UPLOAD_KEY_PASSWORD
+on:
+  push:
+    paths:
+      - '.github/play-release'
+  workflow_dispatch:
+
+concurrency:
+  group: defineciler-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  aab:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: defineciler
+    env:
+      DEFINECILER_API_URL: https://defineciler-api.dronopter.workers.dev
+      DEFINECILER_API_URLS: https://api.defineciler.online
+      # Play her yüklemede daha büyük bir sürüm kodu ister.
+      ANDROID_VERSION_CODE: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Anahtar kontrolü
+        env:
+          KS: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KS" ]; then
+            echo "::error::ANDROID_UPLOAD_KEYSTORE_BASE64 secret'ı eklenmemiş; imzalı AAB üretilemez."
+            exit 1
+          fi
+          echo "$KS" | base64 -d > "$RUNNER_TEMP/upload.jks"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: defineciler/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - run: npm ci
+      - name: Android projesini üret
+        run: npx expo prebuild --platform android --no-install
+      - name: İmza ayarı
+        run: node ../.github/scripts/android-signing.mjs
+      - name: AAB derle (tüm mimariler)
+        working-directory: defineciler/android
+        env:
+          ANDROID_UPLOAD_KEYSTORE_FILE: ${{ runner.temp }}/upload.jks
+          ANDROID_UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          ANDROID_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+          ANDROID_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+        run: ./gradlew bundleRelease --no-daemon
+      - name: Doğrulama
+        working-directory: defineciler/android/app/build/outputs/bundle/release
+        run: |
+          ls -la
+          jarsigner -verify app-release.aab | tail -1
+          keytool -printcert -jarfile app-release.aab | grep -E "Owner|SHA256" | head -2
+          mv app-release.aab "defineciler-v${ANDROID_VERSION_CODE}.aab"
+          {
+            echo "### Defineciler AAB · sürüm kodu ${ANDROID_VERSION_CODE} · $(du -h *.aab | cut -f1)"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: defineciler-aab
+          path: defineciler/android/app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+      - name: Anahtarı sil
+        if: always()
+        run: rm -f "$RUNNER_TEMP/upload.jks"
