@@ -4,9 +4,12 @@ import { Fragment, type ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
+import { ProLock } from '@/components/pro-lock';
 import { EmptyState } from '@/components/ui';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { DOC_GROUPS, type DocBlock } from '@/data/belgeler.generated';
+import { isDocGroupLocked } from '@/services/locks';
+import { useIsPro } from '@/services/pro';
 
 /** Uzun başlıklarda bu kadar bloktan sonra araya reklam girer. */
 const BLOCKS_PER_AD = 14;
@@ -40,9 +43,13 @@ export default function DocumentGroupScreen() {
   const { group } = useLocalSearchParams<{ group: string }>();
   const index = DOC_GROUPS.findIndex((g) => g.id === group);
   const g = DOC_GROUPS[index];
+  const pro = useIsPro();
   if (!g) return <EmptyState icon="file-question-outline" title="Bölüm bulunamadı" />;
   const prev = DOC_GROUPS[index - 1];
   const next = DOC_GROUPS[index + 1];
+  // Pro'ya özel bölümde yalnızca ilk başlığın girişi önizleme olarak gösterilir.
+  const locked = isDocGroupLocked(index) && !pro;
+  const sections = locked ? [{ ...g.sections[0], blocks: g.sections[0].blocks.slice(0, 4) }] : g.sections;
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
@@ -52,7 +59,7 @@ export default function DocumentGroupScreen() {
         {g.sections.length} başlık · ~{g.minutes} dk okuma
       </Text>
 
-      {g.sections.map((s, si) => {
+      {sections.map((s, si) => {
         const parts: ReactNode[] = [];
         s.blocks.forEach((b, bi) => {
           parts.push(<Block key={bi} b={b} />);
@@ -73,6 +80,13 @@ export default function DocumentGroupScreen() {
           </Fragment>
         );
       })}
+
+      {locked && (
+        <ProLock
+          title="Bu bölüm Defineciler Pro'ya özel"
+          text={`İlk iki bölüm herkese açık. ${g.title} ve sonraki bölümlerin tamamını Pro ile okuyabilirsiniz.`}
+        />
+      )}
 
       <View style={styles.nav}>
         {prev ? (

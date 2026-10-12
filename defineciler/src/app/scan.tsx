@@ -3,7 +3,18 @@ import { Image } from 'expo-image';
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 import Animated, {
   cancelAnimation,
@@ -19,6 +30,8 @@ import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { useRemainingScans } from '@/hooks/use-quota';
 import { adsReady, initAds, maybeShowInterstitial, rewardedConfigured, showRewarded, warmUpRewarded } from '@/services/ads';
 import { analyzeArtifact, ApiError } from '@/services/api';
+import { pickFromGallery, takePhoto, type PickedImage } from '@/services/picker';
+import { useIsPro } from '@/services/pro';
 import { addBonusScans, consumeScan, grantFallbackBonus } from '@/services/quota';
 import { playDone, playError, startScanLoop, stopScanLoop } from '@/services/sfx';
 import { saveScan } from '@/storage/history';
@@ -66,6 +79,9 @@ export default function ScanScreen() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rewardBusy, setRewardBusy] = useState(false);
+  const pro = useIsPro();
+  const [detail, setDetail] = useState(true);
+  const [extra, setExtra] = useState<PickedImage[]>([]);
 
   const noQuota = remaining !== null && remaining <= 0;
 
@@ -86,6 +102,8 @@ export default function ScanScreen() {
         width: Number(params.width) || undefined,
         height: Number(params.height) || undefined,
         note,
+        detail: pro && detail,
+        extra: pro ? extra : undefined,
       });
       await consumeScan();
       const record = await saveScan({ imageUri: processedUri, note: note.trim() || undefined, result });
@@ -100,6 +118,17 @@ export default function ScanScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function addExtra() {
+    Alert.alert('Ek fotoğraf', 'Aynı eserin arka yüzü, yanı veya ölçekli bir fotoğrafı', [
+      { text: 'Vazgeç', style: 'cancel' },
+      { text: 'Galeriden seç', onPress: async () => add(await pickFromGallery()) },
+      { text: 'Fotoğraf çek', onPress: async () => add(await takePhoto()) },
+    ]);
+    function add(p: PickedImage | null) {
+      if (p) setExtra((prev) => [...prev, p].slice(0, 2));
     }
   }
 
@@ -157,12 +186,53 @@ export default function ScanScreen() {
           <Text style={styles.hint}>Boyut, ağırlık, bulunduğu bölge gibi bilgiler sonucu iyileştirir.</Text>
         </Card>
 
+        {pro ? (
+          <Card style={{ gap: Spacing.md }}>
+            <View style={styles.proRow}>
+              <MaterialCommunityIcons name="crown-outline" size={20} color={Colors.gold} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Ayrıntılı rapor</Text>
+                <Text style={styles.hint}>Daha kapsamlı inceleme, yazı okuma denemesi ve müze örnekleri</Text>
+              </View>
+              <Switch
+                value={detail}
+                onValueChange={setDetail}
+                disabled={busy}
+                trackColor={{ true: Colors.goldDark, false: Colors.border }}
+                thumbColor={detail ? Colors.goldLight : Colors.textMuted}
+              />
+            </View>
+            <View style={styles.extraRow}>
+              {extra.map((x, i) => (
+                <Pressable key={x.uri} disabled={busy} onPress={() => setExtra((p) => p.filter((_, j) => j !== i))}>
+                  <Image source={{ uri: x.uri }} style={styles.extraImg} contentFit="cover" />
+                  <MaterialCommunityIcons name="close-circle" size={20} color={Colors.text} style={styles.extraRemove} />
+                </Pressable>
+              ))}
+              {extra.length < 2 && (
+                <Pressable disabled={busy} onPress={addExtra} style={[styles.extraImg, styles.extraAdd]}>
+                  <MaterialCommunityIcons name="camera-plus-outline" size={24} color={Colors.gold} />
+                  <Text style={styles.extraAddText}>Arka yüz</Text>
+                </Pressable>
+              )}
+            </View>
+          </Card>
+        ) : (
+          <Pressable onPress={() => router.push('/paywall')} style={styles.proTeaser}>
+            <MaterialCommunityIcons name="crown-outline" size={18} color={Colors.gold} />
+            <Text style={styles.proTeaserText}>Ayrıntılı rapor ve arka yüz fotoğrafı Defineciler Pro’da</Text>
+            <MaterialCommunityIcons name="chevron-right" size={18} color={Colors.textMuted} />
+          </Pressable>
+        )}
+
         {error && <Notice tone="warning" icon="alert-circle-outline" text={error} />}
 
         {noQuota ? (
           <Card style={{ gap: Spacing.md, alignItems: 'center' }}>
             <MaterialCommunityIcons name="gift-outline" size={36} color={Colors.gold} />
-            <Text style={styles.quotaTitle}>Bugünkü ücretsiz analiz hakkınız doldu</Text>
+            <Text style={styles.quotaTitle}>
+              {pro ? 'Bugünkü analiz hakkınız doldu' : 'Bugünkü ücretsiz analiz hakkınız doldu'}
+            </Text>
             <Text style={styles.hint}>Kısa bir reklam izleyerek hemen +1 analiz hakkı kazanabilirsiniz.</Text>
             <Button
               title="Reklam İzle, +1 Hak Kazan"
@@ -172,6 +242,15 @@ export default function ScanScreen() {
               loadingLabel="Reklam hazırlanıyor…"
               style={{ alignSelf: 'stretch' }}
             />
+            {!pro && (
+              <Button
+                title="Pro ile devam et · günde 30 analiz"
+                icon="crown-outline"
+                variant="secondary"
+                onPress={() => router.push('/paywall')}
+                style={{ alignSelf: 'stretch' }}
+              />
+            )}
           </Card>
         ) : (
           <Button
@@ -247,5 +326,30 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   hint: { color: Colors.textMuted, fontSize: 12, lineHeight: 18 },
+  proRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  extraRow: { flexDirection: 'row', gap: Spacing.sm },
+  extraImg: { width: 72, height: 72, borderRadius: Radius.md },
+  extraRemove: { position: 'absolute', top: -6, right: -6 },
+  extraAdd: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: Colors.goldDark,
+    backgroundColor: Colors.surfaceRaised,
+  },
+  extraAddText: { color: Colors.textSecondary, fontSize: 11 },
+  proTeaser: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    padding: Spacing.md,
+    borderRadius: Radius.md,
+    backgroundColor: 'rgba(212,162,76,0.08)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(232,199,122,0.4)',
+  },
+  proTeaserText: { flex: 1, color: Colors.textSecondary, fontSize: 13 },
   quotaTitle: { color: Colors.text, fontWeight: '700', fontSize: 16, textAlign: 'center' },
 });

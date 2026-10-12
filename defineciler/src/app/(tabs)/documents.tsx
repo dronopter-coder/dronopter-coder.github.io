@@ -7,14 +7,18 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
 import { DOCS_COVER } from '@/components/docs-banner';
+import { LockBadge } from '@/components/pro-lock';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { DOC_GROUPS, DOCS_INTRO, DOCS_TITLE } from '@/data/belgeler.generated';
+import { isDocGroupLocked } from '@/services/locks';
+import { useIsPro } from '@/services/pro';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 const SECTION_COUNT = DOC_GROUPS.reduce((n, g) => n + g.sections.length, 0);
 
 export default function DocumentsScreen() {
   const note = DOCS_INTRO.find((b) => b.t === 'note')?.x;
+  const pro = useIsPro();
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
       <View style={styles.cover}>
@@ -49,9 +53,12 @@ export default function DocumentsScreen() {
               <Text style={styles.groupSub} numberOfLines={2}>
                 {g.subtitle}
               </Text>
-              <Text style={styles.groupMeta}>
-                {g.sections.length} başlık · ~{g.minutes} dk okuma
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={styles.groupMeta}>
+                  {g.sections.length} başlık · ~{g.minutes} dk okuma
+                </Text>
+                {!pro && isDocGroupLocked(i) ? <LockBadge /> : null}
+              </View>
             </View>
             <MaterialCommunityIcons name="chevron-right" size={22} color={Colors.textMuted} />
           </Pressable>

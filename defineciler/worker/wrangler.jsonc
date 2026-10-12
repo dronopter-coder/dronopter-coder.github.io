@@ -17,6 +17,8 @@
     // Günlük sınırlar (USAGE KV bağlıysa uygulanır; dağıtım iş akışı KV'yi kendisi oluşturup bağlar).
     // Cihaz başına: 2 ücretsiz + reklamla açılan analizler için cömert, kötüye kullanıma kapalı.
     "DEVICE_DAILY_LIMIT": "15",
+    // Pro aboneler (RevenueCat ile doğrulanır): uygulamada günde 30, sunucuda küçük bir pay bırakılır.
+    "PRO_DEVICE_DAILY_LIMIT": "35",
     // IP başına: mobil operatörlerde çok kullanıcı aynı IP'yi paylaşabilir, bu yüzden geniş.
     "DAILY_LIMIT_PER_IP": "150",
     // Tüm kullanıcılar için günlük toplam: ücretsiz Gemini kotasını ve ileride faturayı korur.

@@ -10,6 +10,8 @@ import { ConfidenceMeter } from '@/components/confidence-meter';
 import { Body, Bullets, Button, Card, Chip, EmptyState, SectionTitle, type IconName } from '@/components/ui';
 import { APP_SHARE_URL } from '@/constants/config';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
+import { useIsPro } from '@/services/pro';
+import { shareReportPdf } from '@/services/report-pdf';
 import { deleteScan, getScan } from '@/storage/history';
 import type { AuthenticityAssessment, ScanRecord, Verdict } from '@/types/analysis';
 
@@ -60,6 +62,8 @@ function shareText(s: ScanRecord) {
 export default function ResultScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [scan, setScan] = useState<ScanRecord | null | undefined>(undefined);
+  const pro = useIsPro();
+  const [pdfBusy, setPdfBusy] = useState(false);
 
   useEffect(() => {
     getScan(id).then(setScan);
@@ -215,6 +219,22 @@ export default function ResultScreen() {
           </Text>
 
           <View style={{ gap: Spacing.md }}>
+            <Button
+              title={pro ? 'PDF Rapor olarak kaydet' : 'PDF Rapor (Pro)'}
+              icon="file-pdf-box"
+              loading={pdfBusy}
+              onPress={async () => {
+                if (!pro) return router.push('/paywall');
+                setPdfBusy(true);
+                try {
+                  await shareReportPdf(scan);
+                } catch {
+                  Alert.alert('PDF oluşturulamadı', 'Lütfen tekrar deneyin.');
+                } finally {
+                  setPdfBusy(false);
+                }
+              }}
+            />
             <Button
               title="Paylaş"
               icon="share-variant"

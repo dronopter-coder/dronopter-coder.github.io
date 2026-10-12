@@ -6,6 +6,7 @@ type Extra = {
   apiUrls?: string[];
   appKey?: string;
   dailyFreeScans?: number;
+  revenuecatKey?: string;
 };
 
 const extra = (Constants.expoConfig?.extra ?? {}) as Extra;
@@ -23,6 +24,11 @@ export const APP_KEY = extra.appKey ?? '';
 
 /** Günlük ücretsiz analiz hakkı. */
 export const DAILY_FREE_SCANS = extra.dailyFreeScans ?? 2;
+
+/** Pro abonelerin günlük analiz hakkı. */
+export const PRO_DAILY_SCANS = 30;
+/** RevenueCat Android genel SDK anahtarı (boşsa Pro satın alma kapalı). */
+export const REVENUECAT_KEY = extra.revenuecatKey ?? '';
 
 export const APP_NAME = 'Defineciler';
 export const PRIVACY_URL = 'https://dronopter-coder.github.io/privacy.html';

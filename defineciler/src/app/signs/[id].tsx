@@ -6,10 +6,13 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
 import { Callout, Pairs } from '@/components/guide-blocks';
+import { ProLock } from '@/components/pro-lock';
 import { EvidenceChip, SIGNS_COVER, SignGlyph, signImage } from '@/components/sign-glyph';
 import { Body, Bullets, Button, Card, EmptyState, SectionTitle } from '@/components/ui';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { EVIDENCE, getSign, SIGN_CATEGORIES, SIGNS_GUIDE } from '@/data/signs';
+import { isSignLocked } from '@/services/locks';
+import { useIsPro } from '@/services/pro';
 
 /** "Okumadan önce: yorum sınırı" kılavuzu. */
 function GuideArticle() {
@@ -48,6 +51,7 @@ function GuideArticle() {
 
 export default function SignScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const pro = useIsPro();
   if (id === 'kilavuz') return <GuideArticle />;
   const sign = getSign(id);
   if (!sign) return <EmptyState icon="sign-direction-remove" title="İşaret bulunamadı" />;
@@ -56,6 +60,7 @@ export default function SignScreen() {
   const category = SIGN_CATEGORIES.find((c) => c.id === sign.category);
   const related = (sign.related ?? []).map(getSign).filter((s) => !!s);
   const evidence = EVIDENCE[sign.evidence];
+  const locked = !pro && isSignLocked(sign);
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: Spacing.xxl }}>
@@ -87,42 +92,53 @@ export default function SignScreen() {
           <EvidenceChip evidence={sign.evidence} />
         </View>
 
-        <Card style={{ gap: Spacing.sm }}>
-          <SectionTitle icon="account-group-outline" style={{ marginBottom: 0 }}>
-            Halk arasında nasıl yorumlanır?
-          </SectionTitle>
-          <Bullets items={sign.folk} />
-          <Text style={styles.hint}>Bu yorumlar definecilik çevrelerinde anlatılanlardır; doğrulukları kanıtlanmamıştır.</Text>
-        </Card>
+        {locked ? (
+          <ProLock
+            title="Bu işaretin ayrıntıları Pro'ya özel"
+            text="Her kategoride ilk üç işaret herkese açık. Halk yorumu, arkeolojik karşılığı ve yorum sınırını Defineciler Pro ile okuyabilirsiniz."
+          />
+        ) : (
+          <>
+            <Card style={{ gap: Spacing.sm }}>
+              <SectionTitle icon="account-group-outline" style={{ marginBottom: 0 }}>
+                Halk arasında nasıl yorumlanır?
+              </SectionTitle>
+              <Bullets items={sign.folk} />
+              <Text style={styles.hint}>
+                Bu yorumlar definecilik çevrelerinde anlatılanlardır; doğrulukları kanıtlanmamıştır.
+              </Text>
+            </Card>
 
-        <Card style={{ gap: Spacing.sm }}>
-          <SectionTitle icon="bank-outline" style={{ marginBottom: 0 }}>
-            Tarih ve arkeolojideki karşılığı
-          </SectionTitle>
-          <Body>{sign.science}</Body>
-        </Card>
+            <Card style={{ gap: Spacing.sm }}>
+              <SectionTitle icon="bank-outline" style={{ marginBottom: 0 }}>
+                Tarih ve arkeolojideki karşılığı
+              </SectionTitle>
+              <Body>{sign.science}</Body>
+            </Card>
 
-        <AdBanner variant="inline" />
+            <AdBanner variant="inline" />
 
-        <Card style={{ gap: Spacing.sm }}>
-          <SectionTitle icon="map-marker-outline" style={{ marginBottom: 0 }}>
-            Nerede ve hangi dönemde görülür?
-          </SectionTitle>
-          <Body>{sign.where}</Body>
-        </Card>
+            <Card style={{ gap: Spacing.sm }}>
+              <SectionTitle icon="map-marker-outline" style={{ marginBottom: 0 }}>
+                Nerede ve hangi dönemde görülür?
+              </SectionTitle>
+              <Body>{sign.where}</Body>
+            </Card>
 
-        <View style={[styles.limit, { borderColor: evidence.color + '88', backgroundColor: evidence.color + '14' }]}>
-          <View style={styles.limitHead}>
-            <MaterialCommunityIcons name="scale-balance" size={20} color={evidence.color} />
-            <Text style={[styles.limitTitle, { color: evidence.color }]}>Yorum sınırı · {evidence.label}</Text>
-          </View>
-          <Text style={styles.limitText}>{sign.limit}</Text>
-        </View>
+            <View style={[styles.limit, { borderColor: evidence.color + '88', backgroundColor: evidence.color + '14' }]}>
+              <View style={styles.limitHead}>
+                <MaterialCommunityIcons name="scale-balance" size={20} color={evidence.color} />
+                <Text style={[styles.limitTitle, { color: evidence.color }]}>Yorum sınırı · {evidence.label}</Text>
+              </View>
+              <Text style={styles.limitText}>{sign.limit}</Text>
+            </View>
 
-        <Callout
-          kind="warning"
-          text="Böyle bir işaret görürseniz kazmayın, boyamayın; fotoğrafını çekip konumunu en yakın müze müdürlüğüne bildirin (2863 sayılı Kanun)."
-        />
+            <Callout
+              kind="warning"
+              text="Böyle bir işaret görürseniz kazmayın, boyamayın; fotoğrafını çekip konumunu en yakın müze müdürlüğüne bildirin (2863 sayılı Kanun)."
+            />
+          </>
+        )}
 
         <Button title="Elindeki eseri tara" icon="line-scan" onPress={() => router.navigate('/')} />
 

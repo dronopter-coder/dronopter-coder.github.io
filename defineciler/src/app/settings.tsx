@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
+import { router } from 'expo-router';
 import { Alert, Linking, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { LogoMark } from '@/components/logo';
@@ -9,6 +10,7 @@ import { APP_NAME, CONTACT_EMAIL, DAILY_FREE_SCANS, PRIVACY_URL } from '@/consta
 import { Colors, Fonts, Spacing } from '@/constants/theme';
 import { showPrivacyOptions } from '@/services/ads';
 import { runDiagnostics, type ProbeResult } from '@/services/api';
+import { useIsPro } from '@/services/pro';
 import { getSfxEnabled, setSfxEnabled } from '@/services/sfx';
 import { clearScans } from '@/storage/history';
 
@@ -17,6 +19,7 @@ export default function SettingsScreen() {
   const [sfx, setSfx] = useState(true);
   const [probing, setProbing] = useState(false);
   const [steps, setSteps] = useState<ProbeResult[]>([]);
+  const pro = useIsPro();
   useEffect(() => {
     getSfxEnabled().then(setSfx);
   }, []);
@@ -36,6 +39,21 @@ export default function SettingsScreen() {
           analiz hakkınız vardır; sonrasında her analiz için kısa bir reklam izlenir. Defineciler analizleri tahmini niteliktedir
           ve uzman görüşünün yerini tutmaz.
         </Body>
+      </Card>
+
+      <Card style={{ gap: Spacing.md }}>
+        <SectionTitle icon="crown-outline">Defineciler Pro</SectionTitle>
+        <Body muted>
+          {pro
+            ? 'Pro üyeliğiniz etkin: reklamsız, günde 30 analiz, ayrıntılı rapor ve PDF, tüm içerik açık.'
+            : 'Reklamsız kullanım, günde 30 analiz, ayrıntılı rapor ve PDF, Belgeler ve İşaretler’in tamamı.'}
+        </Body>
+        <Button
+          title={pro ? 'Aboneliği görüntüle' : 'Pro’ya geç'}
+          icon="crown-outline"
+          variant={pro ? 'secondary' : 'primary'}
+          onPress={() => router.push('/paywall')}
+        />
       </Card>
 
       <Card style={styles.row}>

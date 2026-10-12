@@ -4,6 +4,7 @@ import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
 import { Colors } from '@/constants/theme';
 import { AD_UNITS, adsReady, initAds } from '@/services/ads';
+import { useIsPro } from '@/services/pro';
 
 type Props = {
   /** 'anchored': ekranın altına yapışık uyarlanabilir banner. 'inline': içerik arasında orta dikdörtgen. */
@@ -14,6 +15,7 @@ type Props = {
 export function AdBanner({ variant = 'anchored' }: Props) {
   const [ready, setReady] = useState(adsReady());
   const [failed, setFailed] = useState(false);
+  const pro = useIsPro();
 
   useEffect(() => {
     if (ready) return;
@@ -24,7 +26,7 @@ export function AdBanner({ variant = 'anchored' }: Props) {
     };
   }, [ready]);
 
-  if (!ready || failed) return null;
+  if (pro || !ready || failed) return null; // Pro: reklamsız
 
   const inline = variant === 'inline';
   return (

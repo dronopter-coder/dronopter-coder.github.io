@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { DAILY_FREE_SCANS } from '@/constants/config';
+import { DAILY_FREE_SCANS, PRO_DAILY_SCANS } from '@/constants/config';
+import { isProNow } from '@/services/pro';
 
 /**
  * Günlük ücretsiz analiz hakkı + ödüllü reklamla kazanılan ek haklar.
@@ -27,7 +28,9 @@ async function read(): Promise<State> {
   }
 }
 
-const remainingOf = (s: State) => Math.max(0, DAILY_FREE_SCANS - s.used) + s.bonus;
+/** Günlük hak: ücretsiz 2, Pro 30. */
+const dailyLimit = () => (isProNow() ? PRO_DAILY_SCANS : DAILY_FREE_SCANS);
+const remainingOf = (s: State) => Math.max(0, dailyLimit() - s.used) + s.bonus;
 
 async function write(s: State) {
   await AsyncStorage.setItem(KEY, JSON.stringify(s));
@@ -49,7 +52,7 @@ export function subscribeQuota(listener: Listener) {
 /** Başarılı bir analizden sonra bir hak düşer (önce günlük ücretsiz haklar kullanılır). */
 export async function consumeScan() {
   const s = await read();
-  if (s.used < DAILY_FREE_SCANS) s.used += 1;
+  if (s.used < dailyLimit()) s.used += 1;
   else if (s.bonus > 0) s.bonus -= 1;
   await write(s);
 }

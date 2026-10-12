@@ -22,6 +22,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...config.extra,
       apiUrl: process.env.DEFINECILER_API_URL || config.extra?.apiUrl,
       // Virgülle ayrılmış ek/yedek adresler: DEFINECILER_API_URLS="https://api.alanadi.com,https://x.workers.dev"
+      // RevenueCat Android genel (public) SDK anahtarı; yoksa Pro satın alma kapalıdır.
+      revenuecatKey: process.env.REVENUECAT_ANDROID_KEY || config.extra?.revenuecatKey || '',
       apiUrls: (process.env.DEFINECILER_API_URLS ?? '')
         .split(',')
         .map((u: string) => u.trim())

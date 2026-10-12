@@ -12,7 +12,14 @@ export class HttpError extends Error {
 
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
-export type AnalyzeRequest = { image: string; mimeType: string; note?: string };
+export type ImagePart = { image: string; mimeType: string };
+export type AnalyzeRequest = ImagePart & {
+  note?: string;
+  /** Pro: ayrıntılı rapor isteği (yalnızca doğrulanmış Pro abonede uygulanır) */
+  detail?: boolean;
+  /** Pro: aynı objenin ek fotoğrafları (arka yüz, yan, ölçek), en fazla 2 */
+  extraImages?: ImagePart[];
+};
 
 const MAX_BASE64 = 6 * 1024 * 1024;
 const MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/heic']);
@@ -20,13 +27,21 @@ const MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/heic
 /** İstemciden gelen gövdeyi doğrular. */
 export function parseAnalyzeRequest(body: unknown): AnalyzeRequest {
   if (!body || typeof body !== 'object') throw new HttpError(400, 'Geçersiz istek.', 'bad_request');
-  const { image, mimeType, note } = body as Record<string, unknown>;
+  const { image, mimeType, note, detail, extraImages } = body as Record<string, unknown>;
+  const main = parseImage(image, mimeType);
+  const n = typeof note === 'string' ? note.trim().slice(0, 400) : undefined;
+  const extras = Array.isArray(extraImages)
+    ? extraImages.slice(0, 2).map((x) => parseImage((x as ImagePart)?.image, (x as ImagePart)?.mimeType))
+    : [];
+  return { ...main, note: n || undefined, detail: detail === true, extraImages: extras.length ? extras : undefined };
+}
+
+function parseImage(image: unknown, mimeType: unknown): ImagePart {
   if (typeof image !== 'string' || image.length < 100) throw new HttpError(400, 'Fotoğraf bulunamadı.', 'no_image');
   if (image.length > MAX_BASE64) throw new HttpError(413, 'Fotoğraf çok büyük.', 'too_large');
   if (!/^[A-Za-z0-9+/=\r\n]+$/.test(image.slice(0, 2000))) throw new HttpError(400, 'Fotoğraf verisi bozuk.', 'bad_image');
   const mt = typeof mimeType === 'string' && MIME_TYPES.has(mimeType) ? mimeType : 'image/jpeg';
-  const n = typeof note === 'string' ? note.trim().slice(0, 400) : undefined;
-  return { image, mimeType: mt, note: n || undefined };
+  return { image, mimeType: mt };
 }
 
 const s = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
@@ -63,16 +78,32 @@ export function normalizeResult(raw: unknown): AnalysisResult {
   };
 }
 
+/** Pro "ayrıntılı rapor": aynı şema, daha derin içerik. */
+const DETAIL_INSTRUCTIONS = `
+AYRINTILI RAPOR istendi. Şunlara özellikle dikkat et:
+- description: en az 3 paragraf; üretim tekniği, kullanım amacı, dönemin tarihsel bağlamı ve benzer buluntularla karşılaştırma.
+- inscriptions: yazı, lejant, monogram veya sembolleri harf harf okumaya çalış; okunamayan kısımları [...] ile belirt, varsa çevirisini ver.
+- similarExamples: Türkiye'deki ve dünyadaki müzelerden somut, bilinen benzer örnekler ve tip adları.
+- features ve authenticity.notes: her gözlemi fotoğraftaki somut bir ayrıntıya dayandır.
+- photoTips: kesin tanım için eksik kalan bilgileri (ölçü, ağırlık, arka yüz, kenar) açıkça belirt.`;
+
 /** Toplam süre bütçesi: en fazla 50 sn; her model en fazla 30 sn; 8 sn'den az kaldıysa yeni model denenmez. */
 export const DEFAULT_BUDGET = { totalMs: 50_000, perModelMs: 30_000, minAttemptMs: 8_000 };
+/** Pro ayrıntılı rapor / çok fotoğraflı analiz daha uzun sürer (istemci 85 sn bekler). */
+export const DETAIL_BUDGET = { totalMs: 68_000, perModelMs: 45_000, minAttemptMs: 10_000 };
 
 /** Bu durum kodlarında sıradaki modele geçilir (yoğunluk, kota, geçici hata, model yok). */
 const RETRYABLE = new Set([404, 408, 429, 500, 502, 503, 504]);
 
 /** Tek bir modele istek atar; başarıda sonucu, geçici hatada null döndürür. */
 async function callModel(req: AnalyzeRequest, apiKey: string, model: string, timeoutMs: number): Promise<AnalysisResult | null> {
+  const extras = req.extraImages ?? [];
   const userText =
-    'Bu fotoğraftaki objeyi tanımla.' + (req.note ? `\nKullanıcının ek notu (boyut, bulunduğu yer vb.): """${req.note}"""` : '');
+    (extras.length
+      ? `Bu ${extras.length + 1} fotoğraf AYNI objenin farklı yüzleridir (ön, arka, yan veya ölçekli). Hepsini birlikte değerlendirerek objeyi tanımla.`
+      : 'Bu fotoğraftaki objeyi tanımla.') +
+    (req.detail ? DETAIL_INSTRUCTIONS : '') +
+    (req.note ? `\nKullanıcının ek notu (boyut, bulunduğu yer vb.): """${req.note}"""` : '');
 
   let res: Response;
   try {
@@ -85,7 +116,11 @@ async function callModel(req: AnalyzeRequest, apiKey: string, model: string, tim
         contents: [
           {
             role: 'user',
-            parts: [{ inlineData: { mimeType: req.mimeType, data: req.image } }, { text: userText }],
+            parts: [
+              { inlineData: { mimeType: req.mimeType, data: req.image } },
+              ...extras.map((x) => ({ inlineData: { mimeType: x.mimeType, data: x.image } })),
+              { text: userText },
+            ],
           },
         ],
         generationConfig: {

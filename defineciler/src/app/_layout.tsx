@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 
 import { Colors, Fonts } from '@/constants/theme';
 import { initAds } from '@/services/ads';
+import { initPro } from '@/services/pro';
 import { preloadSfx } from '@/services/sfx';
 
 SplashScreen.preventAutoHideAsync();
@@ -30,6 +31,7 @@ export default function RootLayout() {
   useEffect(() => {
     // Reklam onayı (UMP), SDK başlatma ve ses efektleri; arayüzü bekletmez.
     initAds();
+    initPro();
     preloadSfx();
   }, []);
 
@@ -58,6 +60,7 @@ export default function RootLayout() {
         <Stack.Screen name="documents/[group]" options={{ title: '' }} />
         <Stack.Screen name="signs/[id]" options={{ title: '' }} />
         <Stack.Screen name="settings" options={{ title: 'Ayarlar ve Hakkında' }} />
+        <Stack.Screen name="paywall" options={{ title: 'Defineciler Pro', presentation: 'modal' }} />
       </Stack>
     </ThemeProvider>
   );

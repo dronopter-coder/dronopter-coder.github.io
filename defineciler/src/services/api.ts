@@ -36,7 +36,7 @@ const DEVICE_KEY = 'device:id:v1';
 let deviceId: string | null = null;
 
 /** Bu kuruluma ait rastgele kimlik; sunucuda günlük kullanım sınırı için kullanılır (kişisel veri içermez). */
-async function getDeviceId() {
+export async function getDeviceId() {
   if (deviceId) return deviceId;
   try {
     deviceId = await AsyncStorage.getItem(DEVICE_KEY);
@@ -156,21 +156,31 @@ export type AnalyzeInput = {
   width?: number;
   height?: number;
   note?: string;
+  /** Pro: ayrıntılı rapor */
+  detail?: boolean;
+  /** Pro: aynı objenin ek fotoğrafları (arka yüz, yan), en fazla 2 */
+  extra?: { uri: string; width?: number; height?: number }[];
 };
 
 /** Uygulamanın kalbi: fotoğrafı Worker üzerinden Gemini'ye gönderir ve yapılandırılmış sonucu döndürür. */
-export async function analyzeArtifact(input: AnalyzeInput): Promise<{ result: AnalysisResult; processedUri: string }> {
+export async function analyzeArtifact(
+  input: AnalyzeInput,
+): Promise<{ result: AnalysisResult; processedUri: string; pro: boolean }> {
   const image = await prepareImage(input.uri, input.width, input.height);
-  const data = await request<{ result: AnalysisResult }>('/analyze', {
+  const extras = await Promise.all((input.extra ?? []).slice(0, 2).map((x) => prepareImage(x.uri, x.width, x.height)));
+  const data = await request<{ result: AnalysisResult; pro?: boolean }>('/analyze', {
     method: 'POST',
-    timeoutMs: 70_000,
+    // Ek fotoğraflı ayrıntılı raporlar daha uzun sürer.
+    timeoutMs: extras.length || input.detail ? 85_000 : 70_000,
     body: JSON.stringify({
       image: image.base64,
       mimeType: 'image/jpeg',
       note: input.note?.trim() || undefined,
+      detail: input.detail || undefined,
+      extraImages: extras.length ? extras.map((x) => ({ image: x.base64, mimeType: 'image/jpeg' })) : undefined,
     }),
   });
-  return { result: data.result, processedUri: image.uri };
+  return { result: data.result, processedUri: image.uri, pro: !!data.pro };
 }
 
 export function fetchNews() {

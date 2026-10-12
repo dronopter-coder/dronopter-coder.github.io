@@ -14,6 +14,7 @@ import {
   PRODUCTION_AD_UNITS,
   isPlaceholder,
 } from '@/constants/ad-units';
+import { isProNow } from '@/services/pro';
 
 const pick = (prod: string, test: string) => (__DEV__ || isPlaceholder(prod) ? test : prod);
 
@@ -108,6 +109,7 @@ export function warmUpRewarded() {
  * ve reklam kapanınca çözülür (reklam yoksa hemen çözülür).
  */
 export async function maybeShowInterstitial(): Promise<void> {
+  if (isProNow()) return; // Pro: reklamsız
   scansSinceInterstitial += 1;
   const due =
     scansSinceInterstitial >= INTERSTITIAL_EVERY_N_SCANS && Date.now() - lastInterstitialAt > INTERSTITIAL_MIN_INTERVAL_MS;

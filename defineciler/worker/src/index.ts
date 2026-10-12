@@ -1,4 +1,4 @@
-import { analyzeWithGemini, HttpError, MOCK_RESULT, parseAnalyzeRequest } from './gemini';
+import { analyzeWithGemini, DETAIL_BUDGET, HttpError, MOCK_RESULT, parseAnalyzeRequest } from './gemini';
 import {
   assertWithinLimits,
   fingerprint,
@@ -10,6 +10,7 @@ import {
   type Who,
 } from './limits';
 import { buildNews } from './news';
+import { isProDevice } from './pro';
 
 export interface Env {
   GEMINI_API_KEY?: string;
@@ -20,6 +21,10 @@ export interface Env {
   DEVICE_DAILY_LIMIT?: string;
   GLOBAL_DAILY_LIMIT?: string;
   MOCK_GEMINI?: string;
+  /** RevenueCat gizli API anahtarı (Pro aboneliği doğrulama); yoksa herkes ücretsiz sınırlarla çalışır */
+  REVENUECAT_SECRET?: string;
+  /** Pro abone cihaz başına günlük analiz sınırı */
+  PRO_DEVICE_DAILY_LIMIT?: string;
   ANALYZE_LIMITER?: RateLimit;
   USAGE?: KVNamespace;
 }
@@ -57,7 +62,7 @@ async function handleAnalyze(req: Request, env: Env, ctx: ExecutionContext) {
   const len = Number(req.headers.get('Content-Length') ?? '0');
   if (len > 8 * 1024 * 1024) throw new HttpError(413, 'Fotoğraf çok büyük.', 'too_large');
 
-  const body = parseAnalyzeRequest(await req.json().catch(() => null));
+  const raw = parseAnalyzeRequest(await req.json().catch(() => null));
 
   if (env.MOCK_GEMINI === '1') return json({ result: MOCK_RESULT, mock: true });
   if (!env.GEMINI_API_KEY) throw new HttpError(500, 'Sunucu yapılandırılmamış (GEMINI_API_KEY eksik).', 'config');
@@ -65,23 +70,36 @@ async function handleAnalyze(req: Request, env: Env, ctx: ExecutionContext) {
   const who = whoIs(req);
   await enforceRate(who, env);
 
-  // Aynı fotoğraf (ve not) daha önce analiz edildiyse Gemini'ye gitmeden önceki sonuç verilir.
-  const fp = env.USAGE ? await fingerprint(body.image, body.note) : null;
+  // Pro ayrıcalıkları (ayrıntılı rapor, ek fotoğraflar, yüksek sınır) yalnızca doğrulanmış abonelere.
+  const wantsPro = raw.detail || !!raw.extraImages?.length;
+  const pro = await isProDevice(who.device, env.REVENUECAT_SECRET, env.USAGE);
+  const body = pro || !wantsPro ? raw : { ...raw, detail: false, extraImages: undefined };
+  const limits = limitsFromEnv(env);
+  if (pro) limits.perDevice = Number(env.PRO_DEVICE_DAILY_LIMIT) > 0 ? Number(env.PRO_DEVICE_DAILY_LIMIT) : 35;
+
+  // Aynı fotoğraf(lar), not ve rapor türü daha önce analiz edildiyse Gemini'ye gitmeden önceki sonuç verilir.
+  const fp = env.USAGE
+    ? await fingerprint(
+        [body.image, ...(body.extraImages ?? []).map((x) => x.image)].join('|'),
+        `${body.note ?? ''}${body.detail ? '\n#detail' : ''}`,
+      )
+    : null;
   if (env.USAGE && fp) {
     const hit = await getCachedResult<unknown>(env.USAGE, fp);
-    if (hit) return json({ result: hit, model: 'cache' });
-    await assertWithinLimits(env.USAGE, who, limitsFromEnv(env));
+    if (hit) return json({ result: hit, model: 'cache', pro });
+    await assertWithinLimits(env.USAGE, who, limits);
   }
 
   const models = [env.GEMINI_MODEL || 'gemini-flash-latest', ...(env.GEMINI_FALLBACK_MODELS ?? '').split(',')];
-  const { result, model } = await analyzeWithGemini(body, env.GEMINI_API_KEY, models);
+  const heavy = body.detail || !!body.extraImages?.length;
+  const { result, model } = await analyzeWithGemini(body, env.GEMINI_API_KEY, models, heavy ? DETAIL_BUDGET : undefined);
   if (env.USAGE && fp) {
     // Sonuç dönmüşken yanıtı geciktirmeden kaydet; kayıt hatası kullanıcıya yansımaz.
     ctx.waitUntil(
       Promise.all([recordUsage(env.USAGE, who), putCachedResult(env.USAGE, fp, result)]).catch((e) => console.error('kv', e)),
     );
   }
-  return json({ result, model });
+  return json({ result, model, pro });
 }
 
 async function handleNews(req: Request, ctx: ExecutionContext) {

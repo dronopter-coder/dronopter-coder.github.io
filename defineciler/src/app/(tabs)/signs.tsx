@@ -6,14 +6,19 @@ import { Fragment, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
+import { LockBadge } from '@/components/pro-lock';
 import { EvidenceChip, SIGNS_COVER, SignGlyph, signImage } from '@/components/sign-glyph';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
+import { isSignLocked } from '@/services/locks';
+import { useIsPro } from '@/services/pro';
 import { EVIDENCE, SIGN_CATEGORIES, SIGNS, SIGNS_GUIDE, type Sign, type SignCategory } from '@/data/signs';
 
 const open = (id: string) => router.push({ pathname: '/signs/[id]', params: { id } });
 
 function SignTile({ sign, width }: { sign: Sign; width: number }) {
   const photo = signImage(sign.id);
+  const pro = useIsPro();
+  const locked = !pro && isSignLocked(sign);
   return (
     <Pressable onPress={() => open(sign.id)} style={({ pressed }) => [styles.tile, { width }, pressed && { opacity: 0.85 }]}>
       <View style={styles.tileArt}>
@@ -32,7 +37,10 @@ function SignTile({ sign, width }: { sign: Sign; width: number }) {
         <Text style={styles.tileTitle} numberOfLines={1}>
           {sign.title}
         </Text>
-        <EvidenceChip evidence={sign.evidence} small />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <EvidenceChip evidence={sign.evidence} small />
+          {locked ? <LockBadge /> : null}
+        </View>
       </View>
     </Pressable>
   );

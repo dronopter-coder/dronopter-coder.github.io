@@ -23,6 +23,7 @@ jobs:
     env:
       DEFINECILER_API_URL: https://defineciler-api.dronopter.workers.dev
       DEFINECILER_API_URLS: https://api.defineciler.online
+      REVENUECAT_ANDROID_KEY: ${{ vars.REVENUECAT_ANDROID_KEY }}
       # Play her yüklemede daha büyük bir sürüm kodu ister.
       ANDROID_VERSION_CODE: ${{ github.run_number }}
     steps:
