@@ -54,7 +54,7 @@ jobs:
         # R8 küçültmesi (abonelik kütüphanesiyle) varsayılan 2 GB yığında bellek yetersizliğine düşüyor.
         run: |
           sed -i '/^org.gradle.jvmargs=/d' android/gradle.properties
-          echo 'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g' >> android/gradle.properties
+          printf '\norg.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g\n' >> android/gradle.properties
           grep jvmargs android/gradle.properties
       - name: İmza ayarı
         run: node ../.github/scripts/android-signing.mjs
