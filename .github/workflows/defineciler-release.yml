@@ -50,6 +50,12 @@ jobs:
       - run: npm ci
       - name: Android projesini üret
         run: npx expo prebuild --platform android --no-install
+      - name: Gradle bellek ayarı
+        # R8 küçültmesi (abonelik kütüphanesiyle) varsayılan 2 GB yığında bellek yetersizliğine düşüyor.
+        run: |
+          sed -i '/^org.gradle.jvmargs=/d' android/gradle.properties
+          echo 'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g' >> android/gradle.properties
+          grep jvmargs android/gradle.properties
       - name: İmza ayarı
         run: node ../.github/scripts/android-signing.mjs
       - name: AAB derle (tüm mimariler)

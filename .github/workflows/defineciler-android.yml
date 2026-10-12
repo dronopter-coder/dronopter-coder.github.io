@@ -203,6 +203,12 @@ jobs:
           ls assets/photos | head -40
       - name: Android projesini üret
         run: npx expo prebuild --platform android --no-install
+      - name: Gradle bellek ayarı
+        # R8 küçültmesi (abonelik kütüphanesiyle) varsayılan 2 GB yığında bellek yetersizliğine düşüyor.
+        run: |
+          sed -i '/^org.gradle.jvmargs=/d' android/gradle.properties
+          echo 'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g' >> android/gradle.properties
+          grep jvmargs android/gradle.properties
       - name: APK derle
         working-directory: defineciler/android
         # Yalnızca arm64 (günümüz telefonlarının tamamı); Play Store için AAB ayrıca tüm mimarilerle derlenir.
