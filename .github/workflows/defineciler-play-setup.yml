@@ -1,0 +1,29 @@
+name: Defineciler Play abonelik ürünü
+
+# Play Console'da "defineciler_pro" aboneliğini (aylık/yıllık + 7 gün deneme) oluşturur ve etkinleştirir.
+# Tekrar çalıştırmak güvenlidir. Gerekli secret: PLAY_SERVICE_ACCOUNT_JSON
+on:
+  push:
+    paths:
+      - '.github/scripts/play-subscription.mjs'
+      - '.github/scripts/play-api.mjs'
+      - '.github/workflows/defineciler-play-setup.yml'
+  workflow_dispatch:
+
+jobs:
+  subscription:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Abonelik ürünü
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -z "$PLAY_SERVICE_ACCOUNT_JSON" ]; then
+            echo "::error::PLAY_SERVICE_ACCOUNT_JSON secret'ı eklenmemiş."
+            exit 1
+          fi
+          node .github/scripts/play-subscription.mjs

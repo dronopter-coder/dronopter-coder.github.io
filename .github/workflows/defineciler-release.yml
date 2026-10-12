@@ -4,6 +4,7 @@ name: Defineciler Play Store paketi (AAB)
 # değiştirip gönderin (ör. sürüm notu yazın) ya da (ana dalda) elle çalıştırın.
 # Gerekli secret'lar: ANDROID_UPLOAD_KEYSTORE_BASE64, ANDROID_UPLOAD_KEYSTORE_PASSWORD,
 #                     ANDROID_UPLOAD_KEY_ALIAS, ANDROID_UPLOAD_KEY_PASSWORD
+# İsteğe bağlı: PLAY_SERVICE_ACCOUNT_JSON (AAB'yi dahili test kanalına otomatik yükler)
 on:
   push:
     paths:
@@ -81,6 +82,16 @@ jobs:
           name: defineciler-aab
           path: defineciler/android/app/build/outputs/bundle/release/*.aab
           retention-days: 30
+      - name: Play Console'a yükle (dahili test)
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -z "$PLAY_SERVICE_ACCOUNT_JSON" ]; then
+            echo "PLAY_SERVICE_ACCOUNT_JSON yok; AAB'yi artefakttan elle yükleyin." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          export PLAY_RELEASE_NOTES="$(cat ../.github/play-release)"
+          node ../.github/scripts/play-upload.mjs android/app/build/outputs/bundle/release/defineciler-v${ANDROID_VERSION_CODE}.aab internal
       - name: Anahtarı sil
         if: always()
         run: rm -f "$RUNNER_TEMP/upload.jks"
