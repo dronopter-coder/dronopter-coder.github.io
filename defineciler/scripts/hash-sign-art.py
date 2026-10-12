@@ -2,7 +2,7 @@
 
 Neden: Android'de paketlenen görseller dosya adıyla önbelleğe alınır; ad değişmezse güncellemeden sonra
 eski görsel görünmeye devam eder. Kullanım (defineciler klasöründe): python3 scripts/hash-sign-art.py
-Yeni görseli assets/signs/<işaret-id>.jpg olarak kopyalayın (eski özetli dosyayı silin) ve betiği çalıştırın.
+Yeni görseli assets/signs/<işaret-id>.webp olarak kopyalayın (eski özetli dosyayı silin) ve betiği çalıştırın.
 """
 
 import hashlib
@@ -12,9 +12,9 @@ import re
 d = 'assets/signs'
 entries = []
 for f in sorted(os.listdir(d)):
-    sid = re.sub(r'(-[0-9a-f]{8})?\.jpg$', '', f)
+    sid = re.sub(r'(-[0-9a-f]{8})?\.(jpg|webp)$', '', f)
     h = hashlib.sha1(open(f'{d}/{f}', 'rb').read()).hexdigest()[:8]
-    new = f'{sid}-{h}.jpg'
+    new = f'{sid}-{h}.' + f.rsplit('.', 1)[1]
     if new != f:
         os.rename(f'{d}/{f}', f'{d}/{new}')
     entries.append((sid, new))

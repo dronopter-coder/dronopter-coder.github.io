@@ -8,7 +8,7 @@ import { DustField } from '@/components/dust-field';
 import { Sparkle } from '@/components/sparkle';
 import { Colors, Fonts } from '@/constants/theme';
 
-const HERO = require('../../assets/images/home-hero.jpg');
+const HERO = require('../../assets/images/home-hero.webp');
 /** Görselin oranı (896×1200): yükseklik = genişlik × RATIO */
 const RATIO = 1200 / 896;
 
