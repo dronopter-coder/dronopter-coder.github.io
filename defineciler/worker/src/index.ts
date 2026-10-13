@@ -10,6 +10,7 @@ import {
   type Who,
 } from './limits';
 import { buildNews } from './news';
+import { SITE_PAGES } from './pages.generated';
 import { isProDevice } from './pro';
 
 export interface Env {
@@ -133,19 +134,38 @@ async function handleEcho(req: Request) {
  * kök dizininde bulunmalıdır; AdMob bu dosyayla reklam envanterinin size ait olduğunu doğrular.
  */
 const APP_ADS_TXT = 'google.com, pub-3204109869365538, DIRECT, f08c47fec0942fa0\n';
-const SITE = 'https://dronopter-coder.github.io';
 const APEX_HOSTS = new Set(['defineciler.online', 'www.defineciler.online']);
+const API_PATHS = new Set(['/news', '/ping', '/health']);
+/** Eski bağlantılar (GitHub Pages adları) yeni yollara yönlendirilir. */
+const PAGE_ALIASES: Record<string, string> = {
+  '/privacy': '/gizlilik',
+  '/privacy.html': '/gizlilik',
+  '/gizlilik.html': '/gizlilik',
+  '/abonelik.html': '/abonelik',
+  '/index.html': '/',
+};
 
-/** Ana alan adı (defineciler.online): app-ads.txt dışında tanıtım ve gizlilik sayfalarına yönlendirir. */
+/**
+ * Ana alan adı (defineciler.online): app-ads.txt, tanıtım, gizlilik ve abonelik koşulları sayfaları.
+ * Gizlilik ve abonelik sayfaları her adreste (api. dahil) sunulur; uygulama ve Play Store bu adreslere bağlanır.
+ */
 function handleSite(url: URL): Response | null {
   if (url.pathname === '/app-ads.txt') {
     return new Response(APP_ADS_TXT, {
       headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' },
     });
   }
-  if (!APEX_HOSTS.has(url.hostname)) return null;
-  if (url.pathname === '/gizlilik' || url.pathname === '/privacy') return Response.redirect(`${SITE}/privacy.html`, 302);
-  return Response.redirect(`${SITE}/`, 302);
+  const alias = PAGE_ALIASES[url.pathname];
+  if (alias) return Response.redirect(new URL(alias, url).toString(), 301);
+  const isApex = APEX_HOSTS.has(url.hostname);
+  if (url.pathname === '/' && !isApex) return null; // API sağlık kontrolü
+  const page = SITE_PAGES[url.pathname];
+  if (page) {
+    return new Response(page, {
+      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=600' },
+    });
+  }
+  return isApex && !API_PATHS.has(url.pathname) ? Response.redirect(new URL('/', url).toString(), 302) : null;
 }
 
 export default {

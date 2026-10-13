@@ -31,7 +31,7 @@ export const PRO_DAILY_SCANS = 30;
 export const REVENUECAT_KEY = extra.revenuecatKey ?? '';
 
 export const APP_NAME = 'Defineciler';
-export const PRIVACY_URL = 'https://dronopter-coder.github.io/privacy.html';
+export const PRIVACY_URL = 'https://defineciler.online/gizlilik';
 export const CONTACT_EMAIL = 'dronopter@gmail.com';
 
 /** Play Store adresi (paket adı app.json → android.package ile aynı olmalı). */

@@ -9,7 +9,7 @@ import { PRIVACY_URL, PRO_DAILY_SCANS } from '@/constants/config';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
 import { getPlans, planErrorText, proAvailable, purchase, restore, useIsPro, type ProPlan } from '@/services/pro';
 
-const TERMS_URL = 'https://dronopter-coder.github.io/abonelik.html';
+const TERMS_URL = 'https://defineciler.online/abonelik';
 const MANAGE_URL = 'https://play.google.com/store/account/subscriptions?package=online.defineciler.app';
 
 const BENEFITS: { icon: IconName; title: string; text: string }[] = [

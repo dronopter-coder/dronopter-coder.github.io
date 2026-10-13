@@ -37,11 +37,23 @@ describe('bağlantı testi uç noktaları', () => {
     expect(await res.text()).toBe('google.com, pub-3204109869365538, DIRECT, f08c47fec0942fa0\n');
   });
 
-  it('ana alan adı tanıtım ve gizlilik sayfalarına yönlendirir', async () => {
-    const home = await worker.fetch(new Request('https://defineciler.online/'), env, ctx);
-    expect(home.status).toBe(302);
-    expect(home.headers.get('Location')).toBe('https://dronopter-coder.github.io/');
-    const privacy = await worker.fetch(new Request('https://defineciler.online/gizlilik'), env, ctx);
-    expect(privacy.headers.get('Location')).toBe('https://dronopter-coder.github.io/privacy.html');
+  it('ana alan adı tanıtım, gizlilik ve abonelik sayfalarını sunar', async () => {
+    const get = (u: string) => worker.fetch(new Request(u), env, ctx);
+    const home = await get('https://defineciler.online/');
+    expect(home.status).toBe(200);
+    expect(home.headers.get('Content-Type')).toContain('text/html');
+    const privacy = await get('https://defineciler.online/gizlilik');
+    const html = await privacy.text();
+    expect(html).toContain('Gizlilik Politikası');
+    expect(html).toContain('href="/abonelik"');
+    expect(html).not.toContain('icon.png');
+    expect(await (await get('https://defineciler.online/abonelik')).text()).toContain('href="/gizlilik"');
+    // Uygulamanın kullandığı api. adresinde de sayfalar açılır, kök ise API sağlık kontrolü kalır.
+    expect((await get('https://api.defineciler.online/gizlilik')).status).toBe(200);
+    expect(await (await get('https://api.defineciler.online/')).json()).toMatchObject({ ok: true });
+    const old = await get('https://defineciler.online/privacy.html');
+    expect(old.status).toBe(301);
+    expect(old.headers.get('Location')).toBe('https://defineciler.online/gizlilik');
+    expect((await get('https://defineciler.online/yok')).headers.get('Location')).toBe('https://defineciler.online/');
   });
 });
