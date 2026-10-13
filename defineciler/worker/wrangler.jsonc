@@ -8,11 +8,11 @@
   "observability": { "enabled": true },
   "vars": {
     // Gemini modelleri (13 Eki, fotoğraflı gerçek ölçüm, bkz. .github/workflows/defineciler-gemini-check.yml):
-    // gemini-3-flash-preview ~15 sn, gemini-3.8-flash ~24 sn çalıştı. 3.5/3.6/3.7-flash yoğunlukta 503,
+    // gemini-3-flash-preview ~14 sn (iki ölçümde de çalıştı), gemini-3.8-flash ~24 sn, gemini-3.1-flash-lite ~8 sn (dalgalı). 3.5/3.6/3.7-flash çoğunlukla 503,
     // flash-lite modelleri 500 veya zaman aşımı (60+ sn takılma) verdi, 2.5 modelleri yeni kullanıcılara kapalı (404).
     // Sıra önemli: yanıt vermeyen model süre bütçesini tüketir, çalışanlar öne alınır.
     "GEMINI_MODEL": "gemini-3-flash-preview",
-    "GEMINI_FALLBACK_MODELS": "gemini-3.8-flash,gemini-3.5-flash,gemini-3.6-flash",
+    "GEMINI_FALLBACK_MODELS": "gemini-3.8-flash,gemini-3.1-flash-lite,gemini-3.5-flash",
     // Uygulamanın gönderdiği X-App-Key başlığı (app.json → extra.appKey ile aynı olmalı).
     "APP_KEY": "defineciler-android-v1",
     // Günlük sınırlar (USAGE KV bağlıysa uygulanır; dağıtım iş akışı KV'yi kendisi oluşturup bağlar).
