@@ -1,13 +1,13 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Button, type IconName } from '@/components/ui';
 import { PRIVACY_URL, PRO_DAILY_SCANS } from '@/constants/config';
 import { Colors, Fonts, Radius, Spacing } from '@/constants/theme';
-import { getPlans, purchase, restore, useIsPro, type ProPlan } from '@/services/pro';
+import { getPlans, planErrorText, proAvailable, purchase, restore, useIsPro, type ProPlan } from '@/services/pro';
 
 const TERMS_URL = 'https://dronopter-coder.github.io/abonelik.html';
 const MANAGE_URL = 'https://play.google.com/store/account/subscriptions?package=online.defineciler.app';
@@ -28,15 +28,27 @@ export default function PaywallScreen() {
   const [plans, setPlans] = useState<ProPlan[] | null>(null);
   const [selected, setSelected] = useState<ProPlan['id']>('annual');
   const [busy, setBusy] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchPlans = useCallback(() => {
     getPlans()
       .then((p) => {
         setPlans(p);
         if (p.length && !p.some((x) => x.id === 'annual')) setSelected(p[0].id);
       })
-      .catch(() => setPlans([]));
+      .catch((e) => {
+        setLoadError(planErrorText(e) || 'Bilinmeyen hata');
+        setPlans([]);
+      });
   }, []);
+
+  useEffect(fetchPlans, [fetchPlans]);
+
+  function retry() {
+    setPlans(null);
+    setLoadError(null);
+    fetchPlans();
+  }
 
   const plan = plans?.find((p) => p.id === selected);
 
@@ -94,6 +106,16 @@ export default function PaywallScreen() {
         </View>
       ) : plans === null ? (
         <ActivityIndicator color={Colors.gold} style={{ marginVertical: Spacing.xl }} />
+      ) : plans.length === 0 && (loadError || proAvailable()) ? (
+        <View style={styles.soon}>
+          <Text style={styles.soonTitle}>Planlar şu an yüklenemedi</Text>
+          <Text style={styles.soonText}>
+            Google Play’e ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin. Uygulamayı Google Play’den
+            yüklediğinizden emin olun.
+          </Text>
+          {loadError ? <Text style={styles.errorCode}>{loadError}</Text> : null}
+          <Button title="Tekrar dene" icon="refresh" variant="secondary" onPress={retry} />
+        </View>
       ) : plans.length === 0 ? (
         <View style={styles.soon}>
           <Text style={styles.soonTitle}>Çok yakında</Text>
@@ -215,6 +237,7 @@ const styles = StyleSheet.create({
   soon: { gap: Spacing.sm, padding: Spacing.lg, borderRadius: Radius.lg, backgroundColor: Colors.surface, alignItems: 'center' },
   soonTitle: { fontFamily: Fonts.display, color: Colors.goldLight, fontSize: 20 },
   soonText: { color: Colors.textSecondary, fontSize: 14, lineHeight: 20, textAlign: 'center' },
+  errorCode: { color: Colors.textMuted, fontSize: 11, lineHeight: 16, textAlign: 'center', fontFamily: Fonts.mono },
   links: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: Spacing.lg },
   link: { color: Colors.gold, fontSize: 13, fontWeight: '600' },
 });

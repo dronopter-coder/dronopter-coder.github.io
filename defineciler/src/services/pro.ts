@@ -92,6 +92,7 @@ export async function getPlans(): Promise<ProPlan[]> {
   if (!configured) return [];
   const offerings = await Purchases.getOfferings();
   const pkgs = offerings.current?.availablePackages ?? [];
+  if (!pkgs.length) throw new Error(offerings.current ? 'Teklifte paket yok' : 'Etkin teklif bulunamadı');
   const plans: ProPlan[] = [];
   const annual = pkgs.find((p) => p.packageType === 'ANNUAL');
   const monthly = pkgs.find((p) => p.packageType === 'MONTHLY');
@@ -105,6 +106,15 @@ export async function getPlans(): Promise<ProPlan[]> {
     });
   if (monthly) plans.push({ id: 'monthly', pkg: monthly, price: monthly.product.priceString, trial: trialText(monthly) });
   return plans;
+}
+
+/** Planlar yüklenemediğinde kullanıcıya gösterilecek kısa teşhis metni (RevenueCat hata kodu ve mesajı). */
+export function planErrorText(e: unknown): string {
+  const err = e as { code?: string | number; message?: string; underlyingErrorMessage?: string };
+  return [err?.code != null ? `Kod ${err.code}` : null, err?.underlyingErrorMessage || err?.message]
+    .filter(Boolean)
+    .join(' · ')
+    .slice(0, 240);
 }
 
 export type PurchaseOutcome = 'purchased' | 'cancelled' | 'failed';

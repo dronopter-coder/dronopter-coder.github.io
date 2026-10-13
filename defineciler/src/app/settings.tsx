@@ -15,7 +15,8 @@ import { getSfxEnabled, setSfxEnabled } from '@/services/sfx';
 import { clearScans } from '@/storage/history';
 
 export default function SettingsScreen() {
-  const version = Constants.expoConfig?.version ?? '1.0.0';
+  const build = Constants.expoConfig?.android?.versionCode;
+  const version = `${Constants.expoConfig?.version ?? '1.0.0'}${build ? ` (${build})` : ''}`;
   const [sfx, setSfx] = useState(true);
   const [probing, setProbing] = useState(false);
   const [steps, setSteps] = useState<ProbeResult[]>([]);
