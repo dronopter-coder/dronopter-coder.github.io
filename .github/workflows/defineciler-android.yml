@@ -4,6 +4,7 @@ name: Defineciler Android APK
 #   GEMINI_API_KEY        Google AI Studio API anahtarı
 #   CLOUDFLARE_API_TOKEN  "Edit Cloudflare Workers" şablonuyla oluşturulmuş token
 #   CLOUDFLARE_ACCOUNT_ID (isteğe bağlı) birden fazla Cloudflare hesabınız varsa
+#   REVENUECAT_SECRET     (isteğe bağlı) RevenueCat gizli V1 anahtarı; sunucu Pro aboneliği doğrular
 # Anahtarlar yoksa sunucu yayınlanmaz ama APK yine üretilir.
 
 on:
