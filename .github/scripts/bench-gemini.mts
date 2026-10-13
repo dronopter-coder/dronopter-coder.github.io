@@ -10,7 +10,7 @@ if (!key) throw new Error('GEMINI_API_KEY yok');
 const image = readFileSync(file).toString('base64');
 console.log(`Fotoğraf: ${file} (${Math.round(image.length / 1024)} KB base64)\n`);
 
-for (const model of models) {
+await Promise.all(models.map(async (model) => {
   const t0 = Date.now();
   let status = 0;
   let note = '';
@@ -43,4 +43,4 @@ for (const model of models) {
     note = `HATA: ${(e as Error).message}`;
   }
   console.log(`${model.padEnd(26)} HTTP ${status}  ${((Date.now() - t0) / 1000).toFixed(1)} sn  ${note}`);
-}
+}));

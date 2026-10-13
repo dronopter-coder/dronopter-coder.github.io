@@ -6,6 +6,8 @@ on:
   push:
     paths:
       - '.github/scripts/gemini-check.mjs'
+      - '.github/scripts/bench-gemini.mts'
+      - '.github/scripts/fixtures/**'
       - '.github/workflows/defineciler-gemini-check.yml'
   workflow_dispatch:
 
@@ -26,3 +28,17 @@ jobs:
             exit 1
           fi
           node .github/scripts/gemini-check.mjs
+      - name: Gerçek fotoğrafla model karşılaştırması (süre ve kullanılabilirlik)
+        if: always()
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          {
+            echo '### Fotoğraflı analiz denemesi (aynı anda, yapılandırılmış çıktı)'
+            echo '```'
+            node --experimental-strip-types .github/scripts/bench-gemini.mts .github/scripts/fixtures/sikke.jpg \
+              gemini-3.5-flash gemini-3.8-flash gemini-flash-lite-latest gemini-flash-latest \
+              gemini-2.5-flash gemini-2.5-flash-lite gemini-3.1-flash-lite gemini-3.5-flash-lite \
+              gemini-3.6-flash gemini-3.7-flash gemini-3-flash-preview | sort -k2,2 -s
+            echo '```'
+          } 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
