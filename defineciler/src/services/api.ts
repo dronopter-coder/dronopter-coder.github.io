@@ -9,6 +9,8 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public code: string = 'error',
+    /** Sunucunun teşhis bilgisi (ör. Gemini model hata kodları "429,503"); kullanıcıya küçük kod olarak gösterilir. */
+    public detail?: string,
   ) {
     super(message);
   }
@@ -130,7 +132,7 @@ async function requestOnce<T>(path: string, init: RequestInit & { timeoutMs?: nu
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
-      throw new ApiError(body?.error ?? `Sunucu hatası (${res.status})`, body?.code ?? String(res.status));
+      throw new ApiError(body?.error ?? `Sunucu hatası (${res.status})`, body?.code ?? String(res.status), body?.detail);
     }
     return body as T;
   } catch (e) {

@@ -65,7 +65,20 @@ describe('analyzeWithGemini', () => {
     await expect(analyzeWithGemini({ image: IMG, mimeType: 'image/jpeg' }, 'k', ['a', 'b'])).rejects.toMatchObject({
       status: 503,
       code: 'busy',
+      detail: '503,503',
     });
+    vi.unstubAllGlobals();
+  });
+
+  it('yoğunluk hatasında her modelin başarısızlık nedenini detay olarak bildirir', async () => {
+    vi.stubGlobal('fetch', async (url: string) => {
+      if (url.includes('quota')) return new Response('{"error":{"status":"RESOURCE_EXHAUSTED"}}', { status: 429 });
+      if (url.includes('missing')) return new Response('{}', { status: 404 });
+      return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: '' }] } }] }), { status: 200 });
+    });
+    await expect(
+      analyzeWithGemini({ image: IMG, mimeType: 'image/jpeg' }, 'k', ['quota-model', 'missing-model', 'empty-model']),
+    ).rejects.toMatchObject({ code: 'busy', detail: '429,404,empty' });
     vi.unstubAllGlobals();
   });
 

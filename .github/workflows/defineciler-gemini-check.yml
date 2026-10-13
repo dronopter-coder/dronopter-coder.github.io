@@ -1,0 +1,28 @@
+name: Defineciler Gemini kontrolü
+
+# Sunucunun kullandığı Gemini modellerini küçük bir istekle sınar; "analiz servisi çok yoğun" hatasının
+# nedenini (kota, model adı, geçici yoğunluk) iş özetinde gösterir. Gerekli secret: GEMINI_API_KEY
+on:
+  push:
+    paths:
+      - '.github/scripts/gemini-check.mjs'
+      - '.github/workflows/defineciler-gemini-check.yml'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Gemini modellerini sına
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "::error::GEMINI_API_KEY secret'ı yok."
+            exit 1
+          fi
+          node .github/scripts/gemini-check.mjs

@@ -188,7 +188,7 @@ export default {
       if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, service: 'defineciler-api' });
       return json({ error: 'Bulunamadı', code: 'not_found' }, 404);
     } catch (e) {
-      if (e instanceof HttpError) return json({ error: e.message, code: e.code }, e.status);
+      if (e instanceof HttpError) return json({ error: e.message, code: e.code, ...(e.detail ? { detail: e.detail } : {}) }, e.status);
       console.error('unhandled', e);
       return json({ error: 'Sunucu hatası. Lütfen tekrar deneyin.', code: 'internal' }, 500);
     }

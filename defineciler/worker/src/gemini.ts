@@ -5,6 +5,8 @@ export class HttpError extends Error {
     public status: number,
     message: string,
     public code = 'error',
+    /** İsteğe bağlı teşhis bilgisi (ör. Gemini model hata kodları); yanıtta `detail` olarak döner. */
+    public detail?: string,
   ) {
     super(message);
   }
@@ -96,7 +98,13 @@ export const DETAIL_BUDGET = { totalMs: 68_000, perModelMs: 45_000, minAttemptMs
 const RETRYABLE = new Set([404, 408, 429, 500, 502, 503, 504]);
 
 /** Tek bir modele istek atar; başarıda sonucu, geçici hatada null döndürür. */
-async function callModel(req: AnalyzeRequest, apiKey: string, model: string, timeoutMs: number): Promise<AnalysisResult | null> {
+async function callModel(
+  req: AnalyzeRequest,
+  apiKey: string,
+  model: string,
+  timeoutMs: number,
+  fails: string[] = [],
+): Promise<AnalysisResult | null> {
   const extras = req.extraImages ?? [];
   const userText =
     (extras.length
@@ -133,12 +141,14 @@ async function callModel(req: AnalyzeRequest, apiKey: string, model: string, tim
     });
   } catch (e) {
     console.error('Gemini fetch failed', model, String(e));
+    fails.push(/timeout|abort/i.test(String(e)) ? 'timeout' : 'network');
     return null;
   }
 
   if (!res.ok) {
     const detail = await res.text().catch(() => '');
     console.error('Gemini error', model, res.status, detail.slice(0, 500));
+    fails.push(String(res.status));
     if (RETRYABLE.has(res.status)) return null;
     if (res.status === 400 && /image|inline/i.test(detail))
       throw new HttpError(400, 'Fotoğraf işlenemedi. Farklı bir fotoğraf deneyin.', 'bad_image');
@@ -156,12 +166,14 @@ async function callModel(req: AnalyzeRequest, apiKey: string, model: string, tim
     .join('');
   if (!text) {
     console.error('Gemini empty', model, JSON.stringify(data).slice(0, 500));
+    fails.push('empty');
     return null;
   }
   try {
     return normalizeResult(JSON.parse(text));
   } catch {
     console.error('Gemini bad JSON', model, cand?.finishReason, text.slice(0, 300));
+    fails.push('json');
     return null;
   }
 }
@@ -179,14 +191,20 @@ export async function analyzeWithGemini(
   const list = [...new Set(models.map((m) => m.trim()).filter(Boolean))];
   // İstemci en fazla ~70 sn bekler; sunucu her durumda bundan önce anlamlı bir yanıt vermeli.
   const deadline = Date.now() + budget.totalMs;
+  // Her modelin başarısızlık nedeni (durum kodu, timeout, empty...): "çok yoğun" hatasının teşhisi için.
+  const fails: string[] = [];
   for (const [i, model] of list.entries()) {
     if (i > 0) await new Promise((r) => setTimeout(r, 300));
     const left = deadline - Date.now();
-    if (left < budget.minAttemptMs) break;
-    const result = await callModel(req, apiKey, model, Math.min(budget.perModelMs, left));
+    if (left < budget.minAttemptMs) {
+      fails.push('süre');
+      break;
+    }
+    const result = await callModel(req, apiKey, model, Math.min(budget.perModelMs, left), fails);
     if (result) return { result, model };
   }
-  throw new HttpError(503, 'Analiz servisi şu anda çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.', 'busy');
+  console.error('Gemini hepsi başarısız', fails.join(','));
+  throw new HttpError(503, 'Analiz servisi şu anda çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.', 'busy', fails.join(','));
 }
 
 /** MOCK_GEMINI=1 iken kullanılan örnek sonuç (anahtar olmadan test için). */

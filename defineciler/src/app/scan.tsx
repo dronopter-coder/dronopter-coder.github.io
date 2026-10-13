@@ -113,7 +113,11 @@ export default function ScanScreen() {
       await maybeShowInterstitial();
       router.replace({ pathname: '/result/[id]', params: { id: record.id } });
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.');
+      setError(
+        e instanceof ApiError
+          ? `${e.message}${e.detail ? `\n(Kod: ${e.detail})` : ''}`
+          : 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.',
+      );
       playError();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
     } finally {
