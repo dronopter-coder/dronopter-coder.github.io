@@ -89,8 +89,11 @@ AYRINTILI RAPOR istendi. Şunlara özellikle dikkat et:
 - features ve authenticity.notes: her gözlemi fotoğraftaki somut bir ayrıntıya dayandır.
 - photoTips: kesin tanım için eksik kalan bilgileri (ölçü, ağırlık, arka yüz, kenar) açıkça belirt.`;
 
-/** Toplam süre bütçesi: en fazla 50 sn; her model en fazla 30 sn; 8 sn'den az kaldıysa yeni model denenmez. */
-export const DEFAULT_BUDGET = { totalMs: 50_000, perModelMs: 30_000, minAttemptMs: 8_000 };
+/**
+ * Toplam süre bütçesi: en fazla 62 sn (istemci 70 sn bekler); her model en fazla 38 sn; 8 sn'den az kaldıysa yeni model denenmez.
+ * Fotoğraflı analiz çalışan modellerde 15-25 sn sürer; takılan bir model yedeğin süresini tüketmesin diye sınır geniş tutulmaz.
+ */
+export const DEFAULT_BUDGET = { totalMs: 62_000, perModelMs: 38_000, minAttemptMs: 8_000 };
 /** Pro ayrıntılı rapor / çok fotoğraflı analiz daha uzun sürer (istemci 85 sn bekler). */
 export const DETAIL_BUDGET = { totalMs: 68_000, perModelMs: 45_000, minAttemptMs: 10_000 };
 
