@@ -1,7 +1,7 @@
 name: Defineciler Play abonelik ürünü
 
 # Play Console'da "defineciler_pro" aboneliğini (aylık/yıllık + 7 gün deneme) oluşturur ve etkinleştirir.
-# Tekrar çalıştırmak güvenlidir (bu dosyayı değiştirip göndermek yeniden çalıştırır). Gerekli secret: PLAY_SERVICE_ACCOUNT_JSON
+# Tekrar çalıştırmak güvenlidir (bu dosyayı değiştirip göndermek iş akışını yeniden çalıştırır). Gerekli secret: PLAY_SERVICE_ACCOUNT_JSON
 on:
   push:
     paths:
