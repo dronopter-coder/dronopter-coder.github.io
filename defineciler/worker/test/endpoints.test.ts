@@ -42,15 +42,44 @@ describe('bağlantı testi uç noktaları', () => {
     const home = await get('https://defineciler.online/');
     expect(home.status).toBe(200);
     expect(home.headers.get('Content-Type')).toContain('text/html');
+    const homeHtml = await home.text();
+    expect(homeHtml).toContain('Define işaretleri ve tarihi eserler');
+    expect(homeHtml).toContain('href="/gizlilik"');
+    // Sayfadaki görseller Worker tarafından sunulur.
+    const img = await get('https://defineciler.online/site/ekran-ana.webp');
+    expect(img.status).toBe(200);
+    expect(img.headers.get('Content-Type')).toBe('image/webp');
+    expect((await img.arrayBuffer()).byteLength).toBeGreaterThan(1000);
+    for (const m of homeHtml.matchAll(/(?:src|href)="(\/site\/[^"]+)"/g)) {
+      expect((await get(`https://defineciler.online${m[1]}`)).status, m[1]).toBe(200);
+    }
     const privacy = await get('https://defineciler.online/gizlilik');
     const html = await privacy.text();
     expect(html).toContain('Gizlilik Politikası');
     expect(html).toContain('href="/abonelik"');
-    expect(html).not.toContain('icon.png');
+    expect(html).not.toContain('href="icon.png"');
     expect(await (await get('https://defineciler.online/abonelik')).text()).toContain('href="/gizlilik"');
     // Uygulamanın kullandığı api. adresinde de sayfalar açılır, kök ise API sağlık kontrolü kalır.
     expect((await get('https://api.defineciler.online/gizlilik')).status).toBe(200);
     expect(await (await get('https://api.defineciler.online/')).json()).toMatchObject({ ok: true });
+    // Arama motoru dosyaları ve işaret sayfaları
+    const robots = await (await get('https://defineciler.online/robots.txt')).text();
+    expect(robots).toContain('Sitemap: https://defineciler.online/sitemap.xml');
+    const sitemap = await (await get('https://defineciler.online/sitemap.xml')).text();
+    expect(sitemap).toContain('<loc>https://defineciler.online/define-isaretleri/yilan</loc>');
+    const sign = await get('https://defineciler.online/define-isaretleri/yilan');
+    expect(sign.status).toBe(200);
+    const signHtml = await sign.text();
+    expect(signHtml).toContain('<link rel="canonical" href="https://defineciler.online/define-isaretleri/yilan">');
+    expect(signHtml).toContain('define işareti ne anlama gelir');
+    expect(signHtml).toContain('application/ld+json');
+    expect((await get('https://defineciler.online/define-isaretleri')).status).toBe(200);
+    expect((await get('https://defineciler.online/define-isaretleri/')).status).toBe(301);
+    expect((await get('https://api.defineciler.online/define-isaretleri/yilan')).headers.get('X-Robots-Tag')).toBe('noindex');
+    // Sitemap'teki her adres gerçekten açılır
+    for (const m of sitemap.matchAll(/<loc>https:\/\/defineciler\.online([^<]*)<\/loc>/g)) {
+      expect((await get(`https://defineciler.online${m[1]}`)).status, m[1]).toBe(200);
+    }
     const old = await get('https://defineciler.online/privacy.html');
     expect(old.status).toBe(301);
     expect(old.headers.get('Location')).toBe('https://defineciler.online/gizlilik');

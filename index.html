@@ -3,40 +3,337 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Defineciler</title>
-  <meta name="description" content="Defineciler: fotoğrafla tarihi eser tanımlama uygulaması.">
-  <link rel="icon" href="icon.png">
+  <title>Define işaretleri, sikke ve tarihi eser tanıma uygulaması | Defineciler</title>
+  <meta name="description" content="Defineciler: define işaretlerinin anlamlarını öğren, sikke ve tarihi eserini fotoğrafla tanı. 35 define işareti, halk yorumu ve arkeolojik gerçek, Anadolu'nun tarihi bölgeleri, rehberler ve arkeoloji haberleri. Android uygulaması.">
+  <meta name="theme-color" content="#14100C">
+  <link rel="canonical" href="https://defineciler.online/">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="keywords" content="define işaretleri, define işaretleri ve anlamları, sikke tanıma, tarihi eser tanıma, eser tanıma uygulaması, define, Anadolu tarihi, arkeoloji">
+  <link rel="icon" href="/site/icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="Defineciler">
+  <meta property="og:title" content="Define işaretleri, sikke ve tarihi eser tanıma uygulaması | Defineciler">
+  <meta property="og:description" content="Elindeki eserin hikâyesini bir fotoğrafla keşfet. Sikke, obje, yazıt ve define işaretleri rehberi.">
+  <meta property="og:image" content="https://defineciler.online/site/og.jpg">
+  <meta property="og:url" content="https://defineciler.online/">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "MobileApplication", "name": "Defineciler", "alternateName": "Defineciler: Eser Tanımlama", "operatingSystem": "Android", "applicationCategory": "EducationalApplication", "inLanguage": "tr-TR", "description": "Fotoğrafla tarihi eser ve sikke tanıma, 35 define işaretinin anlamları, Anadolu'nun tarihi bölgeleri ve arkeoloji rehberi.", "url": "https://defineciler.online/", "image": "https://defineciler.online/site/og.jpg", "publisher": {"@type": "Organization", "name": "Defineciler", "url": "https://defineciler.online/", "logo": "https://defineciler.online/site/icon.png"}}, {"@type": "WebSite", "name": "Defineciler", "url": "https://defineciler.online/", "inLanguage": "tr-TR"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Uygulama ücretsiz mi?", "acceptedAnswer": {"@type": "Answer", "text": "Evet. Her gün ücretsiz analiz hakkınız vardır ve hakkınız bittiğinde kısa bir reklam izleyerek devam edebilirsiniz. Reklamsız kullanım ve ek özellikler için isteğe bağlı Defineciler Pro aboneliği bulunur."}}, {"@type": "Question", "name": "Sonuçlar kesin mi?", "acceptedAnswer": {"@type": "Answer", "text": "Hayır. Analizler fotoğrafa dayalı tahminlerdir ve uzman incelemesinin ya da resmî ekspertizin yerini tutmaz."}}, {"@type": "Question", "name": "Define işaretleri gerçekten define yeri mi gösterir?", "acceptedAnswer": {"@type": "Answer", "text": "Hayır, bilimsel bir kanıt yoktur. Defineciler her işareti halk yorumu ile tarih ve arkeolojideki gerçek karşılığına ayırarak anlatır; örneklerin çoğu doğal oluşum ya da rastlantıdır."}}, {"@type": "Question", "name": "Bir eser ya da işaret bulursam ne yapmalıyım?", "acceptedAnswer": {"@type": "Answer", "text": "Dokunmayın, kazmayın ve boyamayın. Fotoğrafını çekip konumunu en yakın müze müdürlüğüne ya da mülki amirliğe bildirin. Bulunan eserlerin 3 gün içinde bildirilmesi 2863 sayılı Kanun gereği zorunludur."}}]}]}</script>
   <style>
-    :root { --bg:#14100C; --surface:#1F1912; --border:#3A2F22; --gold:#D4A24C; --gold-light:#F0C870; --text:#F3E9DA; --muted:#B5A58E; }
+    :root {
+      --bg:#14100C; --bg2:#1A140E; --surface:#1F1912; --surface2:#2A2219; --border:#3A2F22;
+      --gold:#D4A24C; --gold-light:#F0C870; --text:#F3E9DA; --muted:#B5A58E; --green:#7FB069;
+    }
     * { box-sizing: border-box; }
-    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
-    main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
-    h1,h2 { font-family: Georgia, "Times New Roman", serif; color: var(--gold-light); line-height:1.25; }
-    h1 { font-size: 2rem; margin: 0 0 4px; }
-    h2 { font-size: 1.2rem; margin-top: 2rem; }
-    a { color: var(--gold); }
-    .brand { display:flex; align-items:center; gap:14px; margin-bottom: 24px; }
-    .brand img { width:64px; height:64px; border-radius:14px; }
-    .card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px; margin:16px 0; }
-    .muted { color: var(--muted); }
-    ul { padding-left: 1.2rem; }
-    footer { margin-top: 48px; color: var(--muted); font-size: .9rem; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; -webkit-font-smoothing:antialiased; }
+    img { max-width:100%; display:block; }
+    a { color:var(--gold); }
+    h1,h2,h3 { font-family: Georgia,"Times New Roman",serif; color:var(--gold-light); line-height:1.2; margin:0; }
+    .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+    section { padding:72px 0; }
+    .eyebrow { color:var(--gold); font-size:.8rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin:0 0 10px; }
+    h2 { font-size:clamp(1.7rem,4vw,2.4rem); }
+    .lead { color:var(--muted); font-size:1.08rem; max-width:620px; margin:14px 0 0; }
+    .center { text-align:center; } .center .lead { margin-left:auto; margin-right:auto; }
+
+    /* üst çubuk */
+    header { position:sticky; top:0; z-index:10; background:rgba(20,16,12,.88); backdrop-filter:blur(10px); border-bottom:1px solid rgba(58,47,34,.7); }
+    .nav { display:flex; align-items:center; justify-content:space-between; height:64px; }
+    .logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--gold-light); font-family:Georgia,serif; font-weight:700; font-size:1.2rem; letter-spacing:.04em; }
+    .logo img { width:36px; height:36px; border-radius:10px; }
+    .nav ul { display:flex; gap:26px; list-style:none; margin:0; padding:0; }
+    .nav ul a { color:var(--muted); text-decoration:none; font-size:.95rem; }
+    .nav ul a:hover { color:var(--gold-light); }
+    .btn { display:inline-flex; align-items:center; gap:10px; padding:13px 22px; border-radius:999px; font-weight:700; text-decoration:none; border:1px solid transparent; font-size:1rem; }
+    .btn-gold { background:var(--gold); color:#1a1208; }
+    .btn-ghost { border-color:var(--border); color:var(--text); background:var(--surface); }
+    .btn-soon { background:var(--surface2); color:var(--gold-light); border-color:rgba(232,199,122,.45); cursor:default; }
+    .nav .btn { padding:9px 16px; font-size:.9rem; }
+
+    /* hero */
+    .hero { padding:56px 0 40px; background:radial-gradient(900px 500px at 78% 30%, rgba(212,162,76,.16), transparent 70%); }
+    .hero-grid { display:grid; grid-template-columns:1.05fr .95fr; gap:40px; align-items:center; }
+    .hero h1 { font-size:clamp(2rem,5vw,3.3rem); color:var(--text); }
+    .hero h1 em { color:var(--gold); font-style:italic; }
+    .hero p.sub { font-size:1.15rem; color:var(--muted); margin:18px 0 0; max-width:520px; }
+    .cta { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; align-items:center; }
+    .note { color:var(--muted); font-size:.85rem; margin-top:14px; }
+    .phones { position:relative; height:520px; }
+    .phone { position:absolute; width:min(250px,56%); border-radius:30px; padding:8px; background:linear-gradient(160deg,#3a2f22,#17120d); border:1px solid #4a3c2a; box-shadow:0 30px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.4); }
+    .phone img { border-radius:23px; width:100%; height:auto; aspect-ratio:9/16; object-fit:cover; }
+    .phones .p1 { left:2%; top:46px; transform:rotate(-5deg); }
+    .phones .p2 { right:2%; top:0; transform:rotate(4deg); z-index:2; }
+
+    /* adımlar */
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:40px; }
+    .step { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:26px; }
+    .step .n { width:38px; height:38px; border-radius:50%; background:rgba(212,162,76,.14); border:1px solid rgba(232,199,122,.5); color:var(--gold-light); display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom:16px; }
+    .step h3 { font-size:1.25rem; margin-bottom:8px; }
+    .step p { margin:0; color:var(--muted); }
+
+    /* özellikler */
+    .alt { background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:40px; }
+    .feat { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:24px; }
+    .feat .ic { font-size:1.6rem; margin-bottom:12px; }
+    .feat h3 { font-size:1.15rem; margin-bottom:6px; }
+    .feat p { margin:0; color:var(--muted); font-size:.97rem; }
+
+    /* işaretler */
+    .signs-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-top:36px; }
+    .sign { position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--border); aspect-ratio:1; }
+    .sign img { width:100%; height:100%; object-fit:cover; }
+    .sign span { position:absolute; left:0; right:0; bottom:0; padding:22px 10px 8px; font-weight:700; font-size:.9rem; background:linear-gradient(transparent,rgba(12,10,6,.92)); }
+    .split { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
+    .chip { display:inline-flex; align-items:center; gap:7px; padding:5px 12px; border-radius:999px; border:1px solid; font-size:.85rem; font-weight:600; }
+    .chip i { width:8px; height:8px; border-radius:50%; display:inline-block; }
+    .c1 { color:#7FB069; border-color:#7FB06999; background:#7FB0691F; } .c1 i { background:#7FB069; }
+    .c2 { color:#E0A43A; border-color:#E0A43A99; background:#E0A43A1F; } .c2 i { background:#E0A43A; }
+    .c3 { color:#D9645A; border-color:#D9645A99; background:#D9645A1F; } .c3 i { background:#D9645A; }
+
+    /* galeri */
+    .gallery { display:flex; gap:20px; overflow-x:auto; scroll-snap-type:x mandatory; padding:36px 20px 20px; margin:0 -20px; -webkit-overflow-scrolling:touch; }
+    .gallery figure { margin:0; flex:0 0 220px; scroll-snap-align:center; }
+    .gallery .phone { position:static; width:100%; transform:none; }
+    .gallery figcaption { text-align:center; color:var(--muted); font-size:.9rem; margin-top:12px; }
+
+    /* pro */
+    .plans { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; max-width:760px; margin:40px auto 0; }
+    .plan { background:var(--surface); border:1px solid var(--border); border-radius:22px; padding:28px; position:relative; }
+    .plan.best { border-color:var(--gold); background:linear-gradient(180deg,rgba(212,162,76,.12),var(--surface)); }
+    .plan .tag { position:absolute; top:-12px; right:20px; background:var(--gold); color:#1a1208; font-size:.72rem; font-weight:800; letter-spacing:.06em; padding:4px 12px; border-radius:999px; }
+    .plan h3 { font-size:1.2rem; color:var(--text); }
+    .price { font-family:Georgia,serif; font-size:2.3rem; color:var(--gold-light); margin:10px 0 2px; }
+    .price small { font-size:1rem; color:var(--muted); font-family:system-ui,sans-serif; }
+    .plan p { color:var(--muted); margin:0; font-size:.95rem; }
+    .perks { list-style:none; padding:0; margin:34px auto 0; max-width:760px; display:grid; grid-template-columns:repeat(2,1fr); gap:12px 24px; }
+    .perks li { padding-left:30px; position:relative; }
+    .perks li::before { content:"✓"; position:absolute; left:0; top:0; color:var(--gold); font-weight:800; }
+    .fine { color:var(--muted); font-size:.85rem; text-align:center; max-width:640px; margin:22px auto 0; }
+
+    /* uyarı ve sss */
+    .legal { background:rgba(224,164,58,.08); border:1px solid rgba(224,164,58,.4); border-radius:20px; padding:26px; display:flex; gap:18px; }
+    .legal .ic { font-size:1.6rem; }
+    .legal h3 { font-size:1.15rem; color:#E0A43A; margin-bottom:6px; }
+    .legal p { margin:0; }
+    details { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:0 22px; margin-top:12px; }
+    summary { cursor:pointer; padding:18px 0; font-weight:700; list-style:none; display:flex; justify-content:space-between; gap:16px; }
+    summary::-webkit-details-marker { display:none; }
+    summary::after { content:"+"; color:var(--gold); font-size:1.4rem; line-height:1; }
+    details[open] summary::after { content:"–"; }
+    details p { margin:0 0 20px; color:var(--muted); }
+    .faq { max-width:760px; margin:36px auto 0; }
+
+    /* son çağrı ve alt bilgi */
+    .final { text-align:center; background:radial-gradient(700px 320px at 50% 0%, rgba(212,162,76,.18), transparent 70%); }
+    .final .logo-big { width:84px; height:84px; margin:0 auto 22px; border-radius:22px; box-shadow:0 14px 40px rgba(0,0,0,.5); }
+    .final .cta { justify-content:center; }
+    footer { border-top:1px solid var(--border); padding:34px 0 48px; color:var(--muted); font-size:.9rem; }
+    .foot { display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; }
+    .foot a { color:var(--muted); margin-right:18px; }
+    .foot a:hover { color:var(--gold-light); }
+    .small { margin-top:18px; font-size:.82rem; }
+
+    @media (max-width:860px) {
+      .nav ul { display:none; }
+      .hero-grid, .split { grid-template-columns:1fr; }
+      .phones { width:100%; height:440px; max-width:420px; margin:0 auto; }
+      .nav .btn { padding:8px 13px; font-size:.78rem; white-space:nowrap; }
+      .logo { font-size:1.05rem; }
+      .steps, .grid { grid-template-columns:1fr; }
+      .signs-grid { grid-template-columns:repeat(3,1fr); }
+      .plans, .perks { grid-template-columns:1fr; }
+      section { padding:56px 0; }
+    }
+    @media (max-width:520px) { .signs-grid { grid-template-columns:repeat(2,1fr); } .legal { flex-direction:column; gap:8px; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
   </style>
 </head>
 <body>
-<main>
-  <div class="brand"><img src="icon.png" alt="Defineciler simgesi"><div><h1>Defineciler</h1><div class="muted">Fotoğrafla tarihi eser tanımlama</div></div></div>
-  <div class="card">
-    <p>Elinizdeki eserin fotoğrafını çekin; Defineciler ne olduğunu, hangi döneme ve uygarlığa ait olduğunu, malzemesini ve üzerindeki yazı ile sembolleri anlatsın.</p>
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="/"><img src="/site/icon.png" alt="" width="36" height="36">Defineciler</a>
     <ul>
-      <li>Fotoğraftan eser tanımlama ve orijinallik ipuçları</li>
-      <li>Anadolu'nun tarihi bölgeleri ve uygarlıkları</li>
-      <li>Güncel arkeoloji haberleri</li>
-      <li>Sikke, seramik, mühür ve define işaretleri rehberi</li>
+      <li><a href="#nasil">Nasıl çalışır</a></li>
+      <li><a href="#ozellikler">Özellikler</a></li>
+      <li><a href="/define-isaretleri">Define işaretleri</a></li>
+      <li><a href="#pro">Pro</a></li>
+      <li><a href="#sss">Sık sorulanlar</a></li>
     </ul>
+    <a class="btn btn-soon" href="#indir">Yakında Google Play'de</a>
   </div>
-  <p><a href="privacy.html">Gizlilik Politikası</a> · <a href="mailto:dronopter@gmail.com">İletişim</a></p>
-  <footer>Bulunan tarihi eserlerin 3 gün içinde müzeye veya mülki amirliğe bildirilmesi 2863 sayılı Kanun gereği zorunludur.</footer>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Anadolu'nun hazineleri</p>
+        <h1>Define işaretleri ve tarihi eserler: geçmişin kilidini <em>aç.</em></h1>
+        <p class="sub">Elindeki sikkenin, objenin ya da kayadaki işaretin hikâyesini bir fotoğrafla keşfet. Dönemi, uygarlığı, malzemesi ve anlamı saniyeler içinde elinin altında.</p>
+        <div class="cta" id="indir">
+          <span class="btn btn-soon">▶ Google Play'de çok yakında</span>
+          <a class="btn btn-ghost" href="mailto:dronopter@gmail.com?subject=Defineciler%20yayınlanınca%20haber%20verin">Yayınlanınca haber ver</a>
+        </div>
+        <p class="note">Android için · Ücretsiz başlayın, günde 2 analiz hakkı</p>
+      </div>
+      <div class="phones" aria-hidden="true">
+        <div class="phone p1"><img src="/site/ekran-ana.webp" alt="" width="360" height="640"></div>
+        <div class="phone p2"><img src="/site/ekran-sonuc.webp" alt="" width="360" height="640"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="nasil">
+    <div class="wrap center">
+      <p class="eyebrow">Nasıl çalışır</p>
+      <h2>Üç adımda eserin hikâyesi</h2>
+      <p class="lead">Teknik bilgi gerekmez. Fotoğrafı çekin, gerisini Defineciler anlatsın.</p>
+      <div class="steps" style="text-align:left">
+        <div class="step"><div class="n">1</div><h3>Fotoğrafla</h3><p>Eseri kameranızla çekin ya da galeriden seçin. İsterseniz boyut ve bulunduğu yer gibi bir not ekleyin.</p></div>
+        <div class="step"><div class="n">2</div><h3>Analiz et</h3><p>Defineciler eserin türünü, muhtemel dönemini, uygarlığını, malzemesini ve üzerindeki yazı ya da figürleri değerlendirir.</p></div>
+        <div class="step"><div class="n">3</div><h3>Öğren ve sakla</h3><p>Güven düzeyiyle birlikte anlaşılır bir rapor alırsınız. Taramalar yalnızca telefonunuzda saklanır.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ozellikler" class="alt">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow">Özellikler</p>
+        <h2>Merakınızı besleyen her şey, tek uygulamada</h2>
+      </div>
+      <div class="grid">
+        <div class="feat"><div class="ic">📷</div><h3>Fotoğraftan eser tanımlama</h3><p>Sikke, seramik, mühür, kandil, takı ve yazıtlar. Dönem, uygarlık, malzeme ve benzer müze örnekleriyle.</p></div>
+        <div class="feat"><div class="ic">🪨</div><h3>35 define işareti</h3><p>Yılan, kartal, el izi, çanak oyuklar, tümülüs ve daha fazlası. Halk yorumu ile arkeolojik gerçeği yan yana okuyun.</p></div>
+        <div class="feat"><div class="ic">🗺️</div><h3>Tarihi bölgeler</h3><p>Hitit'ten Frigya'ya, Kapadokya'dan Karya'ya Anadolu'nun uygarlıkları, uygarlıkların tipik buluntuları ve müzeleri.</p></div>
+        <div class="feat"><div class="ic">📚</div><h3>Rehber ve belgeler</h3><p>Sikke okuma, patina, sahte eser ayrımı, zaman çizelgesi ve eser bulunca ne yapılacağı. Yasal çerçeve dahil.</p></div>
+        <div class="feat"><div class="ic">📰</div><h3>Güncel arkeoloji haberleri</h3><p>Kazılar, keşifler ve müzelerden haberler tek akışta. Habere dokunun, kaynağında okuyun.</p></div>
+        <div class="feat"><div class="ic">🔒</div><h3>Gizliliğe saygı</h3><p>Hesap açmanız gerekmez. Tarama geçmişiniz yalnızca cihazınızda kalır, fotoğraflar sunucumuzda saklanmaz.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="isaretler">
+    <div class="wrap">
+      <div class="split">
+        <div>
+          <p class="eyebrow">Define işaretleri ve anlamları</p>
+          <h2>Efsane ile gerçeği ayırın</h2>
+          <p class="lead">Taşlarda ve kayalarda görülen işaretler halk arasında çok farklı yorumlanır. Defineciler her işaret için üç şeyi ayrı ayrı gösterir:</p>
+          <div class="chips">
+            <span class="chip c1"><i></i>Arkeolojik iz</span>
+            <span class="chip c2"><i></i>Kültürel sembol</span>
+            <span class="chip c3"><i></i>Halk yorumu</span>
+          </div>
+          <p class="lead" style="margin-top:20px"><a class="btn btn-ghost" href="/define-isaretleri">35 define işaretini ve anlamlarını oku →</a></p>
+          <p class="lead" style="margin-top:20px">Hangi bilginin kanıta dayandığını, hangisinin yalnızca anlatı olduğunu net biçimde görürsünüz. Her işaret için yorumun sınırı da açıkça yazılır.</p>
+        </div>
+        <div class="signs-grid" style="grid-template-columns:repeat(3,1fr);margin-top:0">
+          <a class="sign" href="/define-isaretleri/yilan" style="display:block;color:inherit;text-decoration:none"><img src="/site/s-yilan.webp" alt="Yılan işareti" loading="lazy"><span>Yılan</span></a>
+          <a class="sign" href="/define-isaretleri/kartal" style="display:block;color:inherit;text-decoration:none"><img src="/site/s-kartal.webp" alt="Kartal işareti" loading="lazy"><span>Kartal</span></a>
+          <a class="sign" href="/define-isaretleri/aslan" style="display:block;color:inherit;text-decoration:none"><img src="/site/s-aslan.webp" alt="Aslan işareti" loading="lazy"><span>Aslan</span></a>
+          <a class="sign" href="/define-isaretleri/el" style="display:block;color:inherit;text-decoration:none"><img src="/site/s-el.webp" alt="El izi işareti" loading="lazy"><span>El izi</span></a>
+          <a class="sign" href="/define-isaretleri/tumulus" style="display:block;color:inherit;text-decoration:none"><img src="/site/s-tumulus.webp" alt="Tümülüs" loading="lazy"><span>Tümülüs</span></a>
+          <a class="sign" href="/define-isaretleri/kaplumbaga" style="display:block;color:inherit;text-decoration:none"><img src="/site/s-kaplumbaga.webp" alt="Kaplumbağa işareti" loading="lazy"><span>Kaplumbağa</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow">Uygulamadan</p>
+        <h2>Bir bakışta Defineciler</h2>
+      </div>
+      <div class="gallery">
+        <figure><div class="phone"><img src="/site/ekran-ana.webp" alt="Defineciler ana sayfa" loading="lazy" width="360" height="640"></div><figcaption>Ana sayfa</figcaption></figure>
+        <figure><div class="phone"><img src="/site/ekran-sonuc.webp" alt="Analiz sonucu" loading="lazy" width="360" height="640"></div><figcaption>Analiz sonucu</figcaption></figure>
+        <figure><div class="phone"><img src="/site/ekran-isaretler.webp" alt="Define işaretleri listesi" loading="lazy" width="360" height="640"></div><figcaption>Define işaretleri</figcaption></figure>
+        <figure><div class="phone"><img src="/site/ekran-detay.webp" alt="İşaret ayrıntısı" loading="lazy" width="360" height="640"></div><figcaption>İşaret ayrıntısı</figcaption></figure>
+        <figure><div class="phone"><img src="/site/ekran-bolgeler.webp" alt="Tarihi bölgeler" loading="lazy" width="360" height="640"></div><figcaption>Tarihi bölgeler</figcaption></figure>
+        <figure><div class="phone"><img src="/site/ekran-rehber.webp" alt="Rehber" loading="lazy" width="360" height="640"></div><figcaption>Rehber</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="pro">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow">Defineciler Pro</p>
+        <h2>Ücretsiz başlayın, isterseniz derinleşin</h2>
+        <p class="lead">Her gün ücretsiz analiz hakkınız vardır; hakkınız bitince kısa bir reklam izleyerek devam edebilirsiniz. Daha fazlasını isteyenler için Pro:</p>
+      </div>
+      <div class="plans">
+        <div class="plan"><h3>Aylık</h3><div class="price">79,99 ₺<small> / ay</small></div><p>İstediğiniz zaman iptal edin.</p></div>
+        <div class="plan best"><span class="tag">EN AVANTAJLI</span><h3>Yıllık</h3><div class="price">499,99 ₺<small> / yıl</small></div><p>İlk 7 gün ücretsiz deneyin. Aylık ödemeye göre yaklaşık %48 daha uygun.</p></div>
+      </div>
+      <ul class="perks">
+        <li>Reklamsız kullanım</li>
+        <li>Günde 30 analiz</li>
+        <li>Ön ve arka yüz birlikte ayrıntılı rapor</li>
+        <li>Raporu PDF olarak kaydetme ve paylaşma</li>
+        <li>Tüm belgeler ve define işaretleri</li>
+        <li>Yazı okuma denemesi ve müze örnekleri</li>
+      </ul>
+      <p class="fine">Abonelik Google Play üzerinden alınır ve siz iptal edene kadar her dönem sonunda otomatik yenilenir. Google Play → Abonelikler bölümünden istediğiniz zaman iptal edebilirsiniz. <a href="/abonelik">Abonelik koşulları</a></p>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap" style="max-width:860px">
+      <div class="legal">
+        <div class="ic">⚖️</div>
+        <div>
+          <h3>Sorumlu keşif</h3>
+          <p>Defineciler bir bilgi ve öğrenme uygulamasıdır. Kazıyı, define aramayı ya da kültür varlığı ticaretini teşvik etmez. İzinsiz kazı ve kültür varlıklarına zarar vermek 2863 sayılı Kanun'a göre suçtur. Bir eser ya da işaret gördüğünüzde dokunmayın, fotoğrafını çekin ve en yakın müze müdürlüğüne ya da mülki amirliğe bildirin. Bulunan eserlerin 3 gün içinde bildirilmesi yasal zorunluluktur.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sss">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow">Sık sorulanlar</p>
+        <h2>Merak edilenler</h2>
+      </div>
+      <div class="faq">
+        <details><summary>Uygulama ücretsiz mi?</summary><p>Evet. Her gün ücretsiz analiz hakkınız vardır ve hakkınız bittiğinde kısa bir reklam izleyerek devam edebilirsiniz. Reklamsız kullanım ve ek özellikler için isteğe bağlı Defineciler Pro aboneliği bulunur.</p></details>
+        <details><summary>Sonuçlar kesin mi?</summary><p>Hayır. Analizler fotoğrafa dayalı tahminlerdir ve uzman incelemesinin ya da resmî ekspertizin yerini tutmaz. Rapor, güven düzeyini ve eksik kalan bilgileri de gösterir; ölçü, ağırlık ve arka yüz fotoğrafı eklemek sonucu iyileştirir.</p></details>
+        <details><summary>Fotoğraflarım saklanıyor mu?</summary><p>Analiz için seçtiğiniz fotoğraf şifreli bağlantıyla işlenmek üzere gönderilir ve sunucumuzda saklanmaz. Tarama geçmişiniz yalnızca telefonunuzda tutulur. Ayrıntılar için <a href="/gizlilik">gizlilik politikasına</a> bakabilirsiniz.</p></details>
+        <details><summary>Define işaretleri gerçekten define yeri mi gösterir?</summary><p>Hayır, bilimsel bir kanıt yoktur. Defineciler her işareti halk yorumu ile tarih ve arkeolojideki gerçek karşılığına ayırarak anlatır; örneklerin çoğu doğal oluşum ya da rastlantıdır. <a href="/define-isaretleri">İşaretleri inceleyin.</a></p></details>
+        <details><summary>Hesap açmam gerekiyor mu?</summary><p>Hayır. Üyelik ya da giriş yoktur. Pro aboneliği Google Play hesabınızla yönetilir.</p></details>
+        <details><summary>Bir eser ya da işaret bulursam ne yapmalıyım?</summary><p>Dokunmayın, kazmayın ve boyamayın. Yerini ve fotoğrafını kaydedip en yakın müze müdürlüğüne ya da mülki amirliğe bildirin. Uygulamadaki rehberde adım adım anlatılıyor.</p></details>
+        <details><summary>iPhone sürümü var mı?</summary><p>Şimdilik yalnızca Android için geliştiriliyor.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="final alt">
+    <div class="wrap">
+      <img class="logo-big" src="/site/icon.png" alt="Defineciler" width="84" height="84">
+      <h2>Elindeki hikâyeyi keşfetmeye hazır mısın?</h2>
+      <p class="lead">Defineciler yakında Google Play'de. Yayınlandığında ilk siz haberdar olun.</p>
+      <div class="cta">
+        <span class="btn btn-soon">▶ Google Play'de çok yakında</span>
+        <a class="btn btn-gold" href="mailto:dronopter@gmail.com?subject=Defineciler%20yayınlanınca%20haber%20verin">Haber ver</a>
+      </div>
+    </div>
+  </section>
 </main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div><strong style="color:var(--gold-light);font-family:Georgia,serif">Defineciler</strong> · Fotoğrafla tarihi eser tanımlama</div>
+      <div><a href="/define-isaretleri">Define işaretleri</a><a href="/gizlilik">Gizlilik Politikası</a><a href="/abonelik">Abonelik Koşulları</a><a href="mailto:dronopter@gmail.com">İletişim</a></div>
+    </div>
+    <p class="small">Defineciler bilgilendirme amaçlı bir uygulamadır; analizler tahminidir ve uzman görüşünün yerini tutmaz. Bulunan tarihi eserlerin 3 gün içinde müzeye veya mülki amirliğe bildirilmesi 2863 sayılı Kanun gereği zorunludur.</p>
+  </div>
+</footer>
 </body>
 </html>

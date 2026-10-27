@@ -10,7 +10,8 @@ import {
   type Who,
 } from './limits';
 import { buildNews } from './news';
-import { SITE_PAGES } from './pages.generated';
+import { SITE_ASSETS, SITE_PAGES } from './pages.generated';
+import { ROBOTS_TXT, SEO_PAGES, SITEMAP_XML } from './seo.generated';
 import { isProDevice } from './pro';
 
 export interface Env {
@@ -155,14 +156,33 @@ function handleSite(url: URL): Response | null {
       headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' },
     });
   }
+  if (url.pathname === '/robots.txt') {
+    return new Response(ROBOTS_TXT, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
+  }
+  if (url.pathname === '/sitemap.xml') {
+    return new Response(SITEMAP_XML, { headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
+  }
+  if (url.pathname.length > 1 && url.pathname.endsWith('/') && SEO_PAGES[url.pathname.slice(0, -1)]) {
+    return Response.redirect(new URL(url.pathname.slice(0, -1), url).toString(), 301);
+  }
   const alias = PAGE_ALIASES[url.pathname];
   if (alias) return Response.redirect(new URL(alias, url).toString(), 301);
   const isApex = APEX_HOSTS.has(url.hostname);
   if (url.pathname === '/' && !isApex) return null; // API sağlık kontrolü
-  const page = SITE_PAGES[url.pathname];
+  const asset = SITE_ASSETS[url.pathname];
+  if (asset) {
+    const bytes = Uint8Array.from(atob(asset.data), (c) => c.charCodeAt(0));
+    return new Response(bytes, { headers: { 'Content-Type': asset.type, 'Cache-Control': 'public, max-age=86400' } });
+  }
+  const page = SITE_PAGES[url.pathname] ?? SEO_PAGES[url.pathname];
   if (page) {
     return new Response(page, {
-      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=600' },
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'public, max-age=600',
+        // Aynı sayfalar api. adresinde de açılır; aramalarda yalnızca ana alan adı görünsün.
+        ...(isApex ? {} : { 'X-Robots-Tag': 'noindex' }),
+      },
     });
   }
   return isApex && !API_PATHS.has(url.pathname) ? Response.redirect(new URL('/', url).toString(), 302) : null;
