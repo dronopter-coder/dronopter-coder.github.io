@@ -151,7 +151,7 @@ const PAGE_ALIASES: Record<string, string> = {
  * Gizlilik ve abonelik sayfaları her adreste (api. dahil) sunulur; uygulama ve Play Store bu adreslere bağlanır.
  */
 function handleSite(url: URL): Response | null {
-  if (url.pathname === '/app-ads.txt') {
+  if (url.pathname === '/app-ads.txt' || url.pathname === '/ads.txt') {
     return new Response(APP_ADS_TXT, {
       headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' },
     });
