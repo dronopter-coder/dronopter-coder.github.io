@@ -52,7 +52,7 @@ const head = ({ title, description, path, image, extra = '' }) => `<!doctype htm
 <meta property="og:type" content="article"><meta property="og:locale" content="tr_TR"><meta property="og:site_name" content="Defineciler">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${BASE}${path}">
 <meta property="og:image" content="${BASE}${image ?? '/site/og.jpg'}"><meta name="twitter:card" content="summary_large_image">
-${extra}<style>${CSS}</style></head><body>
+${extra}<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3204109869365538" crossorigin="anonymous"></script><style>${CSS}</style></head><body>
 <header><div class="wrap nav"><a class="logo" href="/"><img src="/site/icon.png" alt="" width="32" height="32">Defineciler</a><a class="s" href="/rehber">Rehberler</a><a class="s" href="/define-isaretleri">İşaretler</a></div></header>
 <main><div class="wrap">`;
 
