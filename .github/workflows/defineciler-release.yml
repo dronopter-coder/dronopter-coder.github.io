@@ -9,6 +9,7 @@ on:
   push:
     paths:
       - '.github/play-release'
+      - '.github/play-track'
   workflow_dispatch:
 
 concurrency:
@@ -82,7 +83,7 @@ jobs:
           name: defineciler-aab
           path: defineciler/android/app/build/outputs/bundle/release/*.aab
           retention-days: 30
-      - name: Play Console'a yükle (dahili test)
+      - name: Play Console'a yükle (kanal: .github/play-track, yoksa dahili test)
         env:
           PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
         run: |
@@ -91,7 +92,7 @@ jobs:
             exit 0
           fi
           export PLAY_RELEASE_NOTES="$(cat ../.github/play-release)"
-          node ../.github/scripts/play-upload.mjs android/app/build/outputs/bundle/release/defineciler-v${ANDROID_VERSION_CODE}.aab internal
+          node ../.github/scripts/play-upload.mjs android/app/build/outputs/bundle/release/defineciler-v${ANDROID_VERSION_CODE}.aab "$(cat ../.github/play-track 2>/dev/null || echo internal)"
       - name: Anahtarı sil
         if: always()
         run: rm -f "$RUNNER_TEMP/upload.jks"
