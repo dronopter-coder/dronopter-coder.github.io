@@ -45,6 +45,9 @@ describe('bağlantı testi uç noktaları', () => {
     const homeHtml = await home.text();
     expect(homeHtml).toContain('Define işaretleri ve tarihi eserler');
     expect(homeHtml).toContain('href="/gizlilik"');
+    // Tanıtım videosu statik dosya olarak (public/media) sunulur; sayfa onu gösterir.
+    expect(homeHtml).toContain('src="/media/defineciler-tanitim.mp4"');
+    expect(homeHtml).toContain('poster="/media/defineciler-tanitim-poster.webp"');
     // Sayfadaki görseller Worker tarafından sunulur.
     const img = await get('https://defineciler.online/site/ekran-ana.webp');
     expect(img.status).toBe(200);

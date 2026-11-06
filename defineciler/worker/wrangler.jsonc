@@ -25,6 +25,8 @@
     // Tüm kullanıcılar için günlük toplam: ücretsiz Gemini kotasını ve ileride faturayı korur.
     "GLOBAL_DAILY_LIMIT": "1500"
   },
+  // Büyük statik dosyalar (tanıtım videosu): Worker koduna gömülemeyecek kadar büyük, doğrudan sunulur.
+  "assets": { "directory": "./public" },
   // IP başına dakikada en fazla 6 analiz isteği.
   "ratelimits": [
     { "name": "ANALYZE_LIMITER", "namespace_id": "1001", "simple": { "limit": 6, "period": 60 } }
