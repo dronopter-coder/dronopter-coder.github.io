@@ -57,7 +57,8 @@ ${extra}<script async src="https://pagead2.googlesyndication.com/pagead/js/adsby
 <main><div class="wrap">`;
 
 const foot = `</div></main><footer><div class="wrap"><a href="/">Ana sayfa</a><a href="/define-isaretleri">Define işaretleri</a><a href="/rehber">Rehberler</a><a href="/gizlilik">Gizlilik</a><a href="/abonelik">Abonelik koşulları</a><a href="mailto:dronopter@gmail.com">İletişim</a>
-<p>Bu sayfa bilgilendirme amaçlıdır. Kazıyı, define aramayı ya da kültür varlığı ticaretini teşvik etmez; izinsiz kazı ve kültür varlıklarına zarar vermek 2863 sayılı Kanun’a göre suçtur.</p></div></footer></body></html>`;
+<p>Bu sayfa bilgilendirme amaçlıdır. Kazıyı, define aramayı ya da kültür varlığı ticaretini teşvik etmez; izinsiz kazı ve kültür varlıklarına zarar vermek 2863 sayılı Kanun’a göre suçtur.</p>
+<p>Geliştirici: <a href="https://dronopter.com.tr" rel="noopener" style="color:var(--gold);margin:0">Dronopter</a></p></div></footer></body></html>`;
 
 const warning = `<div class="warn"><b>Önemli:</b> Böyle bir işaret görürseniz kazmayın, boyamayın ve yerinden oynatmayın. Fotoğrafını çekip konumunu en yakın müze müdürlüğüne ya da mülki amirliğe bildirin (2863 sayılı Kanun). Bulunan eserlerin 3 gün içinde bildirilmesi zorunludur.</div>`;
 

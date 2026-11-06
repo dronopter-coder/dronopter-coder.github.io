@@ -45,6 +45,7 @@ describe('bağlantı testi uç noktaları', () => {
     const homeHtml = await home.text();
     expect(homeHtml).toContain('Define işaretleri ve tarihi eserler');
     expect(homeHtml).toContain('href="/gizlilik"');
+    expect(homeHtml).toContain('href="https://dronopter.com.tr"');
     // Tanıtım videosu statik dosya olarak (public/media) sunulur; sayfa onu gösterir.
     expect(homeHtml).toContain('src="/media/defineciler-tanitim.mp4"');
     expect(homeHtml).toContain('poster="/media/defineciler-tanitim-poster.webp"');
