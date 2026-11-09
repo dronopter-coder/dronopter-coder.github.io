@@ -46,6 +46,12 @@ describe('bağlantı testi uç noktaları', () => {
     expect(homeHtml).toContain('Define işaretleri ve tarihi eserler');
     expect(homeHtml).toContain('href="/gizlilik"');
     expect(homeHtml).toContain('href="https://dronopter.com.tr"');
+    // Güven sayfaları (AdSense): Hakkımızda ve İletişim.
+    for (const p of ['/hakkimizda', '/iletisim', '/rehber/anadolu-arkeolojik-donemler', '/bolgeler/lidya']) {
+      const r = await get(`https://defineciler.online${p}`);
+      expect(r.status, p).toBe(200);
+      expect(await r.text()).toContain('href="/iletisim"');
+    }
     // Tanıtım videosu statik dosya olarak (public/media) sunulur; sayfa onu gösterir.
     expect(homeHtml).toContain('src="/media/defineciler-tanitim.mp4"');
     expect(homeHtml).toContain('poster="/media/defineciler-tanitim-poster.webp"');
