@@ -95,9 +95,15 @@ jobs:
           custom=""
           if [ -n "$CUSTOM_DOMAIN" ]; then
             node ../../.github/scripts/add-route.mjs "$CFG" wrangler.domain.jsonc "$CUSTOM_DOMAIN"
-            if npx wrangler deploy --config wrangler.domain.jsonc 2>&1 | tee deploy.log; then
-              custom="https://${CUSTOM_DOMAIN%%,*}"
-            else
+            # Cloudflare API zaman zaman 5xx (ör. 504) döner; workers.dev'e düşmeden önce yeniden dene.
+            for try in 1 2 3; do
+              if npx wrangler deploy --config wrangler.domain.jsonc 2>&1 | tee deploy.log; then
+                custom="https://${CUSTOM_DOMAIN%%,*}"; break
+              fi
+              echo "::warning::Özel alan adıyla yayın denemesi $try başarısız; 30 sn sonra yeniden denenecek."
+              sleep 30
+            done
+            if [ -z "$custom" ]; then
               echo "::warning::Özel alan adı ($CUSTOM_DOMAIN) bağlanamadı (bölge aktif mi, token'da Zone DNS/Workers Routes izni var mı?). Yalnızca workers.dev ile yayınlanıyor."
             fi
           fi

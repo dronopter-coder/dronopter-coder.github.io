@@ -179,7 +179,8 @@ function handleSite(url: URL): Response | null {
     return new Response(page, {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=600',
+        // Tarayıcı her açılışta yeniden sorar; site güncellemeleri hemen görünür.
+        'Cache-Control': 'no-cache',
         // Aynı sayfalar api. adresinde de açılır; aramalarda yalnızca ana alan adı görünsün.
         ...(isApex ? {} : { 'X-Robots-Tag': 'noindex' }),
       },
