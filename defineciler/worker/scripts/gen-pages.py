@@ -9,7 +9,8 @@ import base64, json, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 OUT = pathlib.Path(__file__).resolve().parents[1] / 'src' / 'pages.generated.ts'
-PAGES = {'/': 'index.html', '/gizlilik': 'privacy.html', '/abonelik': 'abonelik.html'}
+# Sayfalar artık gen-seo.mjs tarafından ortak tasarımla üretilir; burada yalnızca site/ görselleri gömülür.
+PAGES = {}
 LINKS = {'privacy.html': '/gizlilik', 'abonelik.html': '/abonelik', 'index.html': '/'}
 
 ASSET_TYPES = {'.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml'}

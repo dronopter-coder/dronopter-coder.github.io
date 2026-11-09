@@ -174,7 +174,7 @@ function handleSite(url: URL): Response | null {
     const bytes = Uint8Array.from(atob(asset.data), (c) => c.charCodeAt(0));
     return new Response(bytes, { headers: { 'Content-Type': asset.type, 'Cache-Control': 'public, max-age=86400' } });
   }
-  const page = SITE_PAGES[url.pathname] ?? SEO_PAGES[url.pathname];
+  const page = SEO_PAGES[url.pathname] ?? SITE_PAGES[url.pathname];
   if (page) {
     return new Response(page, {
       headers: {

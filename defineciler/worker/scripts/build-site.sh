@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tanıtım sitesini (ana sayfa, gizlilik, abonelik, işaret sayfaları, sitemap) Worker'a gömer.
-# Kaynaklar: depo kökündeki index.html / privacy.html / abonelik.html ve site/ görselleri.
+# Kaynaklar: scripts/gen-seo.mjs (+ shell.mjs, app-pages.mjs, guides.mjs, news.mjs), privacy.html / abonelik.html metinleri ve site/ görselleri.
 # Kullanım (depo kökünden): bash defineciler/worker/scripts/build-site.sh
 set -euo pipefail
 cd "$(dirname "$0")/../../.."

@@ -47,7 +47,7 @@ describe('bağlantı testi uç noktaları', () => {
     expect(homeHtml).toContain('href="/gizlilik"');
     expect(homeHtml).toContain('href="https://dronopter.com.tr"');
     // Güven sayfaları (AdSense): Hakkımızda ve İletişim.
-    for (const p of ['/hakkimizda', '/iletisim', '/rehber/anadolu-arkeolojik-donemler', '/bolgeler/lidya', '/haberler', '/haberler/troya-kemik-flut-ve-idol-basi']) {
+    for (const p of ['/hakkimizda', '/iletisim', '/rehber/anadolu-arkeolojik-donemler', '/bolgeler/lidya', '/haberler', '/haberler/troya-kemik-flut-ve-idol-basi', '/nasil-calisir', '/ozellikler', '/tanitim', '/ekran-goruntuleri', '/pro', '/sss', '/bolgeler']) {
       const r = await get(`https://defineciler.online${p}`);
       expect(r.status, p).toBe(200);
       expect(await r.text()).toContain('href="/iletisim"');
