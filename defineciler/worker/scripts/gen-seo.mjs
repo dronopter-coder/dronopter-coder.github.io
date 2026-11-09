@@ -9,6 +9,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { GUIDES, REGIONS } from './guides.mjs';
+import { NEWS } from './news.mjs';
 import { EVIDENCE, SIGN_CATEGORIES, SIGNS } from '../../src/data/signs.ts';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -54,10 +55,10 @@ const head = ({ title, description, path, image, extra = '' }) => `<!doctype htm
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${BASE}${path}">
 <meta property="og:image" content="${BASE}${image ?? '/site/og.jpg'}"><meta name="twitter:card" content="summary_large_image">
 ${extra}<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3204109869365538" crossorigin="anonymous"></script><style>${CSS}</style></head><body>
-<header><div class="wrap nav"><a class="logo" href="/"><img src="/site/icon.png" alt="" width="32" height="32">Defineciler</a><a class="s" href="/rehber">Rehberler</a><a class="s" href="/define-isaretleri">İşaretler</a><a class="s" href="/hakkimizda">Hakkımızda</a></div></header>
+<header><div class="wrap nav"><a class="logo" href="/"><img src="/site/icon.png" alt="" width="32" height="32">Defineciler</a><a class="s" href="/rehber">Rehberler</a><a class="s" href="/define-isaretleri">İşaretler</a><a class="s" href="/haberler">Haberler</a></div></header>
 <main><div class="wrap">`;
 
-const foot = `</div></main><footer><div class="wrap"><a href="/">Ana sayfa</a><a href="/define-isaretleri">Define işaretleri</a><a href="/rehber">Rehberler</a><a href="/gizlilik">Gizlilik</a><a href="/abonelik">Abonelik koşulları</a><a href="/hakkimizda">Hakkımızda</a><a href="/iletisim">İletişim</a>
+const foot = `</div></main><footer><div class="wrap"><a href="/">Ana sayfa</a><a href="/define-isaretleri">Define işaretleri</a><a href="/rehber">Rehberler</a><a href="/haberler">Haberler</a><a href="/gizlilik">Gizlilik</a><a href="/abonelik">Abonelik koşulları</a><a href="/hakkimizda">Hakkımızda</a><a href="/iletisim">İletişim</a>
 <p>Bu sayfa bilgilendirme amaçlıdır. Kazıyı, define aramayı ya da kültür varlığı ticaretini teşvik etmez; izinsiz kazı ve kültür varlıklarına zarar vermek 2863 sayılı Kanun’a göre suçtur.</p>
 <p>Geliştirici: <a href="https://dronopter.com.tr" rel="noopener" style="color:var(--gold);margin:0">Dronopter</a></p></div></footer></body></html>`;
 
@@ -237,6 +238,50 @@ for (const g of REGIONS) articlePage('bolge', g, allLinks);
     foot;
 }
 
+// Arkeoloji haberleri
+const trDate = (d) => new Date(`${d}T12:00:00+03:00`).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+const NEWS_SORTED = [...NEWS].sort((a, b) => b.date.localeCompare(a.date));
+for (const n of NEWS_SORTED) {
+  const path = `/haberler/${n.id}`;
+  const ld = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'NewsArticle', headline: n.title, description: n.lead, inLanguage: 'tr-TR', datePublished: `${n.date}T10:00:00+03:00`,
+        dateModified: `${n.date}T10:00:00+03:00`, mainEntityOfPage: `${BASE}${path}`, image: `${BASE}/site/og.jpg`,
+        author: { '@type': 'Organization', name: 'Defineciler', url: `${BASE}/hakkimizda` },
+        publisher: { '@type': 'Organization', name: 'Defineciler', logo: { '@type': 'ImageObject', url: `${BASE}/site/icon.png` } } },
+      { '@type': 'BreadcrumbList', itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Defineciler', item: `${BASE}/` },
+        { '@type': 'ListItem', position: 2, name: 'Arkeoloji haberleri', item: `${BASE}/haberler` },
+        { '@type': 'ListItem', position: 3, name: n.title, item: `${BASE}${path}` } ] },
+    ],
+  };
+  const others = NEWS_SORTED.filter((o) => o.id !== n.id).slice(0, 3);
+  pages[path] =
+    head({ title: `${n.title} | Defineciler`, description: n.lead.slice(0, 300), path, extra: `<script type="application/ld+json">${JSON.stringify(ld)}</script>` }) +
+    `<div class="crumb"><a href="/">Defineciler</a> › <a href="/haberler">Arkeoloji haberleri</a> › ${esc(n.title)}</div>
+<p class="muted" style="margin:0 0 6px;text-transform:uppercase;letter-spacing:.1em;font-size:.8rem">Arkeoloji haberi · ${trDate(n.date)}</p>
+<h1>${esc(n.title)}</h1><p class="lead">${esc(n.lead)}</p>
+${n.paragraphs.map((t) => `<p>${esc(t)}</p>`).join('')}
+<h2>Kaynaklar</h2><ul>${n.sources.map((x) => `<li><a href="${esc(x.url)}" rel="nofollow noopener" target="_blank">${esc(x.name)}</a></li>`).join('')}</ul>
+<p class="muted" style="font-size:.88rem">Bu haber, kaynaklardaki bilgiler esas alınarak Defineciler editörlüğünce özetlenmiş ve arka plan bilgisiyle genişletilmiştir. Hata bildirimleri için <a href="/iletisim">iletişim</a>.</p>
+${n.related?.length ? `<h2>Konuyla ilgili rehberler</h2><ul>${n.related.map((r) => `<li><a href="${r.href}">${esc(r.title)}</a></li>`).join('')}</ul>` : ''}
+${others.length ? `<h2>Diğer haberler</h2><ul>${others.map((o) => `<li><a href="/haberler/${o.id}">${esc(o.title)}</a> <span class="muted">· ${trDate(o.date)}</span></li>`).join('')}</ul>` : ''}
+${warning}` +
+    foot;
+}
+{
+  const path = '/haberler';
+  pages[path] =
+    head({ title: 'Arkeoloji haberleri: Türkiye’deki kazılardan son gelişmeler | Defineciler', description: 'Göbeklitepe, Karahantepe, Troya ve Anadolu’nun diğer kazılarından haftalık arkeoloji haberleri; özet, arka plan ve kaynaklarıyla.', path }) +
+    `<div class="crumb"><a href="/">Defineciler</a> › Arkeoloji haberleri</div>
+<h1>Arkeoloji haberleri</h1>
+<p class="lead">Türkiye’deki kazılardan ve araştırmalardan öne çıkan gelişmeleri her hafta derliyor; her haberi kaynaklarıyla birlikte, anlaşılır bir arka plan bilgisiyle özetliyoruz.</p>
+${NEWS_SORTED.map((n) => `<div class="card"><p class="muted" style="font-size:.85rem">${trDate(n.date)}</p><h2 style="margin:4px 0 8px;font-size:1.2rem"><a href="/haberler/${n.id}" style="color:var(--gold-light);text-decoration:none">${esc(n.title)}</a></h2><p>${esc(n.lead)}</p></div>`).join('')}
+${warning}` +
+    foot;
+}
+
 // Hakkımızda ve İletişim
 {
   const path = '/hakkimizda';
@@ -294,6 +339,8 @@ const urls = [
   ...GUIDES.map((g) => [`/rehber/${g.id}`, '0.7']),
   ...REGIONS.map((g) => [`/bolgeler/${g.id}`, '0.6']),
   ...SIGNS.map((s) => [`/define-isaretleri/${s.id}`, '0.7']),
+  ['/haberler', '0.8'],
+  ...NEWS.map((n) => [`/haberler/${n.id}`, '0.6']),
   ['/hakkimizda', '0.4'],
   ['/iletisim', '0.3'],
   ['/gizlilik', '0.3'],
