@@ -66,12 +66,14 @@ p{margin:0 0 14px}ul{padding-left:1.25rem;margin:8px 0 16px}li{margin:4px 0}
 .menu>li>a:hover,.menu>li:hover>span,.menu>li:focus-within>span,.menu>li>a.on,.menu>li>span.on{color:var(--gold-light);background:var(--surface)}
 .menu>li>span::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-3px);opacity:.7}
 .drop{position:absolute;top:100%;left:-8px;min-width:300px;padding:10px;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;box-shadow:0 24px 50px rgba(0,0,0,.55);opacity:0;visibility:hidden;transform:translateY(6px);transition:.16s;list-style:none;margin:0}
+.menu>li:last-child .drop,.menu>li:nth-last-child(2) .drop{left:auto;right:-8px}
 .menu>li:hover .drop,.menu>li:focus-within .drop{opacity:1;visibility:visible;transform:none}
 .drop li{margin:0}.drop a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--text)}
 .drop a:hover{background:var(--surface)}.drop b{display:block;font-weight:600;font-size:.95rem}.drop small{display:block;color:var(--muted);font-size:.82rem;line-height:1.4}
 .bar .btn{padding:10px 18px;font-size:.92rem;margin-left:8px;white-space:nowrap}
 .burger,.navtoggle{display:none}
-@media(max-width:1020px){
+@media(min-width:861px) and (max-width:1120px){.bar .btn{display:none}.menu>li>a,.menu>li>span{padding:9px 9px;font-size:.9rem}.bar{gap:12px}}
+@media(max-width:860px){
   .menu,.bar .btn{display:none}
   .burger{display:flex;margin-left:auto;width:44px;height:44px;border-radius:12px;border:1px solid var(--border2);background:var(--surface);align-items:center;justify-content:center;cursor:pointer}
   .burger i,.burger i::before,.burger i::after{display:block;width:20px;height:2px;background:var(--gold-light);border-radius:2px;position:relative;transition:.2s}
@@ -83,7 +85,7 @@ p{margin:0 0 14px}ul{padding-left:1.25rem;margin:8px 0 16px}li{margin:4px 0}
   .mnav a{display:block;padding:11px 4px;border-bottom:1px solid rgba(58,47,34,.6);color:var(--text);text-decoration:none;font-size:1.02rem}
   .mnav a.on{color:var(--gold-light)}.mnav .btn{display:flex;justify-content:center;margin-top:20px;border:0}
 }
-@media(min-width:1021px){.mnav{display:none}}
+@media(min-width:861px){.mnav{display:none}}
 
 /* sayfa başlığı ve gövde */
 main{min-height:60vh}
