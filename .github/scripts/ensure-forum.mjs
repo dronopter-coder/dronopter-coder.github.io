@@ -60,7 +60,9 @@ if (dbOk) {
     try {
       exists = run(['r2', 'bucket', 'list']).includes(BUCKET);
     } catch (e) {
-      console.log('R2 listesi okunamadı:', short(e));
+      // Kova Cloudflare bağlantısından bir kez oluşturuldu; token'ın R2 izni olmasa da bağlanabilir (D1'deki gibi).
+      console.log('R2 listesi okunamadı:', short(e), '— bilinen kova kullanılıyor.');
+      exists = true;
     }
     if (!exists) {
       run(['r2', 'bucket', 'create', BUCKET]);

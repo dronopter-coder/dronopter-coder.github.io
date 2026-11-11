@@ -111,6 +111,10 @@ jobs:
               if npx wrangler deploy --config wrangler.domain.jsonc 2>&1 | tee deploy.log; then
                 custom="https://${CUSTOM_DOMAIN%%,*}"; break
               fi
+              if grep -qiE 'r2|bucket' deploy.log && grep -q '"r2_buckets"' wrangler.domain.jsonc; then
+                echo "::warning::Fotoğraf deposu (R2) bağlanamadı; forum fotoğrafsız yayınlanıyor."
+                sed -i '/"r2_buckets"/d' wrangler.domain.jsonc "$CFG"
+              fi
               echo "::warning::Özel alan adıyla yayın denemesi $try başarısız; 30 sn sonra yeniden denenecek."
               sleep 30
             done
