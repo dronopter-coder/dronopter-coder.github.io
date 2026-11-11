@@ -9,7 +9,11 @@ const DB = 'defineciler-forum';
 const BUCKET = 'defineciler-forum-img';
 const CFG = 'wrangler.ci.jsonc';
 const run = (args) => execFileSync('npx', ['wrangler', ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-const short = (e) => String(e.stderr || e.message).split('\n').find((l) => l.trim()) ?? 'bilinmeyen hata';
+// wrangler'ın uyarı satırlarını atlayıp asıl hatayı (✘ [ERROR] …, Authentication error …) gösterir.
+const short = (e) => {
+  const lines = `${e.stderr ?? ''}\n${e.stdout ?? ''}\n${e.message ?? ''}`.split('\n').map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean);
+  return lines.find((l) => /ERROR|error|Error|denied|not authorized|10000|7403/.test(l) && !/CF_ACCOUNT_ID/.test(l)) ?? lines.find((l) => !/CF_ACCOUNT_ID|^▲|WARNING/.test(l)) ?? 'bilinmeyen hata';
+};
 
 let cfg = readFileSync(existsSync(CFG) ? CFG : 'wrangler.jsonc', 'utf8');
 if (!cfg.includes('"ratelimits"') || !cfg.includes('"vars": {')) throw new Error('wrangler yapılandırması beklenen biçimde değil');
