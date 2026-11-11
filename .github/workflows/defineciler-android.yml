@@ -12,6 +12,9 @@ on:
     paths:
       - 'defineciler/**'
       - '.github/workflows/defineciler-android.yml'
+      # Sunucu kurulum betikleri (KV, forum veritabanı, alan adı) değişince de yeniden yayınla.
+      - '.github/scripts/ensure-*.mjs'
+      - '.github/scripts/add-route.mjs'
   workflow_dispatch:
 
 concurrency:
