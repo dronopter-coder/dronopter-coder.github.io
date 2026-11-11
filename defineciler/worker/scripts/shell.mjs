@@ -29,6 +29,7 @@ export const MENU = [
     ],
   },
   { href: '/haberler', label: 'Haberler' },
+  { href: '/forum', label: 'Forum' },
   {
     label: 'Kurumsal',
     items: [
@@ -168,7 +169,7 @@ export const footer = () => `<footer class="foot"><div class="wrap">
 <p>Anadolu’nun tarihi eserlerini, sikkelerini ve define işaretlerini halk yorumu ile bilimsel karşılığını ayırarak anlatan bilgi sitesi ve mobil uygulama.</p>
 <a class="btn" href="${PLAY_URL}" style="display:inline-flex;color:#1a1208;padding:10px 18px;font-size:.9rem">▶ Google Play'den indir</a></div>
 <div><h4>Uygulama</h4>${MENU[0].items.map((i) => `<a href="${i.href}">${esc(i.label)}</a>`).join('')}</div>
-<div><h4>Keşfet</h4><a href="/define-isaretleri">Define işaretleri</a><a href="/rehber">Rehberler</a><a href="/bolgeler">Tarihi bölgeler</a><a href="/haberler">Arkeoloji haberleri</a><a href="/rehber/tarihi-eser-bulursam-ne-yapmaliyim">Eser bulursam ne yapmalıyım?</a></div>
+<div><h4>Keşfet</h4><a href="/define-isaretleri">Define işaretleri</a><a href="/rehber">Rehberler</a><a href="/bolgeler">Tarihi bölgeler</a><a href="/haberler">Arkeoloji haberleri</a><a href="/forum">Forum</a><a href="/rehber/tarihi-eser-bulursam-ne-yapmaliyim">Eser bulursam ne yapmalıyım?</a></div>
 <div><h4>Kurumsal</h4><a href="/hakkimizda">Hakkımızda</a><a href="/iletisim">İletişim</a><a href="/gizlilik">Gizlilik politikası</a><a href="/abonelik">Abonelik koşulları</a></div>
 </div>
 <div class="fbottom"><span>Bu site bilgilendirme amaçlıdır; kazıyı, define aramayı ya da kültür varlığı ticaretini teşvik etmez. İzinsiz kazı 2863 sayılı Kanun’a göre suçtur.</span><span>© ${new Date().getFullYear()} Defineciler · Geliştirici: <a href="https://dronopter.com.tr" rel="noopener">Dronopter</a></span></div>

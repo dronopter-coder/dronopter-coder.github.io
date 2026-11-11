@@ -60,6 +60,12 @@ jobs:
       CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       REVENUECAT_SECRET: ${{ secrets.REVENUECAT_SECRET }}
+      # Forum: yönetici kullanıcı adları ve isteğe bağlı giriş/robot doğrulama ayarları (boşsa o özellik kapalı).
+      FORUM_ADMINS: ${{ vars.FORUM_ADMINS }}
+      TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
+      GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+      TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       # Özel alan adı (Cloudflare'de aktif bir bölge olmalı). workers.dev bazı mobil operatörlerde
       # (Turkcell) açılmıyor; uygulama önce bu adresi, yedek olarak workers.dev'i dener.
       CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN || 'api.defineciler.online,defineciler.online' }}
@@ -90,6 +96,8 @@ jobs:
           if [ -n "$CF_ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID"; fi
           # Günlük sayaçlar ve sonuç önbelleği için KV; hazırlanamazsa KV'siz yayınlanır.
           node ../../.github/scripts/ensure-kv.mjs || true
+          # Forum veritabanı (D1), fotoğraf deposu (R2) ve forum ayarları; hazırlanamazsa forum "yakında" gösterir.
+          node ../../.github/scripts/ensure-forum.mjs || true
           CFG=wrangler.jsonc; [ -f wrangler.ci.jsonc ] && CFG=wrangler.ci.jsonc
           echo "Yapılandırma: $CFG"
           custom=""
@@ -121,6 +129,9 @@ jobs:
           printf '%s' "$GEMINI_API_KEY" | npx wrangler secret put GEMINI_API_KEY
           # Pro aboneliği doğrulama (RevenueCat gizli anahtarı); eklenmemişse herkes ücretsiz sınırlarla çalışır.
           if [ -n "$REVENUECAT_SECRET" ]; then printf '%s' "$REVENUECAT_SECRET" | npx wrangler secret put REVENUECAT_SECRET; fi
+          # Forum: robot doğrulama ve Google ile giriş gizli anahtarları (eklenmemişse o özellik kapalı kalır).
+          if [ -n "$TURNSTILE_SECRET" ]; then printf '%s' "$TURNSTILE_SECRET" | npx wrangler secret put TURNSTILE_SECRET; fi
+          if [ -n "$GOOGLE_CLIENT_SECRET" ]; then printf '%s' "$GOOGLE_CLIENT_SECRET" | npx wrangler secret put GOOGLE_CLIENT_SECRET; fi
       - name: Sağlık kontrolü
         if: steps.keys.outputs.ready == 'true'
         run: |

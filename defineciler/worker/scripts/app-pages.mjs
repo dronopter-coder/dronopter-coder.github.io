@@ -230,6 +230,38 @@ ${appCta('Pro’yu deneyin', 'Yıllık planda ilk 7 gün ücretsiz.')}`,
     content: `${faqHtml(FAQ)}<p style="margin-top:22px">Sorunuzun cevabını bulamadınız mı? <a href="/iletisim">Bize yazın.</a></p>`,
   });
 
+  // ---------- Forum kuralları ----------
+  simple({
+    path: '/forum/kurallar', prio: '0.5', eyebrow: 'Defineciler Forum', h1: 'Forum kuralları ve kullanım koşulları',
+    title: 'Forum kuralları ve kullanım koşulları | Defineciler Forum',
+    description: 'Defineciler forumunun kuralları: yer tarifi, eser alım-satımı ve kaçak kazı yasağı, denetim süreci, içerik kaldırma talepleri ve kullanım koşulları.',
+    lead: 'Defineciler Forum; eserler, sikkeler, define işaretleri ve Anadolu tarihi üzerine bilgi paylaşımı için vardır. Herkesin güvenle katılabilmesi ve yasalara uyulması için aşağıdaki kurallar geçerlidir.',
+    content: `<h2>Kesinlikle yasak olanlar</h2><ul>
+<li><b>Yer tarifi:</b> Koordinat, harita bağlantısı, köy/arazi/mevki tarifi ya da yeri belli eden manzara fotoğrafı paylaşılamaz.</li>
+<li><b>Kaçak kazıyı teşvik:</b> Kazı yöntemi, define arama tekniği, cihaz kullanımı ya da izinsiz kazıya çağrı içeren paylaşımlar yasaktır. İzinsiz kazı 2863 sayılı Kanun’a göre suçtur.</li>
+<li><b>Alım-satım ve değer biçme:</b> Eser, sikke ya da kültür varlığı satışı, takası, fiyat sorma veya değer biçme yasaktır. Kültür varlıklarının izinsiz ticareti suçtur.</li>
+<li><b>İletişim bilgisi:</b> Telefon numarası, IBAN, e-posta, WhatsApp/Telegram gibi iletişim kanalları paylaşılamaz.</li>
+<li><b>Kişisel veri ve hakaret:</b> Başkalarına ait kişisel bilgiler, hakaret, tehdit, ayrımcılık ve taciz içeren paylaşımlar yasaktır.</li>
+<li><b>Spam ve reklam:</b> Tekrarlayan, alakasız ya da reklam amaçlı paylaşımlar kaldırılır.</li></ul>
+<h2>Nasıl paylaşım yapmalı?</h2><ul>
+<li>Eser sorularında boyut, ağırlık, malzeme, ön ve arka yüz fotoğrafı ve üzerindeki yazı/figür bilgisi paylaşın; bulunduğu yeri yazmayın.</li>
+<li>Bilgi verirken mümkünse kaynak gösterin; tahminlerinizi tahmin olarak belirtin.</li>
+<li>Faydalı bulduğunuz cevapları “Faydalı” ile işaretleyin; soru sahibi en iyi cevabı seçebilir.</li></ul>
+<h2>Denetim nasıl işler?</h2><ul>
+<li>Yeni üyelerin ilk 3 gönderisi yönetici onayından sonra yayımlanır.</li>
+<li>Koordinat, harita bağlantısı, telefon, fiyat ya da alım-satım ifadeleri içeren gönderiler otomatik olarak onaya düşer.</li>
+<li>Üç farklı üyeden şikâyet alan gönderi incelenene kadar gizlenir.</li>
+<li>Kural ihlallerinde gönderi gizlenir ya da silinir; tekrarında hesap kapatılır.</li></ul>
+<h2>Eser bulursanız</h2><p>Bir kültür varlığı bulduğunuzda dokunmayın ve 3 gün içinde en yakın müze müdürlüğüne ya da mülki amirliğe bildirin. Ayrıntılar için <a href="/rehber/tarihi-eser-bulursam-ne-yapmaliyim">bildirim rehberimize</a> bakın.</p>
+<h2>İçerik kaldırma talepleri</h2><p>Forum içerikleri üyeler tarafından oluşturulur; Defineciler, 5651 sayılı Kanun kapsamında yer sağlayıcıdır. Hukuka aykırı olduğunu düşündüğünüz bir içerik için ilgili sayfanın bağlantısıyla birlikte <a href="mailto:dronopter@gmail.com">dronopter@gmail.com</a> adresine yazabilir ya da gönderideki “Şikâyet et” düğmesini kullanabilirsiniz. Talepler en kısa sürede incelenir.</p>
+<h2>Kullanım koşulları</h2><ul>
+<li>Paylaştığınız içerikten siz sorumlusunuz. Paylaşarak, içeriğin forumda yayımlanmasına izin vermiş olursunuz.</li>
+<li>Forumdaki bilgiler tavsiye niteliğindedir; uzman incelemesinin ya da resmî ekspertizin yerini tutmaz.</li>
+<li>Hesabınızı istediğiniz zaman “Hesabım” sayfasından silebilirsiniz; bu durumda gönderileriniz de silinir.</li>
+<li>Kişisel verilerinizin işlenmesine ilişkin ayrıntılar <a href="/gizlilik">gizlilik politikasında</a> yer alır.</li></ul>
+<p><a class="btn" href="/forum">Foruma git</a></p>`,
+  });
+
   // ---------- Kurumsal ----------
   simple({
     path: '/hakkimizda', prio: '0.5', eyebrow: 'Kurumsal', h1: 'Hakkımızda',
@@ -277,7 +309,7 @@ ${warning}`,
     path: '/gizlilik', prio: '0.3', eyebrow: 'Kurumsal', h1: 'Gizlilik Politikası',
     title: 'Gizlilik Politikası | Defineciler',
     description: 'Defineciler uygulaması ve defineciler.online sitesinin hangi verileri nasıl işlediğini açıklayan gizlilik politikası.',
-    lead: 'Defineciler · Son güncelleme: 12 Ekim 2026',
+    lead: 'Defineciler · Son güncelleme: 11 Kasım 2026',
     content: legalBody(ROOT, 'privacy.html'),
   });
   simple({

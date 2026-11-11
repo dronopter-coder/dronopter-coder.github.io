@@ -13,8 +13,10 @@ import { buildNews } from './news';
 import { SITE_ASSETS, SITE_PAGES } from './pages.generated';
 import { ROBOTS_TXT, SEO_PAGES, SITEMAP_XML } from './seo.generated';
 import { isProDevice } from './pro';
+import { handleForum } from './forum/routes';
+import type { ForumEnv } from './forum/types';
 
-export interface Env {
+export interface Env extends ForumEnv {
   GEMINI_API_KEY?: string;
   GEMINI_MODEL?: string;
   GEMINI_FALLBACK_MODELS?: string;
@@ -193,6 +195,15 @@ export default {
   async fetch(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
+    // Forum (kurallar sayfası statik olarak üretilir)
+    if ((url.pathname === '/forum' || url.pathname.startsWith('/forum/')) && url.pathname !== '/forum/kurallar' && APEX_HOSTS.has(url.hostname)) {
+      try {
+        return await handleForum(req, env);
+      } catch (e) {
+        console.error('forum', e);
+        return new Response('Forumda geçici bir hata oluştu. Lütfen tekrar deneyin.', { status: 500, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+      }
+    }
     if (req.method === 'GET') {
       const site = handleSite(url);
       if (site) return site;

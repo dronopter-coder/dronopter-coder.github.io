@@ -235,6 +235,12 @@ pages['/haberler'] = page({
 const app = appPages({ ROOT, NEWS_SORTED, newsCard, signTile, SIGNS, allLinks, articleCard, warning, appCta, faqLd, faqHtml, crumbLd, ldTag });
 Object.assign(pages, app.pages);
 
+// ---------- Forum kabuğu (Worker çalışma anında doldurur) ----------
+const FORUM_SHELL = page({ title: '%%TITLE%%', description: '%%DESC%%', path: '/forum', extra: '%%HEAD%%', body: '%%BODY%%' })
+  .replaceAll(`${BASE}/forum"`, '%%CANON%%"')
+  .replace('content="index, follow, max-image-preview:large"', 'content="%%ROBOTS%%"');
+if ((FORUM_SHELL.match(/%%CANON%%/g) ?? []).length !== 2) throw new Error('FORUM_SHELL: canonical yer tutucuları bulunamadı');
+
 // ---------- sitemap ve robots ----------
 const urls = [
   ['/', '1.0'],
@@ -243,6 +249,7 @@ const urls = [
   ['/rehber', '0.8'],
   ['/bolgeler', '0.8'],
   ['/haberler', '0.8'],
+  ['/forum/kurallar', '0.5'],
   ...GUIDES.map((g) => [`/rehber/${g.id}`, '0.7']),
   ...REGIONS.map((g) => [`/bolgeler/${g.id}`, '0.7']),
   ...NEWS.map((n) => [`/haberler/${n.id}`, '0.6']),
@@ -253,10 +260,10 @@ if (missing.length) throw new Error(`Sitemap'te olup sayfası olmayan adresler: 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
   .map(([p, pr]) => `  <url><loc>${BASE}${p}</loc><lastmod>${TODAY}</lastmod><priority>${pr}</priority></url>`)
   .join('\n')}\n</urlset>\n`;
-const robots = `User-agent: *\nAllow: /\nDisallow: /analyze\nDisallow: /echo\nDisallow: /news\nDisallow: /ping\n\nSitemap: ${BASE}/sitemap.xml\n`;
+const robots = `User-agent: *\nAllow: /\nDisallow: /analyze\nDisallow: /echo\nDisallow: /news\nDisallow: /ping\nDisallow: /forum/yonetim\nDisallow: /forum/hesap\nDisallow: /forum/yeni\nDisallow: /forum/giris\nDisallow: /forum/kayit\nDisallow: /forum/auth/\n\nSitemap: ${BASE}/sitemap.xml\nSitemap: ${BASE}/forum/sitemap.xml\n`;
 
 writeFileSync(
   OUT,
-  `// scripts/gen-seo.mjs tarafından üretildi; elle düzenlemeyin.\nexport const SEO_PAGES: Record<string, string> = ${JSON.stringify(pages)};\nexport const SITEMAP_XML = ${JSON.stringify(sitemap)};\nexport const ROBOTS_TXT = ${JSON.stringify(robots)};\n`,
+  `// scripts/gen-seo.mjs tarafından üretildi; elle düzenlemeyin.\nexport const SEO_PAGES: Record<string, string> = ${JSON.stringify(pages)};\nexport const SITEMAP_XML = ${JSON.stringify(sitemap)};\nexport const ROBOTS_TXT = ${JSON.stringify(robots)};\nexport const FORUM_SHELL = ${JSON.stringify(FORUM_SHELL)};\n`,
 );
 console.log(`seo.generated.ts: ${Object.keys(pages).length} sayfa, ${urls.length} adres sitemap'te`);
