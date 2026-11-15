@@ -99,8 +99,10 @@ export const topicRow = (t: Topic & { replies?: number }) =>
 <div class="meta">${esc(catLabel(t.category))} · ${esc(t.display_name)} · ${ago(t.last_post_at)}</div></div>
 <div class="cnt"><b>${t.reply_count}</b>cevap</div></a>`;
 
+/** Üye fotoğrafı R2 anahtarıdır; "/" ile başlayan anahtar sitenin kendi görselidir (ekip konuları, ör. /forum-gorsel/place-hitit.webp). */
+const picSrc = (k: string) => (k.startsWith('/') ? esc(k) : `/forum/img/${k}`);
 export const pics = (keys: string[]) =>
-  keys.length ? `<div class="pics">${keys.map((k) => `<a href="/forum/img/${k}" target="_blank" rel="noopener"><img src="/forum/img/${k}" alt="Gönderi fotoğrafı" loading="lazy"></a>`).join('')}</div>` : '';
+  keys.length ? `<div class="pics">${keys.map((k) => `<a href="${picSrc(k)}" target="_blank" rel="noopener"><img src="${picSrc(k)}" alt="Gönderi görseli" loading="lazy"></a>`).join('')}</div>` : '';
 
 export function postCard(p: Post, o: { s: Session | null; acceptedId: number | null; ownerId: number; images: string[]; topicId: number }) {
   const { s } = o;

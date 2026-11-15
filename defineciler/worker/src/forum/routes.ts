@@ -445,7 +445,7 @@ async function accountPost(c: Ctx) {
     return account(c, 'Şifreniz değiştirildi; diğer cihazlardaki oturumlar kapatıldı.');
   }
   if (act === 'delete' && f.get('sure')) {
-    const keys = (await c.db.prepare('SELECT key FROM images WHERE user_id = ?').bind(s.user.id).all<{ key: string }>()).results.map((r) => r.key);
+    const keys = (await c.db.prepare('SELECT key FROM images WHERE user_id = ?').bind(s.user.id).all<{ key: string }>()).results.map((r) => r.key).filter((k) => !k.startsWith('/'));
     if (keys.length && c.env.FORUM_IMG) await c.env.FORUM_IMG.delete(keys);
     const id = s.user.id;
     // D1'de yabancı anahtarlar zorunlu değil; sırayla açıkça silinir.

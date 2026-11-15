@@ -183,6 +183,18 @@ describe('forum akışı', () => {
     expect((await admin.go(`/forum/img/${key}`)).status).toBe(404);
   });
 
+  it('ekip konusu sitenin kendi görselini gösterir', async () => {
+    const db = env.FORUM_DB!;
+    const now = Date.now();
+    await db.prepare("INSERT INTO users (username, display_name, created_at) VALUES ('defineciler_ekibi', 'Defineciler Ekibi', ?)").bind(now).run();
+    await db.prepare("INSERT INTO topics (category, user_id, title, slug, status, created_at, last_post_at) VALUES ('isaretler', 1, 'Bu yılan motifi ne anlatıyor?', 'bu-yilan-motifi-ne-anlatiyor', 'published', ?, ?)").bind(now, now).run();
+    await db.prepare("INSERT INTO posts (topic_id, user_id, is_first, body, status, created_at) VALUES (1, 1, 1, 'Sizce?', 'published', ?)").bind(now).run();
+    await db.prepare("INSERT INTO images (key, user_id, post_id, created_at) VALUES ('/forum-gorsel/s-yilan.webp', 1, 1, ?)").bind(now).run();
+    const html = await (await browser().go('/forum/konu/1-bu-yilan-motifi-ne-anlatiyor')).text();
+    expect(html).toContain('src="/forum-gorsel/s-yilan.webp"');
+    expect(await (await browser().go('/forum')).text()).toContain('Bu yılan motifi ne anlatıyor?');
+  });
+
   it('veritabanı yoksa forum "yakında" gösterir; kurallar sayfası ve robots', async () => {
     const res = await worker.fetch(new Request(`${ORIGIN}/forum`), {} as typeof env, ctx);
     expect(res.status).toBe(503);
