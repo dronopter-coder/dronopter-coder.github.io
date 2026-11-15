@@ -37,6 +37,17 @@ describe('bağlantı testi uç noktaları', () => {
     expect(await res.text()).toBe('google.com, pub-3204109869365538, DIRECT, f08c47fec0942fa0\n');
   });
 
+  it('HEAD istekleri GET ile aynı durumu ve başlıkları, gövdesiz döndürür (AdSense ads.txt kontrolü)', async () => {
+    const head = (u: string) => worker.fetch(new Request(u, { method: 'HEAD' }), env, ctx);
+    const ads = await head('https://defineciler.online/ads.txt');
+    expect(ads.status).toBe(200);
+    expect(ads.headers.get('Content-Type')).toContain('text/plain');
+    expect(await ads.text()).toBe('');
+    for (const u of ['https://defineciler.online/', 'https://defineciler.online/robots.txt', 'https://defineciler.online/sitemap.xml']) {
+      expect((await head(u)).status).toBe(200);
+    }
+  });
+
   it('ana alan adı tanıtım, gizlilik ve abonelik sayfalarını sunar', async () => {
     const get = (u: string) => worker.fetch(new Request(u), env, ctx);
     const home = await get('https://defineciler.online/');

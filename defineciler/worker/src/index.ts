@@ -191,8 +191,7 @@ function handleSite(url: URL): Response | null {
   return isApex && !API_PATHS.has(url.pathname) ? Response.redirect(new URL('/', url).toString(), 302) : null;
 }
 
-export default {
-  async fetch(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+async function handle(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
     // Forum (kurallar sayfası statik olarak üretilir)
@@ -224,5 +223,15 @@ export default {
       console.error('unhandled', e);
       return json({ error: 'Sunucu hatası. Lütfen tekrar deneyin.', code: 'internal' }, 500);
     }
+}
+
+export default {
+  async fetch(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    // HEAD: aynı yanıtın başlıkları, gövdesiz. Tarayıcılar ve doğrulayıcılar (ör. AdSense ads.txt) HEAD ile kontrol eder.
+    if (req.method === 'HEAD') {
+      const res = await handle(new Request(req.url, { method: 'GET', headers: req.headers }), env, ctx);
+      return new Response(null, { status: res.status, statusText: res.statusText, headers: res.headers });
+    }
+    return handle(req, env, ctx);
   },
 } satisfies ExportedHandler<Env>;
