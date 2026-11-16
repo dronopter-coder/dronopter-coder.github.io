@@ -5,6 +5,50 @@
 
 export const NEWS = [
   {
+    id: 'smyrna-agorasi-2026-duvar-resimleri-su-kanali',
+    date: '2026-11-16',
+    title: 'Smyrna Agorası’nda 2026 sezonu: duvar resimli odalar ve Roma su kanalı',
+    lead: 'İzmir’in tarihî merkezindeki Smyrna Agorası ve antik tiyatro çevresinde süren kazılarda Geç Antik Çağ’a ait odalar, daha önce burada görülmemiş duvar resimleri ve izi sürülen bir Roma su kanalı öne çıktı.',
+    paragraphs: [
+      'Smyrna kazıları, Prof. Dr. Akın Ersoy başkanlığında yürütülüyor. Ekip bu yıl Agora ile tiyatro arasındaki alanda üç oda ortaya çıkardı. Odalar MS 5. ve 6. yüzyıllara, yani kentin Geç Antik Çağ evresine tarihleniyor. İkisinin zemini mozaikle kaplı, üçüncüsünde ise mermer döşeme var.',
+      'Sezonun en dikkat çeken yanı, odaların duvarlarında bulunan resimler. Ersoy’un açıklamalarına göre Smyrna Agorası’nda ve tiyatro çevresinde bu türden duvar resimlerine daha önce rastlanmamıştı. Resimlerin konusu ve üslubu henüz ayrıntılı olarak yayımlanmadı; bu nedenle ne tasvir ettiklerine dair yorum yapmak için bilimsel yayınları beklemek gerekiyor.',
+      'Kazı ekibi yapıları Efes’teki Yamaç Evleri ile karşılaştırıyor. Ancak odaların bir konuta mı, yoksa kamusal bir işleve mi ait olduğu henüz kesinleşmiş değil. Ersoy, bunun için alanın genişletilmesi ve çalışmaların sürmesi gerektiğini vurguluyor.',
+      'Aynı sezon, kentin su sistemine ait önemli bir ipucu da verdi. Ekip, Roma dönemine ait bir su kanalını yaklaşık 150 metre boyunca izledi. Kanalın suyu nereden aldığı ise henüz belirlenemedi. Antik kentlerde su yolları, kentin büyüklüğü, nüfusu ve bayındırlık düzeni hakkında doğrudan bilgi veren yapılardır.',
+      'Smyrna Agorası, modern İzmir’in içinde kalan nadir açık arkeolojik alanlardan biri. Kazılar her yıl kentin Roma ve Geç Antik dönemlerine yeni katmanlar ekliyor; geçen sezonlarda bulunan mozaikli mekânlar da bu yıl yeniden ele alındı.',
+      'Neden önemli? Duvar resimleri, mozaikler ve zemin döşemeleri bir yapının kimler tarafından ve ne amaçla kullanıldığını anlamanın en güçlü ipuçlarıdır. Bu bilgiler ancak buluntular yerinde, katmanlarıyla birlikte belgelendiğinde elde edilebilir. Kaçak kazıyla sökülen tek bir mozaik parçası bile bu bütünlüğü kalıcı olarak bozar.',
+    ],
+    sources: [
+      { name: 'Hürriyet Daily News: New rooms, paintings unearthed at Smyrna', url: 'https://www.hurriyetdailynews.com/new-rooms-paintings-unearthed-at-smyrna-226279' },
+      { name: 'Archaeology (AIA): Paintings and Floor Surfaces Revealed in Smyrna’s Agora', url: 'https://archaeology.org/news/2026/09/01/paintings-and-floor-surfaces-revealed-in-smyrnas-agora/' },
+      { name: 'Greek Reporter (2 Ekim 2026): Roman water channel', url: 'https://greekreporter.com/2026/10/02/roman-water-channel-ancient-greek-city-smyrna/' },
+    ],
+    related: [
+      { title: 'Anadolu’nun arkeolojik dönemleri', href: '/rehber/anadolu-arkeolojik-donemler' },
+      { title: 'Seramik nasıl tarihlenir?', href: '/rehber/seramik-nasil-tarihlenir' },
+    ],
+  },
+  {
+    id: 'seyitomer-hoyugu-5-bin-yillik-ekmekler',
+    date: '2026-11-05',
+    title: 'Seyitömer Höyüğü’nde 5 bin yıllık yangından kalma 8 ekmek bulundu',
+    lead: 'Kütahya’daki Seyitömer Höyüğü’nde, yaklaşık 5 bin yıl önce çıkan bir yangında kömürleşerek günümüze ulaşan sekiz ekmek kalıntısı ile buğday ve mercimek taneleri ortaya çıkarıldı.',
+    paragraphs: [
+      'Seyitömer Höyüğü’ndeki kazılar, Kütahya Müzesi Müdürü Dr. Sevgi Gürdal başkanlığında sürüyor. Ekip bu sezon Orta Tunç Çağı ve Erken Tunç Çağı tabakalarında çalıştı. Geçen yıl aynı yapıda bir fırın ve duvar dibinde raf kalıntıları bulunmuştu. Bu yıl raf ayaklarının arasında yanmış sekiz ekmek, buğday ve mercimek kalıntıları ele geçti.',
+      'Gürdal’ın açıklamasına göre buluntular yaklaşık 5 bin yıl öncesine, Erken Tunç Çağı’nın ilk çeyreğine tarihleniyor. Ekibin yorumu şöyle: Yangından önce odada bir raf vardı ve rafın üzerinde çuval ya da torbalar içinde tahıl, bakliyat ve ekmek saklanıyordu. Yangında raf çöktü, ürünler birbirine karışarak toprağın altında kaldı. Ekmek, buğday ve mercimek kalıntıları bugün Kütahya Arkeoloji ve Maden Müzesi’nde sergileniyor.',
+      'Seyitömer, kökeni MÖ 3000’li yıllara uzanan büyük bir höyük. Kent merkezine yaklaşık 26 kilometre uzaklıkta, bir termik santralin linyit sahası içinde kalıyor. Bu nedenle buradaki çalışmalar baştan beri bir kurtarma kazısı. Kazılar 1989’da başladı, farklı dönemlerde Eskişehir ve Afyonkarahisar müzeleri ile Kütahya Dumlupınar Üniversitesi tarafından yürütüldü. Höyükten bugüne kadar 17 binden fazla eser çıkarıldı. Çalışmalar 2019’dan beri Kütahya Müzesi Müdürlüğü’nde.',
+      'Bu buluntu, Eskişehir’deki Küllüoba Höyüğü’nde daha önce bulunan ve ritüel amaçla gömüldüğü düşünülen tek ekmekle karıştırılmamalı. Seyitömer’deki ekmekler, gündelik bir depolama alanında bir yangın anında yakalanmış.',
+      'Neden önemli? Yanarak kömürleşen tahıl ve ekmek, normalde çürüyüp kaybolan gıdaların arkeolojide korunabilmesinin ender yollarından biri. Bu kalıntılar, 5 bin yıl önce Anadolu’da hangi bitkilerin yetiştirildiğini, ekmeğin nasıl yapıldığını ve evlerde yiyeceğin nasıl saklandığını doğrudan gösteriyor. Bilginin değeri, buluntunun raf, fırın ve yangın tabakasıyla birlikte belgelenmesinden geliyor.',
+    ],
+    sources: [
+      { name: 'Diken (5 Kasım 2026, AA fotoğraflarıyla)', url: 'https://www.diken.com.tr/kutahyada-5-bin-yillik-ekmek-kalintilari-bulundu/' },
+      { name: 'Yeni Asır (6 Kasım 2026)', url: 'https://www.yeniasir.com.tr/ege/kutahya/2026/11/06/kutahyada-5-bin-yillik-ekmek-kalintilari-bulundu' },
+    ],
+    related: [
+      { title: 'Anadolu’nun arkeolojik dönemleri', href: '/rehber/anadolu-arkeolojik-donemler' },
+      { title: 'Seramik nasıl tarihlenir?', href: '/rehber/seramik-nasil-tarihlenir' },
+    ],
+  },
+  {
     id: 'kultur-bakanligi-2026-kazi-bilancosu',
     date: '2026-11-06',
     title: '2026 kazı bilançosu: 67 ilde 261 kazı alanı, 32 binden fazla buluntu',
