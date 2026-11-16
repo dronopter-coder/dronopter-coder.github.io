@@ -2,7 +2,8 @@
 // tarihi bölgeler, haberler, kurumsal sayfalar, sitemap.xml ve robots.txt. Ortak tasarım: shell.mjs.
 // Çıktı: src/seo.generated.ts (Worker bunu sunar). Çalıştırma (depo kökünden): bash defineciler/worker/scripts/build-site.sh
 // Not: İşaret sayfaları halk yorumlarının yalnızca ilkini gösterir, kalanını uygulamaya bırakır (Pro içeriği).
-import { existsSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,6 +17,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..', '..');
 const OUT = join(HERE, '..', 'src', 'seo.generated.ts');
 const TODAY = new Date().toISOString().slice(0, 10);
+// Sayfa içindeki "güncelleme" tarihi yer tutucusu; sayfa içeriği gerçekten değiştiğinde güncellenir (aşağıda, sitemap).
+const MOD = '%%MOD%%';
+const MOD_TR = '%%MODTR%%';
+const DATES_FILE = join(HERE, 'page-dates.json');
 
 const hasImg = (id) => existsSync(join(ROOT, 'site', `s-${id}.webp`));
 const lower = (s) => s.toLocaleLowerCase('tr-TR');
@@ -64,7 +69,7 @@ for (const s of SIGNS) {
   const ld = {
     '@context': 'https://schema.org',
     '@graph': [
-      { '@type': 'Article', headline: `${s.title} define işareti ne anlama gelir?`, description: s.summary, inLanguage: 'tr-TR', dateModified: TODAY,
+      { '@type': 'Article', headline: `${s.title} define işareti ne anlama gelir?`, description: s.summary, inLanguage: 'tr-TR', dateModified: MOD,
         mainEntityOfPage: `${BASE}${path}`, image: img ? `${BASE}${img}` : `${BASE}/site/og.jpg`, author: { '@type': 'Organization', name: 'Defineciler' }, publisher },
       crumbLd([['Define işaretleri', '/define-isaretleri'], [s.title, path]]),
       faqLd(signFaq(s)),
@@ -143,7 +148,7 @@ function articlePage(kind, g) {
   const ld = {
     '@context': 'https://schema.org',
     '@graph': [
-      { '@type': 'Article', headline: g.title, description: g.lead, inLanguage: 'tr-TR', dateModified: TODAY, mainEntityOfPage: `${BASE}${path}`,
+      { '@type': 'Article', headline: g.title, description: g.lead, inLanguage: 'tr-TR', dateModified: MOD, mainEntityOfPage: `${BASE}${path}`,
         author: { '@type': 'Organization', name: 'Defineciler', url: `${BASE}/hakkimizda` }, publisher },
       crumbLd([section, [g.title, path]]),
       ...(g.faq?.length ? [faqLd(g.faq)] : []),
@@ -156,7 +161,7 @@ function articlePage(kind, g) {
       crumbs: [section, [g.title]],
       eyebrow: isGuide ? 'Rehber' : 'Tarihi bölge',
       h1: g.title,
-      meta: `Okuma süresi: ${Math.max(2, Math.round(words(g) / 180))} dk · Güncelleme: ${TODAY.split('-').reverse().join('.')} · <a href="/hakkimizda#ilkeler">Yayın ilkelerimiz</a>`,
+      meta: `Okuma süresi: ${Math.max(2, Math.round(words(g) / 180))} dk · Güncelleme: ${MOD_TR} · <a href="/hakkimizda#ilkeler">Yayın ilkelerimiz</a>`,
       lead: g.lead,
       content: `${g.sections.length > 3 ? `<div class="toc"><b>Bu yazıda</b><ul>${g.sections.map(([h], i) => `<li><a href="#b${i + 1}">${esc(h)}</a></li>`).join('')}</ul></div>` : ''}
 ${g.sections.map(([h, ps], i) => `<h2 id="b${i + 1}">${esc(h)}</h2>${ps.map((t) => `<p>${esc(t)}</p>`).join('')}`).join('')}
@@ -257,8 +262,21 @@ const urls = [
 ];
 const missing = urls.filter(([p]) => !pages[p]).map(([p]) => p);
 if (missing.length) throw new Error(`Sitemap'te olup sayfası olmayan adresler: ${missing.join(', ')}`);
+// Son değişiklik tarihi: sayfanın içeriği (tarih yer tutucusu hariç) bir önceki üretimden farklıysa bugün, aynıysa
+// kayıtlı tarih. Kayıtlar page-dates.json'da (depoya işlenir). Haberler ilk kez eklendiğinde kendi yayın tarihini alır.
+const NEWS_DATE = Object.fromEntries(NEWS.map((n) => [`/haberler/${n.id}`, n.date]));
+const oldDates = existsSync(DATES_FILE) ? JSON.parse(readFileSync(DATES_FILE, 'utf8')) : {};
+const dates = {};
+for (const p of Object.keys(pages).sort()) {
+  const hash = createHash('sha256').update(pages[p]).digest('hex').slice(0, 16);
+  const prev = oldDates[p];
+  const date = prev?.hash === hash ? prev.date : prev ? TODAY : (NEWS_DATE[p] ?? TODAY);
+  dates[p] = { hash, date };
+  pages[p] = pages[p].replaceAll(MOD_TR, date.split('-').reverse().join('.')).replaceAll(MOD, date);
+}
+writeFileSync(DATES_FILE, `${JSON.stringify(dates, null, 1)}\n`);
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
-  .map(([p, pr]) => `  <url><loc>${BASE}${p}</loc><lastmod>${TODAY}</lastmod><priority>${pr}</priority></url>`)
+  .map(([p, pr]) => `  <url><loc>${BASE}${p}</loc><lastmod>${dates[p].date}</lastmod><priority>${pr}</priority></url>`)
   .join('\n')}\n</urlset>\n`;
 const robots = `User-agent: *\nAllow: /\nDisallow: /analyze\nDisallow: /echo\nDisallow: /news\nDisallow: /ping\nDisallow: /forum/yonetim\nDisallow: /forum/hesap\nDisallow: /forum/yeni\nDisallow: /forum/giris\nDisallow: /forum/kayit\nDisallow: /forum/auth/\n\nSitemap: ${BASE}/sitemap.xml\nSitemap: ${BASE}/forum/sitemap.xml\n`;
 

@@ -1,0 +1,298 @@
+{
+ "/": {
+  "hash": "6b5abca5225f1194",
+  "date": "2026-11-16"
+ },
+ "/abonelik": {
+  "hash": "161a4b46cc487b7c",
+  "date": "2026-11-16"
+ },
+ "/bolgeler": {
+  "hash": "ef0f1b5e061cc874",
+  "date": "2026-11-16"
+ },
+ "/bolgeler/frigya": {
+  "hash": "e833bc21a19c135c",
+  "date": "2026-11-16"
+ },
+ "/bolgeler/hitit": {
+  "hash": "79a39922af0c0baf",
+  "date": "2026-11-16"
+ },
+ "/bolgeler/kapadokya": {
+  "hash": "5fe35cd0bca9b830",
+  "date": "2026-11-16"
+ },
+ "/bolgeler/karya": {
+  "hash": "198766c98275ae55",
+  "date": "2026-11-16"
+ },
+ "/bolgeler/kommagene": {
+  "hash": "f4b25012ca5c4e54",
+  "date": "2026-11-16"
+ },
+ "/bolgeler/lidya": {
+  "hash": "66d5be9a16384fe0",
+  "date": "2026-11-16"
+ },
+ "/bolgeler/likya": {
+  "hash": "930fc85e4e4de490",
+  "date": "2026-11-16"
+ },
+ "/bolgeler/urartu": {
+  "hash": "34b7d57292e3028c",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri": {
+  "hash": "f80d1215f951efba",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/akrep": {
+  "hash": "505c7b449c1f6217",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/aslan": {
+  "hash": "82f3ec2dfa20fc23",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/at-nali": {
+  "hash": "1c0e697bd2980c4b",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/ayak": {
+  "hash": "6d5195aecaeac49a",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/balik": {
+  "hash": "093771a594546000",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/basamak": {
+  "hash": "e439d93a4aa31926",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/boga": {
+  "hash": "a6fd43d5b00abd77",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/canak": {
+  "hash": "11fae47a79a05edf",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/cizgi": {
+  "hash": "435545cc85983a01",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/el": {
+  "hash": "ac7cff92cc58aab5",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/gunes": {
+  "hash": "c6eaa4445db1cb95",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/hac": {
+  "hash": "ca11cb14a47190e6",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/hilal": {
+  "hash": "66f21a7a2c8aa215",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/insan": {
+  "hash": "0d719b5d66b6ad42",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/kaplumbaga": {
+  "hash": "4658954c3f40fd88",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/kartal": {
+  "hash": "b91e75bd4efb648b",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/kaya-mezari": {
+  "hash": "e3b14e7fd5762dda",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/kazan": {
+  "hash": "6ff727085b2887fc",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/keci": {
+  "hash": "50a042a729f492bb",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/kenet": {
+  "hash": "5ac1f73e50bbf84e",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/kertenkele": {
+  "hash": "66bcda2c67793a8b",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/kus": {
+  "hash": "793fdc68778babb4",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/ok": {
+  "hash": "ee6d8a043eb81834",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/sahte-kapi": {
+  "hash": "818b52412dc2897c",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/sarnic": {
+  "hash": "40810f00c9d629c6",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/sinir-tasi": {
+  "hash": "7c095b745b801b58",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/spiral": {
+  "hash": "f84c4df488a2fa9e",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/tamga": {
+  "hash": "bb4564e848d322d5",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/tas-yigini": {
+  "hash": "fc817679f01cfa08",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/tasci": {
+  "hash": "fa19647bfd0cd2dc",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/tumulus": {
+  "hash": "d9d6f83c5907bdc8",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/yazit": {
+  "hash": "5465421f3583d1fd",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/yilan": {
+  "hash": "ce55d854820f31f3",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/yildiz": {
+  "hash": "66541e9bf8c7485f",
+  "date": "2026-11-16"
+ },
+ "/define-isaretleri/yuz": {
+  "hash": "c2792d3c4e3d0b45",
+  "date": "2026-11-16"
+ },
+ "/ekran-goruntuleri": {
+  "hash": "968760f93df65f15",
+  "date": "2026-11-16"
+ },
+ "/forum/kurallar": {
+  "hash": "14d59ccae4d056bc",
+  "date": "2026-11-16"
+ },
+ "/gizlilik": {
+  "hash": "87f89d62f78c54f8",
+  "date": "2026-11-16"
+ },
+ "/haberler": {
+  "hash": "5a18d162cfa7ce26",
+  "date": "2026-11-16"
+ },
+ "/haberler/golyazi-apollonia-tiyatrosunda-mezar": {
+  "hash": "1bc6be0f5e02f752",
+  "date": "2026-11-01"
+ },
+ "/haberler/kultur-bakanligi-2026-kazi-bilancosu": {
+  "hash": "80f42e1af71a0f2a",
+  "date": "2026-11-06"
+ },
+ "/haberler/seyitomer-hoyugu-5-bin-yillik-ekmekler": {
+  "hash": "d19924d92b7568c5",
+  "date": "2026-11-05"
+ },
+ "/haberler/smyrna-agorasi-2026-duvar-resimleri-su-kanali": {
+  "hash": "ce853b550a734af7",
+  "date": "2026-11-16"
+ },
+ "/haberler/troya-kemik-flut-ve-idol-basi": {
+  "hash": "43933317b0fb39cf",
+  "date": "2026-10-22"
+ },
+ "/haberler/yalova-cobankale-2026-kazilari-tamamlandi": {
+  "hash": "5a78142593cd0f5c",
+  "date": "2026-11-04"
+ },
+ "/hakkimizda": {
+  "hash": "999353277cca3096",
+  "date": "2026-11-16"
+ },
+ "/iletisim": {
+  "hash": "07fe1afa22863795",
+  "date": "2026-11-16"
+ },
+ "/nasil-calisir": {
+  "hash": "e21dc2647b449d4e",
+  "date": "2026-11-16"
+ },
+ "/ozellikler": {
+  "hash": "f9e1c625c8a5e1eb",
+  "date": "2026-11-16"
+ },
+ "/pro": {
+  "hash": "d04fd9f4c78d5a01",
+  "date": "2026-11-16"
+ },
+ "/rehber": {
+  "hash": "e0b4e3bd5cfa35c7",
+  "date": "2026-11-16"
+ },
+ "/rehber/anadolu-arkeolojik-donemler": {
+  "hash": "50b897e20922419a",
+  "date": "2026-11-16"
+ },
+ "/rehber/bizans-ve-roma-sikkeleri": {
+  "hash": "6b285806ba072383",
+  "date": "2026-11-16"
+ },
+ "/rehber/define-efsaneleri-ve-gercekler": {
+  "hash": "e0c49000d4c26f5c",
+  "date": "2026-11-16"
+ },
+ "/rehber/patina-nedir": {
+  "hash": "481311a76e99d6f7",
+  "date": "2026-11-16"
+ },
+ "/rehber/sahte-eser-nasil-anlasilir": {
+  "hash": "0632a8a1d05f6f63",
+  "date": "2026-11-16"
+ },
+ "/rehber/seramik-nasil-tarihlenir": {
+  "hash": "13b793cf8211e569",
+  "date": "2026-11-16"
+ },
+ "/rehber/sikke-nasil-okunur": {
+  "hash": "1ad494b4ba1e8000",
+  "date": "2026-11-16"
+ },
+ "/rehber/tarihi-eser-bulursam-ne-yapmaliyim": {
+  "hash": "055f8258cf9f6328",
+  "date": "2026-11-16"
+ },
+ "/rehber/tumulus-nedir": {
+  "hash": "f187f8c735ceba18",
+  "date": "2026-11-16"
+ },
+ "/sss": {
+  "hash": "9249d24be2d1492c",
+  "date": "2026-11-16"
+ },
+ "/tanitim": {
+  "hash": "94c2150f638b85c4",
+  "date": "2026-11-16"
+ }
+}

@@ -37,6 +37,15 @@ describe('bağlantı testi uç noktaları', () => {
     expect(await res.text()).toBe('google.com, pub-3204109869365538, DIRECT, f08c47fec0942fa0\n');
   });
 
+  it('sitemap son değişiklik tarihleri sayfaya özgü; yer tutucu kalmaz', async () => {
+    const xml = await (await worker.fetch(new Request('https://defineciler.online/sitemap.xml'), env, ctx)).text();
+    expect(xml).toContain('/haberler/troya-kemik-flut-ve-idol-basi</loc><lastmod>2026-10-22</lastmod>');
+    expect(xml).not.toContain('%%');
+    const guide = await (await worker.fetch(new Request('https://defineciler.online/rehber/tumulus-nedir'), env, ctx)).text();
+    expect(guide).not.toContain('%%MOD');
+    expect(guide).toMatch(/"dateModified":"\d{4}-\d{2}-\d{2}"/);
+  });
+
   it('HEAD istekleri GET ile aynı durumu ve başlıkları, gövdesiz döndürür (AdSense ads.txt kontrolü)', async () => {
     const head = (u: string) => worker.fetch(new Request(u, { method: 'HEAD' }), env, ctx);
     const ads = await head('https://defineciler.online/ads.txt');
