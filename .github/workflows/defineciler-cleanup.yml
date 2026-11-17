@@ -1,0 +1,36 @@
+name: Eski yapı çıktılarını sil
+
+# Actions depolama kotası (ücretsiz hesapta 500 MB) yapı çıktılarıyla (APK/AAB) dolmasın diye
+# 1 günden eski çıktıları siler. Haftada bir, bu dosya değiştiğinde ve elle çalışır.
+on:
+  push:
+    paths:
+      - '.github/workflows/defineciler-cleanup.yml'
+  schedule:
+    - cron: '17 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1 günden eski çıktıları sil
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          cutoff=$(date -u -d '1 day ago' +%Y-%m-%dT%H:%M:%SZ)
+          gh api --paginate "repos/$REPO/actions/artifacts?per_page=100" \
+            --jq ".artifacts[] | select(.created_at < \"$cutoff\") | \"\(.id) \(.size_in_bytes) \(.name)\"" > old.txt || true
+          n=0; bytes=0
+          while read -r id size name; do
+            [ -z "$id" ] && continue
+            if gh api -X DELETE "repos/$REPO/actions/artifacts/$id" >/dev/null; then
+              n=$((n+1)); bytes=$((bytes+size)); echo "silindi: $name ($id)"
+            fi
+          done < old.txt
+          echo "Toplam $n çıktı silindi, $((bytes/1024/1024)) MB boşaldı."

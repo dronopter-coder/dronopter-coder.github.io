@@ -160,6 +160,9 @@ jobs:
   photos:
     name: Fotoğrafları indir (Wikimedia Commons)
     needs: check
+    # Test APK'sı yalnızca elle (Run workflow) istenince üretilir; uygulama Play'e AAB ile gider.
+    # Her push'ta 33 MB'lık APK yüklemek Actions depolama kotasını dolduruyordu.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -191,6 +194,7 @@ jobs:
 
   apk:
     needs: [check, worker, photos]
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -257,4 +261,4 @@ jobs:
         with:
           name: defineciler-apk
           path: defineciler/android/app/build/outputs/apk/release/*.apk
-          retention-days: 14
+          retention-days: 3
