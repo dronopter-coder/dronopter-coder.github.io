@@ -2,10 +2,23 @@
   "permissions": {
     "allow": [
       "mcp__Cloudflare_Developer_Platform__d1_database_query",
+      "mcp__Cloudflare_Developer_Platform__r2_bucket_create",
       "mcp__Firecrawl__firecrawl_scrape",
       "mcp__Firecrawl__firecrawl_search",
+      "mcp__github__actions_list",
+      "mcp__github__actions_get",
+      "mcp__github__get_job_logs",
+      "mcp__github__actions_run_trigger",
+      "mcp__claude-code-remote__update_trigger",
       "WebSearch",
-      "WebFetch"
+      "WebFetch",
+      "Bash(git *)",
+      "Bash(curl *)",
+      "Bash(npx *)",
+      "Bash(npm *)",
+      "Bash(node *)",
+      "Bash(python3 *)",
+      "Bash(bash defineciler/*)"
     ]
   }
 }
