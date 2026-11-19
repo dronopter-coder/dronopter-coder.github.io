@@ -504,9 +504,13 @@ async function image(c: Ctx, key: string) {
 async function sitemap(c: Ctx) {
   const rows = (await c.db.prepare("SELECT id, slug, last_post_at FROM topics WHERE status = 'published' ORDER BY last_post_at DESC LIMIT 5000")
     .all<{ id: number; slug: string; last_post_at: number }>()).results;
+  // Boş kategori sayfaları "noindex" taşır; sitemap'e yalnızca konusu olan kategoriler girer (Search Console uyarısı).
+  const cats = (await c.db.prepare("SELECT category, MAX(last_post_at) AS d FROM topics WHERE status = 'published' GROUP BY category")
+    .all<{ category: string; d: number }>()).results;
+  const catDate = new Map(cats.map((r) => [r.category, r.d]));
   const u = (p: string, d?: number) => `  <url><loc>https://defineciler.online${p}</loc>${d ? `<lastmod>${new Date(d).toISOString().slice(0, 10)}</lastmod>` : ''}</url>`;
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[
-    u('/forum'), u('/forum/kurallar'), ...CATEGORIES.map((k) => u(`/forum/k/${k.id}`)), ...rows.map((r) => u(topicUrl(r), r.last_post_at)),
+    u('/forum'), u('/forum/kurallar'), ...CATEGORIES.filter((k) => catDate.has(k.id)).map((k) => u(`/forum/k/${k.id}`, catDate.get(k.id))), ...rows.map((r) => u(topicUrl(r), r.last_post_at)),
   ].join('\n')}\n</urlset>\n`;
   return new Response(xml, { headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
 }

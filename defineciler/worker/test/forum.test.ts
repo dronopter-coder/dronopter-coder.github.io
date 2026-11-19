@@ -195,6 +195,16 @@ describe('forum akışı', () => {
     expect(await (await browser().go('/forum')).text()).toContain('Bu yılan motifi ne anlatıyor?');
   });
 
+  it('forum sitemap\'ine yalnızca konusu olan kategoriler girer (boş kategori noindex)', async () => {
+    const admin = await signup('yonetici');
+    const csrf = await admin.csrf('/forum/yeni');
+    await admin.go('/forum/yeni', { form: { csrf, k: 'tarih', title: 'Hitit başkenti hakkında', body: 'Hattuşa hakkında konuşalım, bildiklerinizi yazın.' } });
+    const xml = await (await browser().go('/forum/sitemap.xml')).text();
+    expect(xml).toContain('/forum/k/tarih</loc>');
+    expect(xml).not.toContain('/forum/k/uygulama</loc>');
+    expect(await (await browser().go('/forum/k/uygulama')).text()).toContain('noindex');
+  });
+
   it('veritabanı yoksa forum "yakında" gösterir; kurallar sayfası ve robots', async () => {
     const res = await worker.fetch(new Request(`${ORIGIN}/forum`), {} as typeof env, ctx);
     expect(res.status).toBe(503);
