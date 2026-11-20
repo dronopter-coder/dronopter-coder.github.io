@@ -205,6 +205,20 @@ describe('forum akışı', () => {
     expect(await (await browser().go('/forum/k/uygulama')).text()).toContain('noindex');
   });
 
+  it('ana sayfada son forum konuları ve ekip rozeti', async () => {
+    const db = env.FORUM_DB!;
+    const now = Date.now();
+    await db.prepare("INSERT INTO users (username, display_name, created_at) VALUES ('defineciler_ekibi', 'Defineciler Ekibi', ?)").bind(now).run();
+    await db.prepare("INSERT INTO topics (category, user_id, title, slug, status, created_at, last_post_at) VALUES ('tarih', 1, 'Lidya sikkeleri <b>', 'lidya-sikkeleri', 'published', ?, ?)").bind(now, now).run();
+    await db.prepare("INSERT INTO posts (topic_id, user_id, is_first, body, status, created_at) VALUES (1, 1, 1, 'Sizce?', 'published', ?)").bind(now).run();
+    const home = await (await browser().go('/')).text();
+    expect(home).toContain('Son tartışmalar');
+    expect(home).toContain('href="/forum/konu/1-lidya-sikkeleri"');
+    expect(home).toContain('Lidya sikkeleri &lt;b&gt;');
+    expect(home).not.toContain('<!--FORUM_SON-->');
+    expect(await (await browser().go('/forum/konu/1-lidya-sikkeleri')).text()).toContain('<span class="tag team">Ekip</span>');
+  });
+
   it('veritabanı yoksa forum "yakında" gösterir; kurallar sayfası ve robots', async () => {
     const res = await worker.fetch(new Request(`${ORIGIN}/forum`), {} as typeof env, ctx);
     expect(res.status).toBe(503);

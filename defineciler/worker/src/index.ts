@@ -205,6 +205,7 @@ async function handle(req: Request, env: Env, ctx: ExecutionContext): Promise<Re
     }
     if (req.method === 'GET') {
       const site = handleSite(url);
+      if (site && url.pathname === '/' && APEX_HOSTS.has(url.hostname)) return withForumLatest(site, env);
       if (site) return site;
     }
     try {
@@ -223,6 +224,34 @@ async function handle(req: Request, env: Env, ctx: ExecutionContext): Promise<Re
       console.error('unhandled', e);
       return json({ error: 'Sunucu hatası. Lütfen tekrar deneyin.', code: 'internal' }, 500);
     }
+}
+
+const escHtml = (t: string) => t.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]!);
+
+/** Ana sayfadaki <!--FORUM_SON--> yerine forumdaki en yeni konuları koyar (veritabanı yoksa ya da hata olursa boş bırakır). */
+async function withForumLatest(res: Response, env: Env): Promise<Response> {
+  const html = await res.text();
+  let block = '';
+  try {
+    if (env.FORUM_DB) {
+      const rows = (await env.FORUM_DB.prepare(
+        "SELECT id, slug, title, reply_count, last_post_at FROM topics WHERE status = 'published' ORDER BY last_post_at DESC LIMIT 4",
+      ).all<{ id: number; slug: string; title: string; reply_count: number; last_post_at: number }>()).results;
+      if (rows.length) {
+        const card = (r: (typeof rows)[number]) => {
+          const d = new Date(r.last_post_at + 3 * 3600_000).toISOString().slice(0, 10);
+          return `<a class="news" href="/forum/konu/${r.id}-${escHtml(r.slug)}"><time datetime="${d}">${d.split('-').reverse().join('.')} · ${r.reply_count} cevap</time><h3>${escHtml(r.title)}</h3></a>`;
+        };
+        block = `<section class="sec"><div class="wrap">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px"><div><p class="eyebrow">Forum</p><h2 style="margin:0">Son tartışmalar</h2></div><a href="/forum">Foruma git →</a></div>
+<div class="cards">${rows.map(card).join('')}</div>
+</div></section>`;
+      }
+    }
+  } catch (e) {
+    console.error('forum-son', e);
+  }
+  return new Response(html.replace('<!--FORUM_SON-->', block), { status: res.status, headers: res.headers });
 }
 
 export default {

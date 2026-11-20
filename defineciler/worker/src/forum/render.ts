@@ -32,7 +32,7 @@ const CSS = `
 .trow{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:16px;margin:10px 0;text-decoration:none;color:var(--text)}
 .trow:hover{border-color:var(--gold)}.trow h3{font-size:1.06rem;margin:0 0 4px;font-family:system-ui,sans-serif;color:var(--text)}.trow .meta{color:var(--muted);font-size:.84rem}
 .trow .cnt{margin-left:auto;text-align:center;min-width:58px;color:var(--muted);font-size:.78rem}.trow .cnt b{display:block;color:var(--gold-light);font-size:1.15rem}
-.tag{display:inline-block;padding:1px 9px;border-radius:999px;font-size:.74rem;font-weight:700;border:1px solid}.tag.ok{color:#7FB069;border-color:#7FB06988}.tag.wait{color:#E0A43A;border-color:#E0A43A88}.tag.hid{color:#D9654B;border-color:#D9654B88}
+.tag{display:inline-block;padding:1px 9px;border-radius:999px;font-size:.74rem;font-weight:700;border:1px solid}.tag.ok{color:#7FB069;border-color:#7FB06988}.tag.wait{color:#E0A43A;border-color:#E0A43A88}.tag.hid{color:#D9654B;border-color:#D9654B88}.tag.team{color:#1a1208;background:var(--gold);border-color:var(--gold)}
 .post{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin:14px 0}.post.acc{border-color:#7FB069;box-shadow:0 0 0 1px #7FB06955}
 .post .who{display:flex;gap:10px;align-items:center;margin-bottom:10px;font-size:.9rem;color:var(--muted)}.post .who b{color:var(--gold-light)}
 .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#3a2f22,#6b5536);display:flex;align-items:center;justify-content:center;color:var(--gold-light);font-weight:800}
@@ -93,10 +93,14 @@ ${banner(0)}`;
 export const statusTag = (st: string) =>
   st === 'published' ? '' : st === 'pending' ? '<span class="tag wait">Onay bekliyor</span>' : '<span class="tag hid">Gizlendi</span>';
 
+/** Resmî ekip hesabı: adının yanında "Ekip" rozeti görünür. */
+export const TEAM_USERS = new Set(['defineciler_ekibi']);
+const teamTag = (u?: string | null) => (u && TEAM_USERS.has(u) ? ' <span class="tag team">Ekip</span>' : '');
+
 export const topicRow = (t: Topic & { replies?: number }) =>
   `<a class="trow" href="${topicUrl(t)}"><div class="av">${esc((t.display_name ?? '?').slice(0, 1).toLocaleUpperCase('tr-TR'))}</div><div>
 <h3>${esc(t.title)} ${statusTag(t.status)}${t.accepted_post_id ? ' <span class="tag ok">Cevaplandı</span>' : ''}</h3>
-<div class="meta">${esc(catLabel(t.category))} · ${esc(t.display_name)} · ${ago(t.last_post_at)}</div></div>
+<div class="meta">${esc(catLabel(t.category))} · ${esc(t.display_name)}${teamTag(t.username)} · ${ago(t.last_post_at)}</div></div>
 <div class="cnt"><b>${t.reply_count}</b>cevap</div></a>`;
 
 /** Üye fotoğrafı R2 anahtarıdır; "/" ile başlayan anahtar sitenin kendi görselidir (ekip konuları, ör. /forum-gorsel/place-hitit.webp). */
@@ -120,7 +124,7 @@ export function postCard(p: Post, o: { s: Session | null; acceptedId: number | n
     if (p.status !== 'hidden') acts.push(f('/forum/yonetim', 'Gizle', `<input type="hidden" name="act" value="hide"><input type="hidden" name="id" value="${p.id}">`));
   }
   return `<article class="post${o.acceptedId === p.id ? ' acc' : ''}" id="g${p.id}">
-<div class="who"><div class="av">${esc((p.display_name ?? '?').slice(0, 1).toLocaleUpperCase('tr-TR'))}</div><div><b><a href="/forum/uye/${encodeURIComponent(p.username ?? '')}" style="color:inherit;text-decoration:none">${esc(p.display_name)}</a></b> · ${ago(p.created_at)} ${statusTag(p.status)}${o.acceptedId === p.id ? ' <span class="tag ok">En iyi cevap</span>' : ''}</div></div>
+<div class="who"><div class="av">${esc((p.display_name ?? '?').slice(0, 1).toLocaleUpperCase('tr-TR'))}</div><div><b><a href="/forum/uye/${encodeURIComponent(p.username ?? '')}" style="color:inherit;text-decoration:none">${esc(p.display_name)}</a></b>${teamTag(p.username)} · ${ago(p.created_at)} ${statusTag(p.status)}${o.acceptedId === p.id ? ' <span class="tag ok">En iyi cevap</span>' : ''}</div></div>
 ${p.status === 'pending' && p.flag_reason ? `<div class="note" style="margin-top:0">Bu gönderi otomatik denetime takıldı (<b>${esc(p.flag_reason)}</b>) ve yönetici onayı bekliyor.</div>` : ''}
 ${formatBody(p.body)}${pics(o.images)}
 ${acts.length ? `<div class="acts">${acts.join('')}</div>` : ''}</article>`;

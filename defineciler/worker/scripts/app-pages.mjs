@@ -140,6 +140,7 @@ ${videoTag}
 <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px"><div><p class="eyebrow">Arkeoloji haberleri</p><h2 style="margin:0">Kazılardan son gelişmeler</h2></div><a href="/haberler">Tüm haberler →</a></div>
 <div class="cards">${NEWS_SORTED.slice(0, 3).map(newsCard).join('')}</div>
 </div></section>
+<!--FORUM_SON-->
 
 <section class="sec alt"><div class="wrap">
 <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px"><div><p class="eyebrow">Rehberler</p><h2 style="margin:0">Okumaya buradan başlayın</h2></div><a href="/rehber">Tüm rehberler →</a></div>

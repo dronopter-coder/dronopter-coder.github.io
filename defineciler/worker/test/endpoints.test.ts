@@ -65,6 +65,7 @@ describe('bağlantı testi uç noktaları', () => {
     const homeHtml = await home.text();
     expect(homeHtml).toContain('Define işaretleri ve tarihi eserler');
     expect(homeHtml).toContain('href="/gizlilik"');
+    expect(homeHtml).not.toContain('<!--FORUM_SON-->');
     expect(homeHtml).toContain('href="https://dronopter.com.tr"');
     // Güven sayfaları (AdSense): Hakkımızda ve İletişim.
     for (const p of ['/hakkimizda', '/iletisim', '/rehber/anadolu-arkeolojik-donemler', '/bolgeler/lidya', '/haberler', '/haberler/troya-kemik-flut-ve-idol-basi', '/nasil-calisir', '/ozellikler', '/tanitim', '/ekran-goruntuleri', '/pro', '/sss', '/bolgeler']) {
